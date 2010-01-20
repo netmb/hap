@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <title>My WebApp</title>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+        <link rel="stylesheet" href="/static/js/webapp/Design/Render.css" />
+        <script type="text/javascript" src="/static/js/webapp/Action/Logic.js">
+        </script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            
+            window.setInterval("refresh()", 3000);
+            
+            function refresh(){
+                WebApp.Request('/iphone/refresh', null, cbRefresh, true);
+            }
+            
+            function cbRefresh(resp){
+                var objects = eval('(' + resp.responseText + ')');
+								objects = objects.data;
+                for (var i = 0; i< objects.length; i++) {
+									  cObj = objects[i];
+              			var el = document.getElementById(cObj.id);
+										if (el) {
+											el.value = cObj.status;
+											if (cObj.status > 0)
+												el.checked = "checked";
+											else 
+												el.checked = null;
+											}
+							  }
+								WebApp.Refresh();
+            }
+            
+            function setDevice(domId, value){
+                var obj = domId.split("_");
+                if (obj[3]) // step defined -> dimmer
+                    WebApp.Request('/gui/setDevice/' + obj[1] + '/' + obj[2] + '/' + obj[3], "", null, true);
+                else { // switch
+                    var el = document.getElementById(domId);
+                    if (el) 
+                        el.value = 100 - value;
+                    WebApp.Request('/gui/setDevice/' + obj[1] + '/' + obj[2] + '/' + (100 - value), "", null, true);
+                }
+            }
+        </script>
+        <div id="WebApp">
+            <div id="iHeader">
+                <a href="#" id="waBackButton">Back</a>
+                <span id="waHeadTitle">WebApp Demo</span>
+            </div>
+            <div id="iGroup">
+                <div class="iLayer" id="waHome" title="HAP">
+                    <div class="iMenu">
+                        <h3>Rooms</h3>
+                        <ul class="iArrow">
+                            [% FOREACH room IN rooms %]
+                            <li>
+                                <a href="#_Room_[% room.id %]">[% room.name %]</a>
+                            </li>
+                            [% END %]
+                        </ul>
+                    </div>
+                </div>
+                [% FOREACH room IN rooms %]
+                <div class="iLayer" id="waRoom_[% room.id %]" title="[% room.name %]">
+                    <div class="iPanel">
+                        <fieldset>
+                            <ul>
+                                [% FOREACH device IN room.devices %]
+                                [% IF device.type == 16 %]
+                                <li>
+                                    [% IF device.status > 0 %] <input type="checkbox" id="device_[% device.module %]_[% device.address %]" class="iToggle" checked="checked" title="ON|OFF" onclick="setDevice(this.id, this.value)" value="0"/> [% ELSE %]<input type="checkbox" id="device_[% device.module %]_[% device.address %]" class="iToggle" title="ON|OFF" onclick="setDevice(this.id, this.value)" value="0"/>[% END %]
+                                    <label>
+                                        [% device.name %]
+                                    </label>
+                                </li>
+                                [% ELSIF device.type >= 64 && device.type <= 67 %]
+                                <li class="iRadio" value="autoback">
+                                    [% device.name %]
+                                    [% step = 100 %]
+                                    [% WHILE step >= 0 %]
+                                    <label>
+                                        [% IF device.status == step %]<input type="radio" name="dimValue" id="device_[% device.module %]_[% device.address %]_[% step %]" value="[% step %]" onclick="setDevice(id, value)" checked="checked" />[% step %]%
+                                        [% ELSE %]<input type="radio" name="dimValue" id="device_[% device.module %]_[% device.address %]_[% step %]" value="[% step %]" onclick="setDevice(id, value)"/>[% step %]%
+                                        [% END %]
+                                    </label>[% step = step - 10 %]
+                                    [% END %]
+                                </li>[% END %]
+                                [% END %]
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>[% END %]
+            </div>
+        </div>
+    </body>
+</html>

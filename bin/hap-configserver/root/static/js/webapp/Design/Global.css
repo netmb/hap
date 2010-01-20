@@ -1,0 +1,34 @@
+[dir = "rtl"] #iHeader .iTab {
+    margin-left: 40px;
+    margin-right: 15px;
+} #iHeader .iTab {
+    margin-right: 55px;
+} .iPanel label + input[type] {
+    padding-left: 95px;
+}[dir =
+"rtl"] .iPanel label + input[type] {
+    padding-right: 95px;
+} #waProgressive div {
+    margin: 5px auto;
+    width: 302px;
+} #waProgressive img {
+    border: 1px solid #B3B3B3;
+} #waProgressive img[load] {
+    background: #D6DCE6 url(Img/bg-img.png) repeat-x scroll 0 0;
+} .iTab li {
+    width: 33%;
+} .iTab li:first-child {
+    width: 34%;
+} .msg {
+    background-color: #008800;
+    color: #FFFFFF;
+    font-size: 11px;
+    margin: 8px;
+    padding: 5px;
+} .err {
+    background-color: #880000;
+    color: #FFFFFF;
+    font-size: 11px;
+    margin: 8px;
+    padding: 5px;
+}
