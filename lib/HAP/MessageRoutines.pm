@@ -151,7 +151,7 @@ sub getTime {
     $wday = 6;
   }
   else {
-    $wday - 1;
+    $wday = $wday - 1;
   }
   my $data = {
     vlan        => $dgram->{vlan},
