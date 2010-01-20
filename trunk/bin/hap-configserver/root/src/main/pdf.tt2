@@ -1,0 +1,21 @@
+[%- USE Latex; FILTER latex("pdf") %]
+
+\documentclass[a4paper,12pt,landscape]{article}
+\usepackage[landscape]{geometry}
+\usepackage{geometry}
+\usepackage{ltxtable}
+\geometry{left=1.0cm,textwidth=26cm,top=1.5cm,textheight=16cm}
+
+\begin{document}
+{\tt \tiny
+\begin{longtable}[l]{ l l l l l }
+Time & PID & Source & Type & Message \\
+\hline
+[% FOREACH entry IN log -%]
+[% entry.time %] & [% entry.pid %] & [% entry.source %] & [% entry.type %] & [% entry.message %] \\
+[% END -%]
+\end{longtable}
+}
+ \end{document}
+[% END -%]
+ 

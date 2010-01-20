@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <title>HAPConfig</title>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <link rel='stylesheet' type='text/css' href='./static/js/ext/resources/css/ext-all.css'/>
+        <link rel='stylesheet' type='text/css' href='./static/js/ext/docs/resources/docs.css'/>
+        <link rel='stylesheet' type='text/css' href='./static/js/ext/ux/UploadDialog/css/Ext.ux.UploadDialog.css'/>
+        <link rel='stylesheet' type='text/css' href='./static/css/ImageChooser.css'/>
+        <link rel='stylesheet' type='text/css' href='./static/css/ColorField.css'/>
+        <link rel='stylesheet' type='text/css' href='./static/css/HAPConfig.css'/>
+    </head>
+    <body>
+        <!-- Loading mask and image -->
+        <div id='loading-mask' style='width:100%;height:100%;background:#FFFFFF;position :absolute;z-index:20000;left:0;top:0;'>
+        </div>
+        <div id='loading' style='position:absolute;left:35%;top:30%;padding:2px; width:450px;text-align:center;z-index:20001;'>
+            <div class='hap-loading-indicator'>
+                <img src='./static/images/loading.gif' style='width:16px;height:16px;' align='absmiddle'>&nbsp;Loading...
+                <br>
+                <img src='./static/images/hap.png' border='0'>
+            </div>
+        </div>
+        </div><!-- ExtJS -->
+        <script type='text/javascript' src='./static/js/ext/adapter/ext/ext-base.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/ext/ext-all.js'>
+        </script>
+        <!-- Draw2D -->
+        <script type='text/javascript' src='./static/js/draw2d/mootools.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/draw2d/moocanvas.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/draw2d/wz_jsgraphics.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/draw2d/draw2d.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/ext/ux/UploadDialog/Ext.ux.UploadDialog.js'>
+        </script>
+        <!-- HAP -->
+        <script type='text/javascript' src='./static/js/hap/LoadingMask.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/Init.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/PropertyGridTemplates.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ObjectTreePanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ObjectPropertyPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/UploadFileWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/LogTable.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/Stores.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/FormTemplates.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ManageConfigWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ManageModulesWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ManageMacrosWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ManageFirmwareWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ManageSchedulerWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ChartPropWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/LoginWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/RoleWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ChangePasswordWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ManageUserWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/UserPropWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/GridUserRoles.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/Trees.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ModulePanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/LogicalInputPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/AnalogInputPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/DigitalInputPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/DevicePanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ShutterPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/RotaryEncoderPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/RangeExtenderPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/RemoteControlPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/RemoteControlLearnedPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/RemoteControlMappingPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/RoomPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ACPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/LCDGuiPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/MacroPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ac/ACPropertyGrid.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ac/ACWorkflowSelector.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ac/ACPopupWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ac/ACObject.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ac/ACPorts.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/ac/ACObjectTree.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/lcd/LCDPropertyGrid.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/lcd/LCDWorkflowSelector.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/lcd/LCDObject.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/lcd/LCDPorts.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/lcd/LCDObjectTree.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/GUIViewPanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/GUIScenePanel.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/GUIWorkflowSelector.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/GUIObject.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/Switch.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/Slider.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/ImageLayer.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/ValueLayer.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/Chart.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/GUIObjectTree.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/GUIPropertyGrid.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/ImageChooser.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/ColorField.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/Layout.js'>
+        </script>
+        <div id='north'>
+        </div>
+        <div id='props-panel'>
+        </div>
+        <div id='south'>
+        </div>
+    </body>
+</html>

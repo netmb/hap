@@ -1,0 +1,36 @@
+{
+
+  "title_":{
+    "text":"Profit",
+    "style":"{font-size:25; color: #FF8040; background-color: #f0f0ff; padding: 10px; margin: 10px}"
+  },
+
+  "elements":[
+    {
+      "type":      "area_hollow",
+      "colour":    "#363c48",
+      "text":      "CA",
+      "font-size": 12,
+      "dot-size":  3,
+      "width":     2,
+      "fill-alpha": 0.35,
+      "values" :   [0,30,40,20,60,60,30,0,0,0,0,30.40,0,0,0,0,0,0,0,610.47,0,0,null,null,0,0,0,null,null,30]
+    }
+  ],
+
+  "x_axis":{
+    "max":30
+  },
+
+  "y_axis":{
+    "min": -10,
+    "max":1000
+  }
+}
+
+/*
+
+&tool_tip=#val#%25&
+&y_format=$#val:none#%25&
+
+*/
