@@ -48,6 +48,7 @@ sub get : Local {
 		#if ( ( $type & 12 ) == 12 ) {
 		#	$c->stash->{data}->{"type/12"} = 1;
 		#}
+		$c->stash->{data}->{"type/x"} = 0;
 		for ( my $i = 0 ; $i < 6 ; $i++ ) {
 			if ( $type & ( 2**$i ) ) {
 				if ( 2**$i == 0 || 2**$i == 4 || 2**$i == 8 ) {
@@ -153,7 +154,7 @@ sub getCheckedCheckboxes : Local {
 			$c->stash->{data}->{ "type/" . ( 2**$i ) } = 0;
 		}
 	}
-	if ( $type & 12 == 12 ) {
+	if ( ($type & 12) == 12 ) {
 		$c->stash->{data}->{"type/x"} = 12;
 	}
 	$c->forward('View::JSON');

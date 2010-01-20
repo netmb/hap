@@ -196,13 +196,13 @@ sub create {
     $self->add("destination $ref->{Address} analog-input-device $_->{Address} trigger 0 value $t0 ");
     my $t0Hyst = ( $_->{Trigger0Hyst} * 16 & 0xFF );
     my $notify = "no-status-message";
-    if ( ( $_->{Trigger0Notify} & 1 ) == 1 ) {
+    if ( ( $_->{Trigger0Notify} & 4 ) == 4 ) {
       $notify = 'lower-limit-message';
     }
-    if ( ( $_->{Trigger0Notify} & 2 ) == 2 ) {
+    if ( ( $_->{Trigger0Notify} & 8 ) == 8 ) {
       $notify = "limit-message";
     }
-    if ( ( $_->{Trigger0Notify} & 3 ) == 3 ) {
+    if ( ( $_->{Trigger0Notify} & 12 ) == 12 ) {
       $notify = "all-status-message";
     }
     $self->add("destination $ref->{Address} analog-input-device $_->{Address} trigger 0 hysteresis $t0Hyst $notify ");
@@ -211,13 +211,13 @@ sub create {
     $self->add("destination $ref->{Address} analog-input-device $_->{Address} trigger 1 value $t1 ");
     my $t1Hyst = ( $_->{Trigger1Hyst} * 16 & 0xFF );
     $notify = "no-status-message";
-    if ( ( $_->{Trigger1Notify} & 1 ) == 1 ) {
+    if ( ( $_->{Trigger1Notify} & 4 ) == 4 ) {
       $notify = 'lower-limit-message';
     }
-    if ( ( $_->{Trigger1Notify} & 2 ) == 2 ) {
+    if ( ( $_->{Trigger1Notify} & 8 ) == 8 ) {
       $notify = "limit-message";
     }
-    if ( ( $_->{Trigger1Notify} & 3 ) == 3 ) {
+    if ( ( $_->{Trigger1Notify} & 12 ) == 12 ) {
       $notify = "all-status-message";
     }
     $self->add("destination $ref->{Address} analog-input-device $_->{Address} trigger 1 hysteresis $t1Hyst $notify ");
@@ -237,13 +237,13 @@ sub create {
     $self->add("destination $ref->{Address} digital-input-device $_->{Address} trigger 0 value $t0 ");
     my $t0Hyst = ( $_->{Trigger0Hyst} * 16 & 0xFF );
     my $notify = "no-status-message";
-    if ( ( $_->{Trigger0Notify} & 1 ) == 1 ) {
+    if ( ( $_->{Trigger0Notify} & 4 ) == 4 ) {
       $notify = 'lower-limit-message';
     }
-    if ( ( $_->{Trigger0Notify} & 2 ) == 2 ) {
+    if ( ( $_->{Trigger0Notify} & 8 ) == 8 ) {
       $notify = "limit-message";
     }
-    if ( ( $_->{Trigger0Notify} & 3 ) == 3 ) {
+    if ( ( $_->{Trigger0Notify} & 12 ) == 12 ) {
       $notify = "all-status-message";
     }
     $self->add("destination $ref->{Address} digital-input-device $_->{Address} trigger 0 hysteresis $t0Hyst $notify ");
@@ -252,13 +252,13 @@ sub create {
     $self->add("destination $ref->{Address} digital-input-device $_->{Address} trigger 1 value $t1 ");
     my $t1Hyst = ( $_->{Trigger1Hyst} * 16 & 0xFF );
     $notify = "no-status-message";
-    if ( ( $_->{Trigger1Notify} & 1 ) == 1 ) {
+    if ( ( $_->{Trigger1Notify} & 4 ) == 4 ) {
       $notify = 'lower-limit-message';
     }
-    if ( ( $_->{Trigger1Notify} & 2 ) == 2 ) {
+    if ( ( $_->{Trigger1Notify} & 8 ) == 8 ) {
       $notify = "limit-message";
     }
-    if ( ( $_->{Trigger1Notify} & 3 ) == 3 ) {
+    if ( ( $_->{Trigger1Notify} & 12 ) == 12 ) {
       $notify = "all-status-message";
     }
     $self->add("destination $ref->{Address} digital-input-device $_->{Address} trigger 1 hysteresis $t1Hyst $notify ");
