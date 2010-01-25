@@ -245,20 +245,25 @@ sub dbUpdateStatus {
   my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
   foreach ( @{ $data->{result} } ) {
     my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
-    if ( $_->{'Formula'} ) {
-      my $formula = $_->{'Formula'};
-      $formula =~ s/x|X/$status/g;
-      $status = eval($formula);
+    if ( $data->{hapData}->{mtype} == 16 && ( $_->{'Type'} == 32 || $_->{'Type'} == 40 )) {
+#   Trigger der Analog- u. Digitaleingänge nicht als Status speichern
     }
-    $kernel->post(
-      'database',
-      insert => {
-        sql          => 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
-        placeholders => [ time(), $_->{'Type'}, $data->{dbModuleId}, $data->{hapData}->{device}, $status, $c->{DefaultConfig} ],
-        event        => '',
+    else {
+      if ( $_->{'Formula'} ) {
+        my $formula = $_->{'Formula'};
+        $formula =~ s/x|X/$status/g;
+        $status = eval($formula);
       }
-    );
-    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "$_->{Name} Status $status" );
+      $kernel->post(
+        'database',
+        insert => {
+          sql          => 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
+          placeholders => [ time(), $_->{'Type'}, $data->{dbModuleId}, $data->{hapData}->{device}, $status, $c->{DefaultConfig} ],
+          event        => '',
+        }
+      );
+      $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "$_->{Name} Status $status" );
+    }
   }
 }
 
