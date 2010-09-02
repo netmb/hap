@@ -622,6 +622,7 @@ Ext.extend(HAP.ObjectPropertyPanel, Ext.Panel, {
 });
 HAP.UploadFileWindow = function(el, event, callback){
     dialog = new Ext.ux.UploadDialog.Dialog({
+	title: 'File upload',
         url: '/fileupload/getFile',
         reset_on_hide: false,
         allow_close_on_upload: true,
@@ -708,13 +709,6 @@ HAP.LogTable = function(){
     this.cm = cm;
     this.sm = sm;
     this.region = 'south';
-    this.split = true;
-    this.height = 100;
-    this.collapsible = true;
-    this.margins = '0 0 0 0';
-    this.autoWidth = false;
-    this.autoHeight = false;
-    this.frame = false;
     this.viewConfig = {
         forceFit: true
     };

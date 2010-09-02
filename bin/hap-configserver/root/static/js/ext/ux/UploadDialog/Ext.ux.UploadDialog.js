@@ -282,19 +282,17 @@ Ext.ux.UploadDialog.BrowseButton = Ext.extend(Ext.Button,
    */
   createInputFile : function()
   {
-    var button_container = this.el.child('.x-btn-center');
-    button_container.position('relative');
-    this.input_file = Ext.DomHelper.append(
-      button_container, 
-      {
-        tag: 'input',
-        type: 'file',
-        size: 1,
-        name: this.input_name || Ext.id(this.el),
-        style: 'position: absolute; display: block; border: none; cursor: pointer'
-      },
-      true
-    );
+    var button_container = this.el.child('tbody' /* JYJ '.x-btn-center'*/);
+        button_container.position('relative');
+       this.wrap = this.el.wrap({cls:'tbody'});    
+       this.input_file = this.wrap.createChild({
+           tag: 'input',
+            type: 'file',
+            size: 1,
+            name: this.input_name || Ext.id(this.el),
+            style: "position: absolute; display: block; border: none; cursor: pointer"
+        });
+        this.input_file.setOpacity(0.0);
     
     var button_box = button_container.getBox();
     this.input_file.setStyle('font-size', (button_box.width * 0.5) + 'px');
@@ -454,6 +452,9 @@ Ext.ux.UploadDialog.Dialog = function(config)
     maximizable: false,
     minimizable: false,
     resizable: true,
+    
+        layout:'fit',
+        region:'center',
     autoDestroy: true,
     closeAction: 'hide',
     title: this.i18n.title,
@@ -464,7 +465,9 @@ Ext.ux.UploadDialog.Dialog = function(config)
     permitted_extensions: [],
     reset_on_hide: true,
     allow_close_on_upload: false,
-    upload_autostart: false
+    upload_autostart: false,
+    Make_Reload: false,
+    post_var_name: 'file'
   }
   config = Ext.applyIf(config || {}, default_config);
   config.layout = 'absolute';
@@ -473,7 +476,8 @@ Ext.ux.UploadDialog.Dialog = function(config)
 }
 
 Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
-
+    
+    
   fsa : null,
   
   state_tpl : null,
@@ -767,7 +771,7 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
     
     // Compiling state template.
     this.state_tpl = new Ext.Template(
-      "<div class='ext-ux-uploaddialog-state ext-ux-uploaddialog-state-{state}'>&#160;</div>"
+      "<div class='ext-ux-uploaddialog-state ext-ux-uploaddialog-state-{state}'> </div>"
     ).compile();
   },
   
@@ -827,14 +831,14 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
         renderer: this.renderNoteCell.createDelegate(this)
       }
     ]);
-  
       this.grid_panel = new Ext.grid.GridPanel({
       ds: store,
       cm: cm,
-    
+        layout:'fit',
+        height: this.height-50,
+        region:'center',
       x: 0,
       y: 22,
-      anchor: '0 -22',
       border: true,
       
         viewConfig: {
@@ -857,53 +861,54 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
     tb.x_buttons = {}
     
     tb.x_buttons.add = tb.addItem(new Ext.ux.UploadDialog.TBBrowseButton({
+      input_name: this.post_var_name,
       text: this.i18n.add_btn_text,
       tooltip: this.i18n.add_btn_tip,
-      iconCls: 'add',
+      iconCls: 'ext-ux-uploaddialog-addbtn',
       handler: this.onAddButtonFileSelected,
       scope: this
     }));
-    
+//    
     tb.x_buttons.remove = tb.addButton({
       text: this.i18n.remove_btn_text,
       tooltip: this.i18n.remove_btn_tip,
-      iconCls: 'delete',
+      iconCls: 'ext-ux-uploaddialog-removebtn',
       handler: this.onRemoveButtonClick,
       scope: this
     });
-    
+//    
     tb.x_buttons.reset = tb.addButton({
       text: this.i18n.reset_btn_text,
       tooltip: this.i18n.reset_btn_tip,
-      iconCls: 'reset',
+      iconCls: 'ext-ux-uploaddialog-resetbtn',
       handler: this.onResetButtonClick,
       scope: this
     });
-    
+//    
     tb.add('-');
-    
+//    
     tb.x_buttons.upload = tb.addButton({
       text: this.i18n.upload_btn_start_text,
       tooltip: this.i18n.upload_btn_start_tip,
-      iconCls: 'upload',
+      iconCls: 'ext-ux-uploaddialog-uploadstartbtn',
       handler: this.onUploadButtonClick,
       scope: this
     });
-    
+//    
     tb.add('-');
-    
-    tb.x_buttons.indicator = tb.addItem(
-      new Ext.Toolbar.Item(
-        Ext.DomHelper.append(tb.getEl(), {
-          tag: 'div',
-          cls: 'ext-ux-uploaddialog-indicator-stoped',
-          html: '&#160'
-        })
-      )
-    );
-    
-    tb.add('->');
-    
+//    
+//    tb.x_buttons.indicator = tb.addItem(
+//      new Ext.Toolbar.Item(
+//        Ext.DomHelper.append(tb.getEl(), {
+//          tag: 'div',
+//          cls: 'ext-ux-uploaddialog-indicator-stoped',
+//          html: '&#160'
+//        })
+//      )
+//    );
+//    
+//    tb.add('->');
+//    
     tb.x_buttons.close = tb.addButton({
       text: this.i18n.close_btn_text,
       tooltip: this.i18n.close_btn_tip,
@@ -1050,10 +1055,10 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
       if (!this.getAllowCloseOnUpload()) {
         tb.x_buttons.close.disable();
       }
-      Ext.fly(tb.x_buttons.indicator.getEl()).replaceClass(
-        'ext-ux-uploaddialog-indicator-stoped',
-        'ext-ux-uploaddialog-indicator-processing'
-      );
+//      Ext.fly(tb.x_buttons.indicator.getEl()).replaceClass(
+//        'ext-ux-uploaddialog-indicator-stoped',
+//        'ext-ux-uploaddialog-indicator-processing'
+//      );
       tb.x_buttons.upload.setIconClass('ext-ux-uploaddialog-uploadstopbtn');
       tb.x_buttons.upload.setText(this.i18n.upload_btn_stop_text);
       tb.x_buttons.upload.getEl()
@@ -1064,15 +1069,15 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
       tb.x_buttons.remove.enable();
       tb.x_buttons.reset.enable();
       tb.x_buttons.close.enable();
-      Ext.fly(tb.x_buttons.indicator.getEl()).replaceClass(
-        'ext-ux-uploaddialog-indicator-processing',
-        'ext-ux-uploaddialog-indicator-stoped'
-      );
+//      Ext.fly(tb.x_buttons.indicator.getEl()).replaceClass(
+//        'ext-ux-uploaddialog-indicator-processing',
+//        'ext-ux-uploaddialog-indicator-stoped'
+//      );
       tb.x_buttons.upload.setIconClass('ext-ux-uploaddialog-uploadstartbtn');
       tb.x_buttons.upload.setText(this.i18n.upload_btn_start_text);
-      tb.x_buttons.upload.getEl()
-        .child(tb.x_buttons.upload.buttonSelector)
-        .dom[tb.x_buttons.upload.tooltipType] = this.i18n.upload_btn_start_tip;
+//      tb.x_buttons.upload.getEl()
+//        .child(tb.x_buttons.upload.buttonSelector)
+//        .dom[tb.x_buttons.upload.tooltipType] = this.i18n.upload_btn_start_tip;
       
       if (this.getQueuedCount() > 0) {
         tb.x_buttons.upload.enable();
@@ -1352,6 +1357,9 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
   onCloseButtonClick : function()
   {
     this[this.closeAction].call(this);
+    if(this.Make_Reload == true){
+        document.location.reload();
+   }
   },
   
   onAjaxSuccess : function(response, options)
@@ -1360,7 +1368,15 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
       'success' : false,
       'error' : this.i18n.note_upload_error
     }
-    try { var json_response = Ext.util.JSON.decode(response.responseText); } catch (e) {}
+    try { 
+        var rt = response.responseText;
+        var filter = rt.match(/^<pre>((?:.|\n)*)<\/pre>$/i);
+        if (filter) {
+            rt = filter[1];
+        }
+        json_response = Ext.util.JSON.decode(rt); 
+    } 
+    catch (e) {}
     
     var data = {
       record: options.record,
@@ -1432,6 +1448,21 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
     this.upload_autostart = value;
   },
   
+  ///////////EIGENE ERWEITERUNG RELOAD EXT//////////////////////
+  
+  getMakeReload : function()
+  {
+    return this.Make_Reload;
+  },
+  
+  setMakeReload : function(value)
+  {
+    this.Make_Reload = value;
+  },
+  
+  ///////////EIGENE ERWEITERUNG RELOAD EXT//////////////////////
+  
+  
   getAllowCloseOnUpload : function()
   {
     return this.allow_close_on_upload;
@@ -1497,7 +1528,7 @@ Ext.extend(Ext.ux.UploadDialog.Dialog, Ext.Window, {
 
 var p = Ext.ux.UploadDialog.Dialog.prototype;
 p.i18n = {
-  title: 'File upload dialog',
+  title: 'File upload',
   state_col_title: 'State',
   state_col_width: 70,
   filename_col_title: 'Filename',
@@ -1516,7 +1547,7 @@ p.i18n = {
   upload_btn_stop_tip: 'Stop upload.',
   close_btn_text: 'Close',
   close_btn_tip: 'Close the dialog.',
-  progress_waiting_text: 'Ready...',
+  progress_waiting_text: 'Waiting...',
   progress_uploading_text: 'Uploading: {0} of {1} files complete.',
   error_msgbox_title: 'Error',
   permitted_extensions_join_str: ',',
@@ -1528,3 +1559,4 @@ p.i18n = {
   note_upload_error: 'Upload error.',
   note_aborted: 'Aborted by user.'
 }
+

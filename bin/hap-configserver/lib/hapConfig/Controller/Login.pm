@@ -66,7 +66,7 @@ sub check : Local {
 }
 
 sub checkGui : Local {
-  my ( $self, $c ) = @_;
+  my ( $self, $c, $configId, $viewId, $sceneId ) = @_;
   my $user = $c->request->params->{user};
   my $pass = $c->request->params->{pass};
   if ( $user && $pass ) {
@@ -78,8 +78,12 @@ sub checkGui : Local {
         $roleObj{$_} = \1;
       }
       $c->stash->{roles} = \%roleObj;
-      $c->forward('/gui/index');
-      #$c->response->redirect('/gui');
+      if ($configId) {
+        $c->forward("/gui/setConfig"); # viewId and sceneId gets passed if specified
+      }
+      else {
+        $c->forward('/gui/index');
+      }
     }
     else {
       $c->stash->{success} = \0;

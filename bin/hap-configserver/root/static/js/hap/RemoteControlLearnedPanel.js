@@ -1,6 +1,7 @@
 HAP.RemoteControlLearnedPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -82,9 +83,9 @@ HAP.RemoteControlLearnedPanel = function(attrib){
             width: 145,
             x: 385,
             y: 5,
-            labelWidth: 90,
+//            labelWidth: 90,
             defaults: {
-                width: 230
+//                width: 230
             },
             items: [new HAP.ButtonKeyPad(attrib.id, {
                 key: 'button-1',

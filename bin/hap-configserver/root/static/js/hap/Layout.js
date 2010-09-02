@@ -80,6 +80,7 @@ HAP.Viewport = function(){
     
     var toolbar = new Ext.Toolbar({
         region: 'north',
+        height: 27,
         items: [{
             text: 'Manage',
             iconCls: 'config',
@@ -122,7 +123,8 @@ HAP.Viewport = function(){
     
     this.id = 'vp';
     this.layout = 'border';
-    this.items = [toolbar, {
+    this.items = [toolbar, 
+    {
         region: 'south',
         title: 'Log',
         iconCls: 'log',
@@ -134,7 +136,8 @@ HAP.Viewport = function(){
         layout: 'fit',
         margins: '0 5 0 0',
         items: [log]
-    }, {
+    }, 
+    {
         region: 'east',
         id: 'east-panel',
         title: 'Object-Explorer',
@@ -154,7 +157,7 @@ HAP.Viewport = function(){
         id: 'west-panel',
         title: 'Navigation',
         iconCls: 'navigation',
-        hideCollapseTool: true,
+        //hideCollapseTool: true,
         tools: [{
             id: 'refresh',
             qtip: 'Refresh Trees',
@@ -164,12 +167,13 @@ HAP.Viewport = function(){
                 Ext.getCmp('treeRoom').root.reload();
                 Ext.getCmp('treeGUI').root.reload();
             }
-        }, {
+        }
+        /*, {
             id: 'left',
             handler: function(event, toolEl, panel){
                 panel.collapse();
             }
-        }],
+        }*/],
         split: true,
         width: 200,
         minSize: 175,

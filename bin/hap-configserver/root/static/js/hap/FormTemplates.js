@@ -652,6 +652,8 @@ HAP.ButtonKeyPad = function(url, confObj){
         left: confObj.x,
         top: confObj.y
     };
+//    this.x = confObj.x;
+//    this.y = confObj.y;
     this.minWidth = 30;
     if (confObj && confObj.minWidth) {
         this.minWidth = confObj.minWidth;

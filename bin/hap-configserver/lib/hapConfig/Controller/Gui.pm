@@ -44,20 +44,22 @@ sub getConfigs : Local {
 }
 
 sub setConfig : Local {
-  my ( $self, $c, $elementnfId ) = @_;
+  my ( $self, $c, $configId, $viewId, $sceneId, $p ) = @_;
+  $c->log->debug("IN SETCONFIG WE HAVE#$configId#$viewId#$sceneId#$p#");
   $c->stash->{sceneId}  = 0;
-  $c->session->{config} = $elementnfId;
-  my $rc = $c->model('hapModel::GuiView')->search( { config => $elementnfId, isdefault => 1 } )->first;
+  $c->session->{config} = $configId;
+  my $rc = $c->model('hapModel::GuiView')->search( { config => $configId, isdefault => 1 } )->first;
   if ( !$rc ) {
-    $rc = $c->model('hapModel::GuiView')->search( { config => $elementnfId } )->first;
+    $rc = $c->model('hapModel::GuiView')->search( { config => $configId } )->first;
   }
-  if ($rc) {
-    my $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $rc->id, isdefault => 1, config => $elementnfId } )->first;
+  if ($rc  || $viewId) {
+    my $id = $viewId || $rc->id;
+    my $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $id, isdefault => 1, config => $configId } )->first;
     if ( !$rcScene ) {
-      $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $rc->id, config => $elementnfId } )->first;
+      $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $id, config => $configId } )->first;
     }
-    if ($rcScene) {
-      $c->stash->{sceneId} = $rcScene->id;
+    if ($rcScene || $sceneId) {
+      $c->stash->{sceneId} = $sceneId || $rcScene->id;
     }
   }
   if ( $c->stash->{sceneId} == 0 ) {

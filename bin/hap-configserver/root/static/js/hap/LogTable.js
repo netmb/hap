@@ -59,13 +59,6 @@ HAP.LogTable = function(){
     this.cm = cm;
     this.sm = sm;
     this.region = 'south';
-    this.split = true;
-    this.height = 100;
-    this.collapsible = true;
-    this.margins = '0 0 0 0';
-    this.autoWidth = false;
-    this.autoHeight = false;
-    this.frame = false;
     this.viewConfig = {
         forceFit: true
     };
