@@ -134,7 +134,7 @@ sub getLog : Local {
 sub getNewLogEntries : Local {
  my ( $self, $c, $auto, $id ) = @_;
  my $rs    = $c->model('hapModel::Log');
- my $last  = $rs->get_column('id')->max;
+ my $last  = $rs->get_column('id')->max || 0;
  my $total = $rs->count;
  my $start = $c->request->params->{start};
  $start = 0 if ( !defined($start) );

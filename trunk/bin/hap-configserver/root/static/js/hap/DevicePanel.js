@@ -1,6 +1,7 @@
 HAP.DevicePanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';

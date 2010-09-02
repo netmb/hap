@@ -1,6 +1,7 @@
 HAP.ModulePanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.method = 'POST';
     this.frame = true;

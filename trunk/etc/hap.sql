@@ -657,6 +657,6 @@ REPLACE INTO users_roles VALUES (5,1),(5,2),(5,3),(5,24),(5,25),(5,26),(5,27),(5
 
 USE `mysql`;
 REPLACE INTO user (Host,User,Password) VALUES("localhost","hap",PASSWORD("password"));
-REPLACE INTO db (Host,Db,User,Select_priv,Insert_priv,Update_priv,Delete_priv,Create_priv,Drop_priv) VALUES("localhost","hap","hap","Y","Y","Y","Y","Y","Y");
+REPLACE INTO db (Host,Db,User,Select_priv,Insert_priv,Update_priv,Delete_priv,Create_priv,Drop_priv,Alter_priv) VALUES("localhost","hap","hap","Y","Y","Y","Y","Y","Y","Y");
 FLUSH PRIVILEGES;
 

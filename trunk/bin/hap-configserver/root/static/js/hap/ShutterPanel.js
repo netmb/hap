@@ -1,6 +1,7 @@
 HAP.ShutterPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -68,7 +69,7 @@ HAP.ShutterPanel = function(attrib){
                 shutter: true
             }), {
                 xtype: 'numberfield',
-                fieldLabel: 'Stroke Time (sec)',
+                fieldLabel: 'Run time (sec)',
                 name: 'attrib0',
                 allowBlank: false,
                 minValue: 1,

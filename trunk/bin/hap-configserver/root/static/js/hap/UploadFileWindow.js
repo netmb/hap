@@ -1,5 +1,6 @@
 HAP.UploadFileWindow = function(el, event, callback){
     dialog = new Ext.ux.UploadDialog.Dialog({
+	title: 'File upload',
         url: '/fileupload/getFile',
         reset_on_hide: false,
         allow_close_on_upload: true,
