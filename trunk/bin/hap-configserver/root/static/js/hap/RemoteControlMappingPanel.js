@@ -62,7 +62,7 @@ HAP.RemoteControlMappingPanel = function(attrib){
                 id: attrib.id + '/irkey',
                 fieldLabel: 'Key',
                 name: 'irkey',
-                minValue: 10,
+                minValue: 1,
                 maxValue: 99,
                 width: 64
             }, new HAP.ComboIRDestinations(attrib.id), new HAP.ComboDevices(attrib.id, {
