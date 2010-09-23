@@ -57,6 +57,7 @@ __PACKAGE__->config->{authentication}{dbic} = {
 	password_type      => 'hashed',
 	password_hash_type => 'SHA-1',
   };
+  
 __PACKAGE__->config->{authorization}{dbic} = {
 	role_class           => 'hapModel::Roles',
 	role_field           => 'role',

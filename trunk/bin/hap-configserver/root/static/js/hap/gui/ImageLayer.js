@@ -13,7 +13,7 @@ HAP.ImageLayer = function(config, viewPortCall){
         'Font-size': 14,
         'Font-weight': 'bold',
         'Font-color': '000000',
-		'Font-family': 'sans-serif',
+        'Font-family': 'sans-serif',
         'Show text': true,
         'Text': '',
         'Text-Align': 'center',
@@ -75,7 +75,7 @@ HAP.ImageLayer.prototype.setConfig = function(conf, viewPortCall){
     this.text.style.fontSize = this.conf.display['Font-size'] + 'px';
     this.text.style.fontWeight = this.conf.display['Font-weight'];
     this.text.style.color = '#' + this.conf.display['Font-color'];
-	this.text.style.fontFamily =  this.conf.display['Font-family'];
+    this.text.style.fontFamily = this.conf.display['Font-family'];
     this.text.align = this.conf.display['Text-Align'];
     this.text.style.zIndex = this.conf.display['z-Index'];
     this.text.innerHTML = this.conf.display['Text'];
@@ -110,7 +110,7 @@ HAP.ImageLayer.prototype.setConfig = function(conf, viewPortCall){
                 var lnk = this.conf.display['Target External'];
                 var target = '_blank';
                 if (this.conf.display['Target Frame']) {
-                  target = this.conf.display['Target Frame'];
+                    target = this.conf.display['Target Frame'];
                 }
                 this.layer.onclick = function(){
                     window.open(lnk, target);
@@ -134,7 +134,7 @@ HAP.ImageLayer.prototype.setHeight = function(height){
     this.img.style.height = height + 'px';
     this.text.style.height = height + 'px';
     if (this.conf.display['Text-VAlign']) {
-      this.text.style.lineHeight = height + 'px';
+        this.text.style.lineHeight = height + 'px';
     }
     this.layer.style.height = height + 'px';
 }
@@ -171,10 +171,10 @@ HAP.ImageLayer.prototype.setFontColor = function(color){
 
 HAP.ImageLayer.prototype.showtextusText = function(bool){
     if (bool) {
-      this.text.style.display = 'block';
+        this.text.style.display = 'block';
     }
     else {
-      this.text.style.display = 'none';
+        this.text.style.display = 'none';
     }
 }
 
