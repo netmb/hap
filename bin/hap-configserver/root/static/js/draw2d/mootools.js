@@ -304,7 +304,7 @@ Properties:
 window.xpath = !!(document.evaluate);
 if (window.ActiveXObject) window.ie = window[window.XMLHttpRequest ? 'ie7' : 'ie6'] = true;
 else if (document.childNodes && !document.all && !navigator.taintEnabled) window.webkit = window[window.xpath ? 'webkit420' : 'webkit419'] = true;
-else if (document.getBoxObjectFor != null) window.gecko = true;
+else if (document.getBoxObjectFor !== null) window.gecko = true;
 
 /*compatibility*/
 
@@ -320,7 +320,7 @@ if (typeof HTMLElement == 'undefined'){
 	var HTMLElement = function(){};
 	if (window.webkit) document.createElement("iframe"); //fixes safari
 	HTMLElement.prototype = (window.webkit) ? window["[[DOMElement.prototype]]"] : {};
-}
+};
 HTMLElement.prototype.htmlElement = function(){};
 
 //enables background image cache for internet explorer 6
@@ -1105,7 +1105,7 @@ Array.extend({
 
 	rgbToHex: function(array){
 		if (this.length < 3) return false;
-		if (this.length == 4 && this[3] == 0 && !array) return 'transparent';
+		if (this.length == 4 && this[3] === 0 && !array) return 'transparent';
 		var hex = [];
 		for (var i = 0; i < 3; i++){
 			var bit = (this[i] - 0).toString(16);
@@ -1953,7 +1953,7 @@ Element.extend({
 
 	/*
 	Property: setOpacity
-		Sets the opacity of the Element, and sets also visibility == "hidden" if opacity == 0, and visibility = "visible" if opacity > 0.
+		Sets the opacity of the Element, and sets also visibility == "hidden" if opacity === 0, and visibility = "visible" if opacity > 0.
 
 	Arguments:
 		opacity - float; Accepts values from 0 to 1.
@@ -1963,7 +1963,7 @@ Element.extend({
 	*/
 
 	setOpacity: function(opacity){
-		if (opacity == 0){
+		if (opacity === 0){
 			if (this.style.visibility != "hidden") this.style.visibility = "hidden";
 		} else {
 			if (this.style.visibility != "visible") this.style.visibility = "visible";

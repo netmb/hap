@@ -155,8 +155,7 @@ HAP.GUIScenePanel = function(attrib){
                 }));
                 return menu;
             };
-            //workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
+						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.snap = true; // custom !
