@@ -2004,6 +2004,8 @@ HAP.ButtonKeyPad = function(url, confObj){
         left: confObj.x,
         top: confObj.y
     };
+//    this.x = confObj.x;
+//    this.y = confObj.y;
     this.minWidth = 30;
     if (confObj && confObj.minWidth) {
         this.minWidth = confObj.minWidth;
@@ -4596,6 +4598,7 @@ Ext.extend(HAP.TreeContextMenu, Ext.menu.Menu, {
 HAP.ModulePanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.method = 'POST';
     this.frame = true;
@@ -5314,6 +5317,7 @@ Ext.extend(HAP.ModulePanel, Ext.FormPanel, {});
 HAP.LogicalInputPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -5486,6 +5490,7 @@ Ext.extend(HAP.LogicalInputPanel, Ext.FormPanel, {});
 HAP.AnalogInputPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -5686,6 +5691,7 @@ Ext.extend(HAP.AnalogInputPanel, Ext.FormPanel, {});
 HAP.DigitalInputPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -5867,6 +5873,7 @@ Ext.extend(HAP.DigitalInputPanel, Ext.FormPanel, {});
 HAP.DevicePanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -5961,6 +5968,7 @@ Ext.extend(HAP.DevicePanel, Ext.FormPanel, {});
 HAP.ShutterPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -6028,7 +6036,7 @@ HAP.ShutterPanel = function(attrib){
                 shutter: true
             }), {
                 xtype: 'numberfield',
-                fieldLabel: 'Stroke Time (sec)',
+                fieldLabel: 'Run time (sec)',
                 name: 'attrib0',
                 allowBlank: false,
                 minValue: 1,
@@ -6083,6 +6091,7 @@ Ext.extend(HAP.ShutterPanel, Ext.FormPanel, {});
 HAP.RotaryEncoderPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -6208,6 +6217,7 @@ Ext.extend(HAP.RotaryEncoderPanel, Ext.FormPanel, {});
 HAP.RangeExtenderPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -6307,6 +6317,7 @@ Ext.extend(HAP.RangeExtenderPanel, Ext.FormPanel, {});
 HAP.RemoteControlPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -6386,9 +6397,9 @@ HAP.RemoteControlPanel = function(attrib){
             width: 145,
             x: 385,
             y: 5,
-            labelWidth: 90,
+//            labelWidth: 90,
             defaults: {
-                width: 230
+ //               width: 230
             },
             items: [new HAP.ButtonKeyPad(attrib.id, {
                 key: 'button-1',
@@ -6514,6 +6525,7 @@ Ext.extend(HAP.RemoteControlPanel, Ext.FormPanel, {});
 HAP.RemoteControlLearnedPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -6595,9 +6607,9 @@ HAP.RemoteControlLearnedPanel = function(attrib){
             width: 145,
             x: 385,
             y: 5,
-            labelWidth: 90,
+//            labelWidth: 90,
             defaults: {
-                width: 230
+//                width: 230
             },
             items: [new HAP.ButtonKeyPad(attrib.id, {
                 key: 'button-1',
@@ -6723,6 +6735,7 @@ Ext.extend(HAP.RemoteControlLearnedPanel, Ext.FormPanel, {});
 HAP.RemoteControlMappingPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -6783,7 +6796,7 @@ HAP.RemoteControlMappingPanel = function(attrib){
                 id: attrib.id + '/irkey',
                 fieldLabel: 'Key',
                 name: 'irkey',
-                minValue: 10,
+                minValue: 1,
                 maxValue: 99,
                 width: 64
             }, new HAP.ComboIRDestinations(attrib.id), new HAP.ComboDevices(attrib.id, {
@@ -6844,6 +6857,7 @@ Ext.extend(HAP.RemoteControlMappingPanel, Ext.FormPanel, {});
 HAP.RoomPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -6920,6 +6934,7 @@ HAP.ACPanel = function(attrib){
     var workflow;
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -7158,7 +7173,7 @@ HAP.ACPanel = function(attrib){
             //var bla = document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id;
 						//alert (bla);
 						//workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
+						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.setSnapToGrid(true);
@@ -7280,6 +7295,7 @@ HAP.LCDGuiPanel = function(attrib){
     var workflow;
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -7454,7 +7470,7 @@ HAP.LCDGuiPanel = function(attrib){
             
             workflow = new draw2d.Workflow(attrib.id + '/workflowSequenceBody');
             //workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-            workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
+            workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.setSnapToGrid(true);
@@ -9003,6 +9019,7 @@ Ext.extend(HAP.LCDObjectTree, Ext.Panel, {
 HAP.GUIViewPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -9091,6 +9108,7 @@ HAP.GUIScenePanel = function(attrib){
     var workflow;
     this.target = attrib.id;
     this.id = attrib.id;
+    this.buttonAlign = 'center';
     this.closable = true;
     this.labelWidth = 75;
     this.method = 'POST';
@@ -9240,8 +9258,7 @@ HAP.GUIScenePanel = function(attrib){
                 }));
                 return menu;
             };
-            //workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
+						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.snap = true; // custom !
@@ -10027,7 +10044,7 @@ HAP.ImageLayer = function(config, viewPortCall){
         'Font-size': 14,
         'Font-weight': 'bold',
         'Font-color': '000000',
-		'Font-family': 'sans-serif',
+        'Font-family': 'sans-serif',
         'Show text': true,
         'Text': '',
         'Text-Align': 'center',
@@ -10089,7 +10106,7 @@ HAP.ImageLayer.prototype.setConfig = function(conf, viewPortCall){
     this.text.style.fontSize = this.conf.display['Font-size'] + 'px';
     this.text.style.fontWeight = this.conf.display['Font-weight'];
     this.text.style.color = '#' + this.conf.display['Font-color'];
-	this.text.style.fontFamily =  this.conf.display['Font-family'];
+    this.text.style.fontFamily = this.conf.display['Font-family'];
     this.text.align = this.conf.display['Text-Align'];
     this.text.style.zIndex = this.conf.display['z-Index'];
     this.text.innerHTML = this.conf.display['Text'];
@@ -10124,7 +10141,7 @@ HAP.ImageLayer.prototype.setConfig = function(conf, viewPortCall){
                 var lnk = this.conf.display['Target External'];
                 var target = '_blank';
                 if (this.conf.display['Target Frame']) {
-                  target = this.conf.display['Target Frame'];
+                    target = this.conf.display['Target Frame'];
                 }
                 this.layer.onclick = function(){
                     window.open(lnk, target);
@@ -10148,7 +10165,7 @@ HAP.ImageLayer.prototype.setHeight = function(height){
     this.img.style.height = height + 'px';
     this.text.style.height = height + 'px';
     if (this.conf.display['Text-VAlign']) {
-      this.text.style.lineHeight = height + 'px';
+        this.text.style.lineHeight = height + 'px';
     }
     this.layer.style.height = height + 'px';
 }
@@ -10185,10 +10202,10 @@ HAP.ImageLayer.prototype.setFontColor = function(color){
 
 HAP.ImageLayer.prototype.showtextusText = function(bool){
     if (bool) {
-      this.text.style.display = 'block';
+        this.text.style.display = 'block';
     }
     else {
-      this.text.style.display = 'none';
+        this.text.style.display = 'none';
     }
 }
 
@@ -10613,7 +10630,6 @@ HAP.Chart.prototype.setConfig = function(conf, viewPortCall){
 }
 
 function open_flash_chart_data(){
-    ;
     return '{"bg_colour": "#FFFFFF","x-axis": {}, "y-axis":{}, "elements":[]}';
 }
 

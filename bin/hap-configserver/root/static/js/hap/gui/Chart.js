@@ -185,7 +185,6 @@ HAP.Chart.prototype.setConfig = function(conf, viewPortCall){
 }
 
 function open_flash_chart_data(){
-    ;
     return '{"bg_colour": "#FFFFFF","x-axis": {}, "y-axis":{}, "elements":[]}';
 }
 
