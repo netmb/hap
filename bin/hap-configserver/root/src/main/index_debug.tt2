@@ -36,6 +36,15 @@
         </script>
         <script type='text/javascript' src='./static/js/ext/ux/UploadDialog/Ext.ux.UploadDialog.js'>
         </script>
+         <!-- rgraph -->
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.common.core.js'></script>
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.line.js'></script>
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.bar.js'></script>
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.hbar.js'></script>
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.hprogress.js'></script>
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.vprogress.js'></script>
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.meter.js'></script>
+        <script type='text/javascript' src='./static/js/rgraph/RGraph.odo.js'></script>
         <!-- HAP -->
         <script type='text/javascript' src='./static/js/hap/LoadingMask.js'>
         </script>
@@ -66,6 +75,8 @@
         <script type='text/javascript' src='./static/js/hap/ManageSchedulerWindow.js'>
         </script>
         <script type='text/javascript' src='./static/js/hap/ChartPropWindow.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/Chart5PropWindow.js'>
         </script>
         <script type='text/javascript' src='./static/js/hap/LoginWindow.js'>
         </script>
@@ -150,6 +161,8 @@
         <script type='text/javascript' src='./static/js/hap/gui/ValueLayer.js'>
         </script>
         <script type='text/javascript' src='./static/js/hap/gui/Chart.js'>
+        </script>
+        <script type='text/javascript' src='./static/js/hap/gui/Chart5.js'>
         </script>
         <script type='text/javascript' src='./static/js/hap/gui/GUIObjectTree.js'>
         </script>

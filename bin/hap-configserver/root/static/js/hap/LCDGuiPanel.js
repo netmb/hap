@@ -176,8 +176,10 @@ HAP.LCDGuiPanel = function(attrib){
             Ext.getCmp(attrib.id + '/textName').focus();
             
             workflow = new draw2d.Workflow(attrib.id + '/workflowSequenceBody');
-            //workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-            workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            if (Ext.isIE) 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            else 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.setSnapToGrid(true);

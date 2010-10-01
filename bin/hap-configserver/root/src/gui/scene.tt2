@@ -35,6 +35,8 @@
         </script>
         <script type="text/javascript" src='/static/js/hap/gui/Chart.js'>
         </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Chart5.js'>
+        </script>
     </head>
     <body>
         <div id="rootDiv">

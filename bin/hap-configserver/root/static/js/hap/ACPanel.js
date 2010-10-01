@@ -239,9 +239,12 @@ HAP.ACPanel = function(attrib){
             
             workflow = new draw2d.Workflow(attrib.id + '/workflowSequenceBody');
             //var bla = document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id;
-						//alert (bla);
-						//workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            //alert (bla);
+            //workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
+            if (Ext.isIE) 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            else 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.setSnapToGrid(true);
@@ -258,8 +261,8 @@ HAP.ACPanel = function(attrib){
                     //var offX = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollLeft;
                     //var offY = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollTop;
                     var offX = workflow.getScrollLeft();
-										var offY = workflow.getScrollTop();
-										var fig = classFactory(data.className, data.conf);
+                    var offY = workflow.getScrollTop();
+                    var fig = classFactory(data.className, data.conf);
                     workflow.addFigure(fig, Math.floor((e.xy[0] - xOffset + offX) / 10) * 10, Math.floor((e.xy[1] - yOffset + offY) / 10) * 10);
                     workflow.showResizeHandles(fig);
                     workflow.setCurrentSelection(fig);
