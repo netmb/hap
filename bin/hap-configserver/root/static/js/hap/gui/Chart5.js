@@ -559,7 +559,7 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
             }
             var data = this.getData(this.conf.display.dataSources, true);
             this.chart.Set('chart.labels', data.labels);
-            //this.chart.original_data = data.values;
+            this.chart.original_data = data.values;
             this.chart.Draw();
             
             
@@ -570,8 +570,8 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
 
 HAP.Chart5.prototype.getData = function(dataSources, viewPortCall){
     var data = {
-        labels: ['a', 'b', 'c'],
-        values: [1, 2, 3]
+        labels: [['a', 'b', 'c']],
+        values: [[1, 2, 3]]
     };
     if (viewPortCall) {
         var oThis = this;
