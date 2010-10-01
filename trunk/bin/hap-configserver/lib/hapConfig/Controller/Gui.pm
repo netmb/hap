@@ -29,8 +29,14 @@ sub index : Private {
 sub getAllObjects : Local {
   my ( $self, $c ) = @_;
   my @guiObjs =
-    map { { id => $_->id, name => $_->name, type => $_->type, display => JSON::XS->new->utf8(0)->decode( $_->display ) } }
-    $c->model('hapModel::GuiTypes')->search( {} )->all;
+    map {
+    {
+      id      => $_->id,
+      name    => $_->name,
+      type    => $_->type,
+      display => JSON::XS->new->utf8(0)->decode( $_->display )
+    }
+    } $c->model('hapModel::GuiTypes')->search( {} )->all;
 
   $c->stash->{success} = 'true';
   $c->stash->{data}    = \@guiObjs;
@@ -45,20 +51,26 @@ sub getConfigs : Local {
 
 sub setConfig : Local {
   my ( $self, $c, $configId, $viewId, $sceneId, $p ) = @_;
-  $c->log->debug("IN SETCONFIG WE HAVE#$configId#$viewId#$sceneId#$p#");
   $c->stash->{sceneId}  = 0;
   $c->session->{config} = $configId;
-  my $rc = $c->model('hapModel::GuiView')->search( { config => $configId, isdefault => 1 } )->first;
+  my $rc =
+    $c->model('hapModel::GuiView')
+    ->search( { config => $configId, isdefault => 1 } )->first;
   if ( !$rc ) {
-    $rc = $c->model('hapModel::GuiView')->search( { config => $configId } )->first;
+    $rc =
+      $c->model('hapModel::GuiView')->search( { config => $configId } )->first;
   }
-  if ($rc  || $viewId) {
+  if ( $rc || $viewId ) {
     my $id = $viewId || $rc->id;
-    my $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $id, isdefault => 1, config => $configId } )->first;
+    my $rcScene =
+      $c->model('hapModel::GuiScene')
+      ->search( { viewid => $id, isdefault => 1, config => $configId } )->first;
     if ( !$rcScene ) {
-      $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $id, config => $configId } )->first;
+      $rcScene =
+        $c->model('hapModel::GuiScene')
+        ->search( { viewid => $id, config => $configId } )->first;
     }
-    if ($rcScene || $sceneId) {
+    if ( $rcScene || $sceneId ) {
       $c->stash->{sceneId} = $sceneId || $rcScene->id;
     }
   }
@@ -73,7 +85,11 @@ sub setConfig : Local {
 sub setDevice : Local {
   my ( $self, $c, $module, $device, $value ) = @_;
   my $data;
-  my $sock = new IO::Socket::INET( PeerAddr => $c->config->{MessageProcessor}->{Host}, PeerPort => $c->config->{MessageProcessor}->{Port}, Proto => 'tcp' );
+  my $sock = new IO::Socket::INET(
+    PeerAddr => $c->config->{MessageProcessor}->{Host},
+    PeerPort => $c->config->{MessageProcessor}->{Port},
+    Proto    => 'tcp'
+  );
   eval {
     local $SIG{ALRM} = sub { die 'Alarm'; };
     alarm 2;
@@ -85,8 +101,11 @@ sub setDevice : Local {
     $c->stash->{info}    = "Cant connect to the MessageProcessor.";
   }
   else {
-    print $sock "destination " . $c->config->{hap}->getModuleAddress($module) . " set device $device value $value\n";
-    #print $sock "destination " . $c->config->{'mAddress'}->{$module} . " set device $device value $value\n";
+    print $sock "destination "
+      . $c->config->{hap}->getModuleAddress($module)
+      . " set device $device value $value\n";
+
+#print $sock "destination " . $c->config->{'mAddress'}->{$module} . " set device $device value $value\n";
     $data = <$sock>;
     $c->log->debug("$data");
     $sock->autoflush(1);
@@ -106,7 +125,11 @@ sub setDevice : Local {
 sub queryDevice : Local {
   my ( $self, $c, $module, $device ) = @_;
   my ( $data, $sData );
-  my $sock = new IO::Socket::INET( PeerAddr => $c->config->{MessageProcessor}->{Host}, PeerPort => $c->config->{MessageProcessor}->{Port}, Proto => 'tcp' );
+  my $sock = new IO::Socket::INET(
+    PeerAddr => $c->config->{MessageProcessor}->{Host},
+    PeerPort => $c->config->{MessageProcessor}->{Port},
+    Proto    => 'tcp'
+  );
   eval {
     local $SIG{ALRM} = sub { die 'Alarm'; };
     alarm 2;
@@ -118,14 +141,21 @@ sub queryDevice : Local {
     $c->stash->{info}    = "Cant connect to the MessageProcessor.";
   }
   else {
-    print $sock "destination " . $c->config->{hap}->getModuleAddress($module) . " query device $device\n";
+    print $sock "destination "
+      . $c->config->{hap}->getModuleAddress($module)
+      . " query device $device\n";
     $sData = <$sock>;
     $sock->autoflush(1);
     $sock->close();
 
-    my $rc =
-      $c->model('hapModel::Status')->search( { module => $module, address => $device, config => $c->session->{config} }, { order_by => "TS DESC", rows => 1 } )
-      ->first;
+    my $rc = $c->model('hapModel::Status')->search(
+      {
+        module  => $module,
+        address => $device,
+        config  => $c->session->{config}
+      },
+      { order_by => "TS DESC", rows => 1 }
+    )->first;
 
     if ($rc) {
       $data = { value => $rc->status };
@@ -146,9 +176,14 @@ sub getScene : Local {
 
 sub getView : Local {
   my ( $self, $c, $id ) = @_;
-  my $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $id, isdefault => 1, config => $c->session->{config} } )->first;
+  my $rcScene =
+    $c->model('hapModel::GuiScene')
+    ->search(
+    { viewid => $id, isdefault => 1, config => $c->session->{config} } )->first;
   if ( !$rcScene ) {
-    $rcScene = $c->model('hapModel::GuiScene')->search( { viewid => $id, config => $c->session->{config} } )->first;
+    $rcScene =
+      $c->model('hapModel::GuiScene')
+      ->search( { viewid => $id, config => $c->session->{config} } )->first;
   }
   if ($rcScene) {
     $id = $rcScene->id;
@@ -166,18 +201,24 @@ sub refresh : Local {
   foreach (@$jsonData) {
     my $o = $_;
     if ( $o->{type} eq "HAP.Chart" ) {
-      my $rc            = $c->model('hapModel::GuiObjects')->search( { id => $o->{id} } )->first;
+      my $rc =
+        $c->model('hapModel::GuiObjects')->search( { id => $o->{id} } )->first;
       my $displayObject = JSON::XS->new->utf8(0)->decode( $rc->configobject );
       my $chartObj      = $displayObject->{'chart'};
       foreach ( @{ $chartObj->{'elements'} } ) {
         my $element = $_;
-        my @rcdata  =
-          $c->model('hapModel::Status')
-          ->search( { ts => { '>', ( time() - $o->{startOffset} * 60 ) }, module => $element->{'HAP-Module'}, address => $element->{'HAP-Device'} },
-          { order_by => 'TS ASC' } )->all;
+        my @rcdata  = $c->model('hapModel::Status')->search(
+          {
+            ts => { '>', ( time() - $o->{startOffset} * 60 ) },
+            module  => $element->{'HAP-Module'},
+            address => $element->{'HAP-Device'}
+          },
+          { order_by => 'TS ASC' }
+        )->all;
         my ( @labels, @values );
         foreach (@rcdata) {
-          my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime( $_->ts );
+          my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
+            localtime( $_->ts );
           $hour = sprintf( "%02d", $hour );
           $min  = sprintf( "%02d", $min );
           if ( $chartObj->{'x_axis_labels'}->{'show_date'} ) {
@@ -188,7 +229,7 @@ sub refresh : Local {
           }
           else {
             push @labels, "$hour:$min";
-          }    
+          }
           $element->{'Scale'} = 1 if ( !$element->{'Scale'} );
           push @values, $_->status * $element->{'Scale'};
         }
@@ -204,9 +245,14 @@ sub refresh : Local {
         };
     }
     else {
-      my $rc =
-        $c->model('hapModel::Status')
-        ->search( { module => $_->{module}, address => $_->{address}, config => $c->session->{config} }, { order_by => "TS DESC", rows => 1 } )->first;
+      my $rc = $c->model('hapModel::Status')->search(
+        {
+          module  => $_->{module},
+          address => $_->{address},
+          config  => $c->session->{config}
+        },
+        { order_by => "TS DESC", rows => 1 }
+      )->first;
       if ($rc) {
         push @data,
           {
@@ -218,6 +264,40 @@ sub refresh : Local {
   }
   $c->stash->{success} = \1;
   $c->stash->{data}    = \@data;
+  $c->forward('View::JSON');
+}
+
+sub getChartData : Local {
+  my ( $self, $c ) = @_;
+  my @labelsAll;
+  my @valuesAll;
+  my $jsonData = JSON::XS->new->utf8(0)->decode( $c->request->params->{data} );
+  my $startOffset = $c->request->params->{startOffset};
+  foreach (@$jsonData) {
+    my $o      = $_;
+    my @rcdata = $c->model('hapModel::Status')->search(
+      {
+        ts => { '>', ( time() - $startOffset * 60 ) },
+        module  => $o->{'HAP-Module'},
+        address => $o->{'HAP-Device'}
+      },
+      { order_by => 'TS ASC' }
+    )->all;
+    my @labels;
+    my @values;
+    foreach (@rcdata) {
+      my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
+        localtime( $_->ts );
+      $hour = sprintf( "%02d", $hour );
+      $min  = sprintf( "%02d", $min );
+      push @labels, "$hour:$min";
+      push @values, $_->status;
+    }
+    push @labelsAll, \@labels;
+    push @valuesAll, \@values;
+  }
+  $c->stash->{success} = \1;
+  $c->stash->{data}    = {labels => \@labelsAll, values => \@valuesAll};
   $c->forward('View::JSON');
 }
 

@@ -4,9 +4,7 @@
 //////////////////////////////////////////////////
 
 HAP.TreeChartProp = function(chartDisplayObj){
-    //this.loader = new Ext.tree.TreeLoader();
     this.chartDisplayObj = chartDisplayObj;
-    
     this.id = 'treeChartProp';
     this.title = 'Chart Properties';
     this.region = 'west';
@@ -172,10 +170,7 @@ HAP.TreeGraphContextMenu = function(node, event){
         Ext.getCmp('treeChartProp').getNodeById('elements').appendChild(newNode);
     }
     
-    
     HAP.TreeGraphContextMenu.superclass.constructor.call(this);
-    
-    
 }
 
 Ext.extend(HAP.TreeGraphContextMenu, Ext.menu.Menu, {

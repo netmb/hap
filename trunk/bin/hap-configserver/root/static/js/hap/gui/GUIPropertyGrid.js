@@ -100,10 +100,15 @@ HAP.GUIPropertyGrid = function(confObj){
                 'change': clearOtherViews
             }
         })),
-        /* --- Chart/Flotr ----*/
+        /* --- Chart ----*/
         'Chart-Data': new Ext.grid.GridEditor(new HAP.GridChartObject({
             targetGrid: this.id,
             targetRowName: 'Chart-Data',
+            redimWrapper: false
+        })),
+        'Chart-Properties': new Ext.grid.GridEditor(new HAP.GridChart5Object({
+            targetGrid: this.id,
+            targetRowName: 'Chart-Properties',
             redimWrapper: false
         })),
         'backgroundColor': new Ext.grid.GridEditor(new HAP.GridColorField(this.id, 'Font-color', {
@@ -120,17 +125,19 @@ HAP.GUIPropertyGrid = function(confObj){
         })),
         'labelBackgroundColor': new Ext.grid.GridEditor(new HAP.GridColorField(this.id, 'Font-color', {
             showHexValue: true
+        })),
+        'Chart-Type': new Ext.grid.GridEditor(new HAP.GridComboChartType({
+            id: 'gridComboChartType'
         }))
-    
     };
     this.source = {};
     HAP.GUIPropertyGrid.superclass.constructor.call(this);
     
     //this.store.sortInfo = null; // this little fu** statement avoids sorting
-    var oThis = this;
+    
     this.on('propertychange', function(){
-        if (oThis.getCurrentFigure()) {
-            oThis.getCurrentFigure().setGUIObjectConfig();
+        if (Ext.getCmp('guiPropertyGrid').getCurrentFigure()) {
+          Ext.getCmp('guiPropertyGrid').getCurrentFigure().setGUIObjectConfig();
         }
     });
     

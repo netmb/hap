@@ -139,8 +139,8 @@ HAP.GUIScenePanel = function(attrib){
                 menu.appendMenuItem(new draw2d.MenuItem('Paste', null, function(){
                     //var offX = Ext.getCmp(wf.scrollArea.id).body.dom.scrollLeft;
                     //var offY = Ext.getCmp(wf.scrollArea.id).body.dom.scrollTop;
-										var offX = this.workflow.getScrollLeft();
-										var offY = this.workflow.getScrollTop();
+                    var offX = this.workflow.getScrollLeft();
+                    var offY = this.workflow.getScrollTop();
                     var fig = new HAP.GUIObject(cutNPaste);
                     wf.addFigure(fig, wf.mouseDownPosX + offX, wf.mouseDownPosY + offY);
                 }));
@@ -155,7 +155,10 @@ HAP.GUIScenePanel = function(attrib){
                 }));
                 return menu;
             };
-						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            if (Ext.isIE) 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            else 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.snap = true; // custom !
@@ -172,12 +175,15 @@ HAP.GUIScenePanel = function(attrib){
                     var yOffset = workflow.getAbsoluteY();
                     //var offX = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollLeft;
                     //var offY = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollTop;
-										var offX = workflow.getScrollLeft();
-										var offY = workflow.getScrollTop();
+                    var offX = workflow.getScrollLeft();
+                    var offY = workflow.getScrollTop();
                     var fig = new HAP.GUIObject(data);
                     workflow.addFigure(fig, Math.floor((e.xy[0] - xOffset + offX) / 10) * 10, Math.floor((e.xy[1] - yOffset + offY) / 10) * 10);
                     workflow.showResizeHandles(fig);
                     workflow.setCurrentSelection(fig);
+                    if (data.type == 'HAP.Chart5') {
+                      fig.setGUIObjectConfig();
+                    }
                     return true;
                 }
             }

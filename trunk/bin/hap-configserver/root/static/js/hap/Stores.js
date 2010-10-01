@@ -460,6 +460,7 @@ var storeUserRoles = new Ext.data.Store({
     }])
 });
 
+
 var loadStores = function(){
     storeModules.load();
     storeNotifyModules.load();
@@ -477,5 +478,5 @@ var loadStores = function(){
     storeSchedulerCommands.load();
     storeGuiViews.load();
     storeGuiScenes.load();
-		storeASInputValueTemplates.load();
+    storeASInputValueTemplates.load();
 }

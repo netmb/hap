@@ -41,6 +41,24 @@ Ext.extend(HAP.GridChartObject, Ext.form.TriggerField, {
     }
 });
 
+
+HAP.GridChart5Object = function(config){
+    this.conf = {
+        redimWrapper: true
+    };
+    Ext.apply(this.conf, config);
+    HAP.GridChart5Object.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.GridChart5Object, Ext.form.TriggerField, {
+    onTriggerClick: function(event){
+        var oThis = this;
+        var chartDisplayObj = Ext.getCmp(oThis.conf.targetGrid).conf.display;
+        var chooser = new HAP.Chart5PropWindow(chartDisplayObj);
+        chooser.show();
+    }
+});
+
 HAP.GridColorField = function(gridId, rowName, confObj){ // Extending doesnt work
     this.gridId = gridId;
     this.gridRowName = rowName;
@@ -248,6 +266,25 @@ HAP.GridComboScene = function(confObj){
 }
 
 Ext.extend(HAP.GridComboScene, Ext.form.ComboBox, {});
+
+
+HAP.GridComboChartType = function(confObj){
+    this.id = confObj.id;
+    this.store = [ 'Line', 'Bar', 'HBar', 'HProgress', 'VProgress', 'Meter', 'Odometer' ];
+    this.valueField = 'id';
+    this.displayField = 'name';
+    this.typeAhead = true;
+    this.mode = 'local';
+    this.triggerAction = 'all';
+    this.emptyText = 'Select a Type...';
+    this.forceSelection = false;
+    this.selectOnFocus = true;
+    this.editable = false;
+    this.allowBlank = true;
+    HAP.GridComboChartType.superclass.constructor.call(this);
+}
+Ext.extend(HAP.GridComboChartType, Ext.form.ComboBox, {});
+
 
 var gridRenderer = function(editor, v){
     var rv = editor.field.emptyText;

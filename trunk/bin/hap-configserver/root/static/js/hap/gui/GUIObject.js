@@ -67,6 +67,8 @@ HAP.GUIObject.prototype.onDragend = function(){
     Ext.getCmp('guiPropertyGrid').setSource(this.guiObject.conf.display);
 };
 
+
+
 HAP.GUIObject.prototype.getContextMenu = function(){
     var menu = new draw2d.Menu();
     var figure = this;
