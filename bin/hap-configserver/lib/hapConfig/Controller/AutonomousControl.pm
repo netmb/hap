@@ -202,7 +202,7 @@ sub submit : Local {
 				$objs{$key}->{prop1} |= $display->{'Sunday'} << 7;
 			}
 			elsif ( $confObj->{type} == 35 ) {
-				my @tmp = split( /:/, $display->{'Start Value (hh: mm)'} );
+				my @tmp = split( /:/, $display->{'Start Value (hh:mm)'} );
 				$objs{$key}->{prop1} = $display->{'Start Value (d)'} << 5;
 				$objs{$key}->{prop1} |= $tmp[0];
 				$objs{$key}->{prop2} = $tmp[1];
@@ -595,7 +595,7 @@ sub simulate : Local {
 					$calcVar,
 					$objs{ $confObj->{inPort1} }->{'simValue'},
 					$objs{ $confObj->{inPort2} }->{'simValue'},
-					$objs{ $confObj->{inPort2} }->{'simValue'}
+					$objs{ $confObj->{inPort3} }->{'simValue'}
 				);
 			}
 			$confObj->{'simValue'} = $simValue;
