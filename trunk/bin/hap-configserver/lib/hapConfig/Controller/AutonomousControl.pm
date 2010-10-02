@@ -181,7 +181,7 @@ sub submit : Local {
 				$objs{$key}->{prop3} = $display->{'Interval (1/10s)'} & 0xFF;
 			}
 			elsif ( $confObj->{type} == 33 ) {
-				my @tmp = split( /:/, $display->{'Start Value (mm: ss)'} );
+				my @tmp = split( /:/, $display->{'Start Value (mm:ss)'} );
 				$objs{$key}->{prop1} = $tmp[0];
 				$objs{$key}->{prop2} = $tmp[1];
 				$objs{$key}->{prop1} |=
@@ -191,7 +191,7 @@ sub submit : Local {
 				$objs{$key}->{prop3} = $display->{'Interval (s)'} & 0xFF;
 			}
 			elsif ( $confObj->{type} == 34 ) {
-				my @tmp = split( /:/, $display->{'Start Value (hh: mm)'} );
+				my @tmp = split( /:/, $display->{'Start Value (hh:mm)'} );
 				$objs{$key}->{prop1} = $tmp[0];
 				$objs{$key}->{prop2} = $tmp[1];
 				$objs{$key}->{prop2} |=
@@ -380,7 +380,7 @@ sub simulate : Local {
 					$v2 );
 			}
 			elsif ( $confObj->{type} == 33 ) {
-				my @tmp = split( /:/, $display->{'Start Value (mm: ss)'} );
+				my @tmp = split( /:/, $display->{'Start Value (mm:ss)'} );
 				$v0 = $tmp[0];
 				$v1 = $tmp[1];
 				$v0 |= ( $display->{'Interval (s)'} & 0xC00 ) >> 4;
@@ -391,7 +391,7 @@ sub simulate : Local {
 					$v2 );
 			}
 			elsif ( $confObj->{type} == 34 ) {
-				my @tmp = split( /:/, $display->{'Start Value (hh: mm)'} );
+				my @tmp = split( /:/, $display->{'Start Value (hh:mm)'} );
 				$v0 = $tmp[0];
 				$v1 = $tmp[1];
 				$v1 |= ( $display->{'Interval (m)'} & 0x300 ) >> 2;
@@ -404,7 +404,7 @@ sub simulate : Local {
 					$v2 );
 			}
 			elsif ( $confObj->{type} == 35 ) {
-				my @tmp = split( /:/, $display->{'Start Value (hh: mm)'} );
+				my @tmp = split( /:/, $display->{'Start Value (hh:mm)'} );
 				$v0 = $display->{'Start Value (d)'} << 5;
 				$v0 |= $tmp[0];
 				$v1 = $tmp[1];
