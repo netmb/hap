@@ -356,7 +356,10 @@ sub getChartData : Local {
   my @tStamps;
   foreach (@timestamps) {
     if ( $i == 0 || ( $i % $xSkip ) == 0 ) {
-      push @tStamps, $_->ts;
+      my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime( $_->ts );
+      $hour = sprintf( "%02d", $hour );
+      $min  = sprintf( "%02d", $min );
+      push @tStamps, "$hour:$min";
     }
     my $time     = $_->ts;
     my $devIndex = 0;
@@ -373,9 +376,11 @@ sub getChartData : Local {
   }
   my @values;
   foreach (@deviceArray) {
+    my @tmp;
     my %tmpHash = %{$_};
-    sort keys %tmpHash;
-    my @tmp = values(%tmpHash);
+    foreach my $key (sort { $a <=> $b } keys(%tmpHash)) {
+       push @tmp, $tmpHash{$key};
+    }
     push @values, \@tmp;
   }
   $c->stash->{success} = \1;
