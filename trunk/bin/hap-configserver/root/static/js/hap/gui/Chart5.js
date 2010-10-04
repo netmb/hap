@@ -14,6 +14,7 @@ HAP.Chart5 = function(config, viewPortCall){
         'Start-Offset (m)': 60,
         'Chart-Properties': '',
         'Chart-Type': 'Line',
+        'Chart-X-Interval': 1,
         'sourceTemplate': {
             'HAP-Module': '',
             'HAP-Device': '',
@@ -135,7 +136,8 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.backdrop.alpha': 0.2,
                 'chart.resizable': false,
                 'chart.adjustable': false,
-                'chart.noredraw': false
+                'chart.noredraw': false,
+                'chart.xticks': ''
             },
             'Bar': {
                 'chart.background.barcolor1': 'rgba(0,0,0,0)',
@@ -558,9 +560,9 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
                 }
             }
             var data = this.getData(this.conf.display.dataSources, true);
-            this.chart.Set('chart.labels', data.labels);
-            this.chart.original_data = data.values;
-            this.chart.Draw();
+            //this.chart.Set('chart.labels', data.labels);
+            //this.chart.original_data = data.values;
+            //this.chart.Draw();
             
             
         }
@@ -570,7 +572,7 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
 
 HAP.Chart5.prototype.getData = function(dataSources, viewPortCall){
     var data = {
-        labels: [['a', 'b', 'c']],
+        labels: ['a', 'b', 'c'],
         values: [[1, 2, 3]]
     };
     if (viewPortCall) {
@@ -579,10 +581,18 @@ HAP.Chart5.prototype.getData = function(dataSources, viewPortCall){
             url: 'gui/getChartData',
             params: {
                 'data': Ext.encode(dataSources),
-                'startOffset': this.conf.display['Start-Offset (m)']
+                'startOffset': this.conf.display['Start-Offset (m)'],
+                'xSkip': this.conf.display['Chart-X-Interval']
             },
-            success: function(res){
+            success: function(res, req){
                 data = Ext.decode(res.responseText).data;
+                RGraph.Clear(oThis.chart.canvas);
+                oThis.chart.Set('chart.labels', data.labels);
+                oThis.chart.original_data = data.values;
+                oThis.chart.Draw();
+            },
+            failure: function(res, req){
+                alert('shit');
             }
         });
     }

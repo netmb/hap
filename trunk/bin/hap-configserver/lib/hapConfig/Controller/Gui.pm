@@ -267,7 +267,7 @@ sub refresh : Local {
   $c->forward('View::JSON');
 }
 
-sub getChartData : Local {
+sub getChartData1 : Local {
   my ( $self, $c ) = @_;
   my @labelsAll;
   my @valuesAll;
@@ -297,7 +297,7 @@ sub getChartData : Local {
     push @valuesAll, \@values;
   }
   $c->stash->{success} = \1;
-  $c->stash->{data}    = {labels => \@labelsAll, values => \@valuesAll};
+  $c->stash->{data} = { labels => \@labelsAll, values => \@valuesAll };
   $c->forward('View::JSON');
 }
 
@@ -306,12 +306,88 @@ sub access_denied : Private {
   $c->response->redirect( $c->uri_for('/login') );
 }
 
+sub getChartData : Local {
+  my ( $self, $c ) = @_;
+  my $jsonData = JSON::XS->new->utf8(0)->decode( $c->request->params->{data} );
+  my $startOffset = $c->request->params->{startOffset};
+  my $xSkip = $c->request->params->{xSkip} || 1;
+
+  # build search
+  my @ors;
+  my @ands;
+  foreach (@$jsonData) {
+    my $o = $_;
+    push @ands,
+      { -and => [ module => $o->{'HAP-Module'}, address => $o->{'HAP-Device'} ]
+      };
+  }
+
+  # fetch all available timestamps
+  my @timestamps = $c->model('hapModel::Status')->search(
+    {
+      -or => \@ands,
+      ts  => { '>', ( time() - $startOffset * 60 ) },
+    },
+    { order_by => 'TS ASC', columns => [qw/ts/], distinct => 1 }
+  )->all;
+
+  # fetch all device data
+  my @deviceArray;
+  foreach (@$jsonData) {
+    my $o      = $_;
+    my @rcdata = $c->model('hapModel::Status')->search(
+      {
+        ts => { '>', ( time() - $startOffset * 60 ) },
+        module  => $o->{'HAP-Module'},
+        address => $o->{'HAP-Device'}
+      },
+      { order_by => 'TS ASC' }
+    )->all;
+    my %devArray;
+    foreach (@rcdata) {
+      $devArray{ $_->ts } = $_->status;
+    }
+    push @deviceArray, \%devArray;
+  }
+
+  #fill in the missing times per device
+  my $i = 0;
+  my @preVals;
+  my @tStamps;
+  foreach (@timestamps) {
+    if ( $i == 0 || ( $i % $xSkip ) == 0 ) {
+      push @tStamps, $_->ts;
+    }
+    my $time     = $_->ts;
+    my $devIndex = 0;
+    foreach (@deviceArray) {
+      if ( defined( $_->{$time} ) ) {
+        $preVals[$devIndex] = $_->{$time};
+      }
+      else {
+        $_->{$time} = $preVals[$devIndex] || 0;
+      }
+      $devIndex++;
+    }
+    $i++;
+  }
+  my @values;
+  foreach (@deviceArray) {
+    my %tmpHash = %{$_};
+    sort keys %tmpHash;
+    my @tmp = values(%tmpHash);
+    push @values, \@tmp;
+  }
+  $c->stash->{success} = \1;
+  $c->stash->{data} = { labels => \@tStamps, values => \@values };
+  $c->forward('View::JSON');
+}
+
 =head1 AUTHOR
 
 root
 
 =head1 LICENSE
-
 This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
