@@ -592,7 +592,7 @@ HAP.Chart5.prototype.getData = function(dataSources, viewPortCall){
                 oThis.chart.Draw();
             },
             failure: function(res, req){
-                alert('shit');
+                alert('FAIL');
             }
         });
     }
