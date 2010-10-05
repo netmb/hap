@@ -135,9 +135,15 @@ HAP.GUIPropertyGrid = function(confObj){
     
     //this.store.sortInfo = null; // this little fu** statement avoids sorting
     
-    this.on('propertychange', function(){
+    this.on('propertychange', function(prop , b){
         if (Ext.getCmp('guiPropertyGrid').getCurrentFigure()) {
           Ext.getCmp('guiPropertyGrid').getCurrentFigure().setGUIObjectConfig();
+        }
+        if (Ext.getCmp('treeChartProp')) {
+          var node = Ext.getCmp('treeChartProp').getSelectionModel().getSelectedNode();
+          if (node && prop.Description) {
+            node.setText(prop.Description);
+          }
         }
     });
     

@@ -309,6 +309,11 @@ sub access_denied : Private {
 sub getChartData : Local {
   my ( $self, $c ) = @_;
   my $jsonData = JSON::XS->new->utf8(0)->decode( $c->request->params->{data} );
+  
+  if (scalar(@$jsonData) == 0) {
+    $c->detach('View::JSON');
+  }
+  
   my $startOffset = $c->request->params->{startOffset};
   my $xSkip = $c->request->params->{xSkip} || 1;
 

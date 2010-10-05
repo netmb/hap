@@ -104,6 +104,7 @@ sub submit : Local {
     my $obj = undef;
     $obj->{sceneid} = $id;
     $obj->{type}    = $_->{type};
+    $c->log->debug($_->{type});
     $obj->{configobject} = JSON::XS->new->utf8(0)->encode( $_->{display} );
     $obj->{config}       = $c->session->{config};
     $c->model('hapModel::GuiObjects')->create($obj);

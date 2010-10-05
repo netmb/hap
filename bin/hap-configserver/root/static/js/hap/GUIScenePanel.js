@@ -136,11 +136,23 @@ HAP.GUIScenePanel = function(attrib){
             workflow.getContextMenu = function(){
                 var menu = new draw2d.Menu();
                 var wf = this;
+                var figure = this.getCurrentSelection();
+                if (figure) {
+                  menu.appendMenuItem(new draw2d.MenuItem('Copy', null, function(){
+                    figure.guiObject.id = 0;
+                    figure.guiObject.conf.id = 0;
+                    cutNPaste = Ext.ux.clone(figure.guiObject.conf);
+                  }));
+                  menu.appendMenuItem(new draw2d.MenuItem('Delete', null, function(){
+                    wf.removeFigure(figure);
+                    
+                  }));
+                }
                 menu.appendMenuItem(new draw2d.MenuItem('Paste', null, function(){
                     //var offX = Ext.getCmp(wf.scrollArea.id).body.dom.scrollLeft;
                     //var offY = Ext.getCmp(wf.scrollArea.id).body.dom.scrollTop;
-                    var offX = this.workflow.getScrollLeft();
-                    var offY = this.workflow.getScrollTop();
+                    var offX = wf.getScrollLeft();
+                    var offY = wf.getScrollTop();
                     var fig = new HAP.GUIObject(cutNPaste);
                     wf.addFigure(fig, wf.mouseDownPosX + offX, wf.mouseDownPosY + offY);
                 }));
@@ -154,6 +166,7 @@ HAP.GUIScenePanel = function(attrib){
                     wf.setSnapToGrid(wf.snap);
                 }));
                 return menu;
+                
             };
             if (Ext.isIE) 
                 workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
@@ -181,9 +194,6 @@ HAP.GUIScenePanel = function(attrib){
                     workflow.addFigure(fig, Math.floor((e.xy[0] - xOffset + offX) / 10) * 10, Math.floor((e.xy[1] - yOffset + offY) / 10) * 10);
                     workflow.showResizeHandles(fig);
                     workflow.setCurrentSelection(fig);
-                    if (data.type == 'HAP.Chart5') {
-                      fig.setGUIObjectConfig();
-                    }
                     return true;
                 }
             }

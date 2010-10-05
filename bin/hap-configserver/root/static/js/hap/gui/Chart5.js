@@ -7,7 +7,7 @@ HAP.Chart5 = function(config, viewPortCall){
     this.conf.display = {
         x: 0,
         y: 0,
-        height: 100,
+        height: 150,
         width: 150,
         'z-Index': 2,
         'Update Interval (s)': 3600,
@@ -22,7 +22,6 @@ HAP.Chart5 = function(config, viewPortCall){
             'chart.colors': '',
             'chart.fillstyle': '',
             'chart.key': ''
-            //'chart.labels': ''
         },
         'dataSources': [],
         'chart': {
@@ -53,24 +52,24 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.colors': ['red', '#0f0', '#00f', '#f0f', '#ff0', '#0ff'],
                 'chart.hmargin': 0,
                 'chart.tickmarks.dot.color': 'white',
-                'chart.tickmarks': null,
+                'chart.tickmarks': '',
                 'chart.ticksize': 3,
-                'chart.gutter': 25,
+                'chart.gutter': 45,
                 'chart.tickdirection': -1,
                 'chart.yaxispoints': 5,
-                'chart.fillstyle': null,
+                'chart.fillstyle': '',
                 'chart.xaxispos': 'bottom',
                 'chart.yaxispos': 'left',
-                'chart.xticks': null,
+                'chart.xticks': '',
                 'chart.text.size': 10,
-                'chart.text.angle': 0,
+                'chart.text.angle': 90,
                 'chart.text.color': 'black',
                 'chart.text.font': 'Verdana',
-                'chart.ymin': null,
-                'chart.ymax': null,
+                'chart.ymin': 0,
+                'chart.ymax': 100,
                 'chart.title': '',
-                'chart.title.hpos': null,
-                'chart.title.vpos': null,
+                'chart.title.hpos': '',
+                'chart.title.vpos': '',
                 'chart.title.xaxis': '',
                 'chart.title.yaxis': '',
                 'chart.title.xaxis.pos': 0.25,
@@ -116,7 +115,7 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.annotate.color': 'black',
                 'chart.axesontop': false,
                 'chart.filled.range': false,
-                'chart.variant': null,
+                'chart.variant': '',
                 'chart.axis.color': 'black',
                 'chart.zoom.factor': 1.5,
                 'chart.zoom.fade.in': true,
@@ -137,7 +136,6 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.resizable': false,
                 'chart.adjustable': false,
                 'chart.noredraw': false,
-                'chart.xticks': ''
             },
             'Bar': {
                 'chart.background.barcolor1': 'rgba(0,0,0,0)',
@@ -167,6 +165,7 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.ylabels': true,
                 'chart.ylabels.count': 5,
                 'chart.ylabels.inside': false,
+                'chart.ymax': 100,
                 'chart.xlabels.offset': 0,
                 'chart.xaxispos': 'bottom',
                 'chart.yaxispos': 'left',
@@ -298,7 +297,8 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.zoom.action': 'zoom',
                 'chart.resizable': false,
                 'chart.scale.point': '.',
-                'chart.scale.thousand': ','
+                'chart.scale.thousand': ',',
+                'chart.ymax': 100,
             },
             'HProgress': {
                 'chart.colors': ['#0c0'],
@@ -506,7 +506,15 @@ HAP.Chart5 = function(config, viewPortCall){
     };
     this.conf = apply(this.conf, config);
     this.create(this.conf)
-    this.setConfig(this.conf, viewPortCall);
+    var oThis = this;
+    //canvas creation takes some time, so we have to wait, until the element is available
+    function check(){
+        if (document.getElementById(oThis.conf.tmpId)) 
+            oThis.setConfig(oThis.conf, viewPortCall);
+        else 
+            window.setTimeout(check, 100);
+    }
+    window.setTimeout(check, 100);
     return this;
 }
 
@@ -521,62 +529,52 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
     this.div.style.position = 'absolute';
     this.div.style.width = this.conf.display['width'] + 'px';
     this.div.style.height = this.conf.display['height'] + 'px';
+    
     if (!viewPortCall) {
         this.div.style.left = this.conf.display['x'] + 'px';
         this.div.style.top = this.conf.display['y'] + 'px';
-        // stuff for gui
     }
-    else {
-        var data = [1, 2, 3];
-        if (document.getElementById(this.conf.tmpId)) {
-            if (this.chart) {
-                RGraph.Clear(this.chart.canvas);
-                var p = this.div.getParent();
-                p.removeChild(document.getElementById(this.conf.tmpId));
-                p.appendChild(this.create());
-            }
-            var type = this.conf.display['Chart-Type'];
-            this.chart = new RGraph[type](this.conf.tmpId, data);
-            this.chart.canvas.width = this.conf.display['width'];
-            this.chart.canvas.height = this.conf.display['height'];
-            
-            // To optimize : set properties directly not via loop !
-            for (var prop in this.conf.display.chart[type]) {
-                var val = this.conf.display.chart[type][prop];
-                this.chart.Set(prop, val);
-            }
-            
-            // set datasource props
-            var size = this.conf.display.dataSources.length;
-            for (var i = 0; i < size; i++) {
-                var cObj = this.conf.display.dataSources[i];
-                for (var cProp in cObj) {
-                    if (this.conf.display.chart[type][cProp] instanceof Array && this.conf.display.dataSources[i][cProp]) {
-                        if (i == 0) 
-                            this.conf.display.chart[type][cProp] = [];
-                        this.conf.display.chart[type][cProp].push(this.conf.display.dataSources[i][cProp]);
-                        this.chart.Set(cProp, this.conf.display.chart[type][cProp]);
-                    }
+    
+    if (document.getElementById(this.conf.tmpId)) {
+        if (this.chart) {
+            RGraph.Clear(this.chart.canvas);
+            var p = this.div.getParent();
+            p.removeChild(document.getElementById(this.conf.tmpId));
+            p.appendChild(this.create());
+        }
+        var type = this.conf.display['Chart-Type'];
+        this.chart = new RGraph[type](this.conf.tmpId, [1, 2, 3]);
+        this.chart.canvas.width = this.conf.display['width'];
+        this.chart.canvas.height = this.conf.display['height'];
+        
+        // To optimize : set properties directly not via loop !
+        for (var prop in this.conf.display.chart[type]) {
+            var val = this.conf.display.chart[type][prop];
+            this.chart.Set(prop, val);
+        }
+        
+        // set datasource props
+        var size = this.conf.display.dataSources.length;
+        for (var i = 0; i < size; i++) {
+            var cObj = this.conf.display.dataSources[i];
+            for (var cProp in cObj) {
+                if (this.conf.display.chart[type][cProp] instanceof Array && this.conf.display.dataSources[i][cProp]) {
+                    if (i == 0) 
+                        this.conf.display.chart[type][cProp] = [];
+                    this.conf.display.chart[type][cProp].push(this.conf.display.dataSources[i][cProp]);
+                    this.chart.Set(cProp, this.conf.display.chart[type][cProp]);
                 }
             }
-            var data = this.getData(this.conf.display.dataSources, true);
-            //this.chart.Set('chart.labels', data.labels);
-            //this.chart.original_data = data.values;
-            //this.chart.Draw();
-            
-            
         }
+        this.fillChartData(this.conf.display.dataSources, viewPortCall);
     }
+    
     this.div.style.zIndex = this.conf.display['z-Index'];
 }
 
-HAP.Chart5.prototype.getData = function(dataSources, viewPortCall){
-    var data = {
-        labels: ['a', 'b', 'c'],
-        values: [[1, 2, 3]]
-    };
+HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
+    var oThis = this;
     if (viewPortCall) {
-        var oThis = this;
         Ext.Ajax.request({
             url: 'gui/getChartData',
             params: {
@@ -585,30 +583,46 @@ HAP.Chart5.prototype.getData = function(dataSources, viewPortCall){
                 'xSkip': this.conf.display['Chart-X-Interval']
             },
             success: function(res, req){
-                data = Ext.decode(res.responseText).data;
-                RGraph.Clear(oThis.chart.canvas);
-                oThis.chart.Set('chart.labels', data.labels);
-                oThis.chart.original_data = data.values;
-                oThis.chart.Draw();
-            },
-            failure: function(res, req){
-                alert('FAIL');
+                var data = Ext.decode(res.responseText).data;
+                process(data);
             }
         });
     }
     else {
-        YAHOO.util.Connect.asyncRequest('get', '/gui/getChartData', {
+        YAHOO.util.Connect.asyncRequest('POST', '/gui/getChartData', {
             success: function(o){
                 if (YAHOO.lang.JSON.isValid(o.responseText)) {
                     var response = YAHOO.lang.JSON.parse(o.responseText);
                     if (response.success) {
-                        data = response;
+                        var data = response.data;
+                        process(data);
                     }
                 }
             }
-        });
+        }, 'data=' + YAHOO.lang.JSON.stringify(dataSources) + '&startOffset=' + this.conf.display['Start-Offset (m)'] + '&xSkip=' + this.conf.display['Chart-X-Interval']);
     }
-    return data;
+    function process(data){
+        if (!data) { //some dummy data
+            data = {
+                labels: ['a', 'b', 'c'],
+                values: [[1, 2, 3]]
+            };
+        }
+        RGraph.Clear(oThis.chart.canvas);
+        oThis.chart.Set('chart.labels', data.labels);
+        switch (oThis.conf.display['Chart-Type']) {
+            case 'Line':
+                oThis.chart.original_data = data.values;
+                break;
+            case 'Bar':
+                oThis.chart.data = data.values;
+                break;
+            case 'HBar':
+                oThis.chart.data = data.values;
+                break;
+        }
+        oThis.chart.Draw();
+    }
 }
 
 HAP.Chart5.prototype.setValue = function(value){

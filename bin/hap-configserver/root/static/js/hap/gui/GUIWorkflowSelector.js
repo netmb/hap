@@ -6,6 +6,7 @@ HAP.GUIWorkflowSelector = function(workflow){
 HAP.GUIWorkflowSelector.prototype.type = 'GUIWorkflowSelector';
 
 HAP.GUIWorkflowSelector.prototype.onSelectionChanged = function(figure){
+    
     if (this.currentSelection != null) {
         this.currentSelection.detachMoveListener(this);
     }
@@ -18,6 +19,7 @@ HAP.GUIWorkflowSelector.prototype.onSelectionChanged = function(figure){
       Ext.getCmp('guiPropertyGrid').blank();
     }
 }
+
 
 HAP.GUIWorkflowSelector.prototype.onOtherFigureMoved = function(figure){
 }
