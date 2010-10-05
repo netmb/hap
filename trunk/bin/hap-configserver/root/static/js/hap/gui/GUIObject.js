@@ -68,7 +68,7 @@ HAP.GUIObject.prototype.onDragend = function(){
 };
 
 
-
+/*
 HAP.GUIObject.prototype.getContextMenu = function(){
     var menu = new draw2d.Menu();
     var figure = this;
@@ -101,6 +101,7 @@ HAP.GUIObject.prototype.getContextMenu = function(){
     }));
     return menu;
 }
+*/
 
 HAP.GUIObject.prototype.setGUIObjectConfig = function(){
     this.guiObject.setConfig(this.guiObject.conf, true);
@@ -113,16 +114,16 @@ HAP.GUIObject.prototype.setGUIObjectConfig = function(){
 }
 
 
-draw2d.Workflow.prototype.showMenu = function(/*:draw2d.Menu*/menu,/*:int*/ xPos,/*:int*/ yPos){
-    if (this.menu != null) {
-        this.html.removeChild(this.menu.getHTMLElement());
-        this.menu.setWorkflow();
-    }
-    this.menu = menu;
-    if (this.menu != null) {
-        this.menu.setWorkflow(this);
-				this.menu.setPosition(xPos, yPos);
-        this.html.appendChild(this.menu.getHTMLElement());
-        this.menu.paint();
-    }
-}
+//draw2d.Workflow.prototype.showMenu = function(/*:draw2d.Menu*/menu,/*:int*/ xPos,/*:int*/ yPos){
+//    if (this.menu != null) {
+//        this.html.removeChild(this.menu.getHTMLElement());
+//        this.menu.setWorkflow();
+//    }
+//    this.menu = menu;
+//    if (this.menu != null) {
+ //       this.menu.setWorkflow(this);
+//				this.menu.setPosition(xPos, yPos);
+ //       this.html.appendChild(this.menu.getHTMLElement());
+  //      this.menu.paint();
+  //  }
+//}

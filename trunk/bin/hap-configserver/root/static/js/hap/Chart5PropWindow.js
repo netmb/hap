@@ -26,18 +26,17 @@ HAP.TreeChart5Prop = function(chartDisplayObj){
         id: 'chart/0/root'
     });
     this.listeners = {
-        'click': showProps,
+        'click': this.showProps,
         'contextmenu': this.contextMenuHandler
     };
-    
-    function showProps(node, event){
-        Ext.getCmp('chartPropertyGrid').setSource(node.attributes.cObj);
-    }
-    
+
     HAP.TreeChart5Prop.superclass.constructor.call(this);
 }
 
 Ext.extend(HAP.TreeChart5Prop, Ext.tree.TreePanel, {
+    showProps: function(node, event) {
+        Ext.getCmp('chartPropertyGrid').setSource(node.attributes.cObj);
+    },
     contextMenuHandler: function(node, e){
         if (node.text == 'Data-Source' || node.parentNode.text == 'Data-Source') {
             if (!this.menu) {

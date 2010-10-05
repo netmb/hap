@@ -20,6 +20,15 @@
         <!-- Open Flash Chart -->
         <script type="text/javascript" src='/static/js/ofc/swfobject.js'>
         </script>
+        <!-- rgraph -->
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.common.core.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.line.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.bar.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.hbar.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.hprogress.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.vprogress.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.meter.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.odo.js"></script>    
         <!-- HAP -->
         <script type="text/javascript" src='/static/js/hap/gui/Init.js'>
         </script>
