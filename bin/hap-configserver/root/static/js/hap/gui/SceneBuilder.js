@@ -70,7 +70,7 @@ HAP.SceneBuilder.prototype.refresh = function(){
             var tmpObj = {};
             tmpObj.id = objects[obj].conf.id;
             tmpObj.type = objects[obj].conf.type;
-            if (objects[obj].conf.type == 'HAP.Chart') {
+            if (objects[obj].conf.type == 'HAP.Chart' || objects[obj].conf.type == 'HAP.Chart5') {
               tmpObj.startOffset = objects[obj].conf.display['Start-Offset (m)'];
             }
             tmpObj.module = objects[obj].conf.display['HAP-Module'];

@@ -536,7 +536,7 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
     }
     
     if (document.getElementById(this.conf.tmpId)) {
-        if (this.chart) {
+        if (this.chart  && viewPortCall) {
             RGraph.Clear(this.chart.canvas);
             var p = this.div.getParent();
             p.removeChild(document.getElementById(this.conf.tmpId));
@@ -566,9 +566,9 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
                 }
             }
         }
-        this.fillChartData(this.conf.display.dataSources, viewPortCall);
+        if (viewPortCall)
+          this.fillChartData(this.conf.display.dataSources, viewPortCall);
     }
-    
     this.div.style.zIndex = this.conf.display['z-Index'];
 }
 
@@ -625,9 +625,8 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
     }
 }
 
-HAP.Chart5.prototype.setValue = function(value){
-    if (value) 
-        this.conf.display.chart = value;
+HAP.Chart5.prototype.setValue = function(){
+    this.fillChartData(this.conf.display.dataSources, false);
 }
 
 HAP.Chart5.prototype.attachEvent = function(event, handler, viewPortCall){
@@ -671,20 +670,6 @@ HAP.Chart5.prototype.setY = function(y, viewPortCall){
 }
 
 HAP.Chart5.prototype.setRequest = function(value){
-    var oThis = this;
-    YAHOO.util.Connect.asyncRequest('get', '/gui/setDevice/' + this.conf.display['HAP-Module'] + '/' + this.conf.display['HAP-Device'] + '/' + value, {
-        success: function(o){
-            if (YAHOO.lang.JSON.isValid(o.responseText)) {
-                var response = YAHOO.lang.JSON.parse(o.responseText);
-                if (response.success) {
-                    oThis.setValue(response.data.value);
-                }
-            }
-            else {
-                document.getElementById('rootDiv').innerHTML = o.responseText;
-            }
-        }
-    });
 }
 
 HAP.Chart5Image = function(conf){
