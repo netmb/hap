@@ -165,7 +165,6 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.ylabels': true,
                 'chart.ylabels.count': 5,
                 'chart.ylabels.inside': false,
-                'chart.ymax': 100,
                 'chart.xlabels.offset': 0,
                 'chart.xaxispos': 'bottom',
                 'chart.yaxispos': 'left',
@@ -229,7 +228,8 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.zoom.thumbnail.height': 75,
                 'chart.zoom.background': true,
                 'chart.resizable': false,
-                'chart.adjustable': false
+                'chart.adjustable': false,
+                'chart.ymax': 100
             },
             'HBar': {
                 'chart.gutter': 25,
@@ -580,7 +580,8 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
             params: {
                 'data': Ext.encode(dataSources),
                 'startOffset': this.conf.display['Start-Offset (m)'],
-                'xSkip': this.conf.display['Chart-X-Interval']
+                'xSkip': this.conf.display['Chart-X-Interval'],
+                'type': this.conf.display['Chart-Type']
             },
             success: function(res, req){
                 var data = Ext.decode(res.responseText).data;
@@ -599,7 +600,7 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
                     }
                 }
             }
-        }, 'data=' + YAHOO.lang.JSON.stringify(dataSources) + '&startOffset=' + this.conf.display['Start-Offset (m)'] + '&xSkip=' + this.conf.display['Chart-X-Interval']);
+        }, 'data=' + YAHOO.lang.JSON.stringify(dataSources) + '&startOffset=' + this.conf.display['Start-Offset (m)'] + '&xSkip=' + this.conf.display['Chart-X-Interval'] + '&type=' + this.conf.display['Chart-Type']);
     }
     function process(data){
         if (!data) { //some dummy data
@@ -610,10 +611,7 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
         }
         RGraph.Clear(oThis.chart.canvas);
         oThis.chart.Set('chart.labels', data.labels);
-        if (values.length == 1) 
-            oThis.chart.Set('chart.tooltips', data.values[0]);
-        else 
-            oThis.chart.Set('chart.tooltips', data.values);
+        
         switch (oThis.conf.display['Chart-Type']) {
             case 'Line':
                 oThis.chart.original_data = data.values;
