@@ -154,7 +154,8 @@ HAP.GUIScenePanel = function(attrib){
                     var offX = wf.getScrollLeft();
                     var offY = wf.getScrollTop();
                     var fig = new HAP.GUIObject(cutNPaste);
-                    wf.addFigure(fig, wf.mouseDownPosX + offX, wf.mouseDownPosY + offY);
+                    //wf.addFigure(fig, wf.mouseDownPosX + offX, wf.mouseDownPosY + offY);
+                    wf.addFigure(fig, wf.currentMouseX + offX, wf.currentMouseY + offY);
                 }));
                 menu.appendMenuItem(new draw2d.MenuItem('Toggle Grid', null, function(){
                     if (wf.snap) {

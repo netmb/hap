@@ -536,7 +536,7 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
     }
     
     if (document.getElementById(this.conf.tmpId)) {
-        if (this.chart  && viewPortCall) {
+        if (this.chart && viewPortCall) {
             RGraph.Clear(this.chart.canvas);
             var p = this.div.getParent();
             p.removeChild(document.getElementById(this.conf.tmpId));
@@ -566,8 +566,8 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
                 }
             }
         }
-        if (viewPortCall)
-          this.fillChartData(this.conf.display.dataSources, viewPortCall);
+        if (viewPortCall) 
+            this.fillChartData(this.conf.display.dataSources, viewPortCall);
     }
     this.div.style.zIndex = this.conf.display['z-Index'];
 }
@@ -610,6 +610,10 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
         }
         RGraph.Clear(oThis.chart.canvas);
         oThis.chart.Set('chart.labels', data.labels);
+        if (values.length == 1) 
+            oThis.chart.Set('chart.tooltips', data.values[0]);
+        else 
+            oThis.chart.Set('chart.tooltips', data.values);
         switch (oThis.conf.display['Chart-Type']) {
             case 'Line':
                 oThis.chart.original_data = data.values;
