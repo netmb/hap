@@ -14,10 +14,10 @@
 
 # Do NOT "set -e"
 
-PATH=/sbin:/usr/sbin:/bin:/usr/bin:/opt/hap-svn/bin
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/opt/hap/bin
 DESC="HAP Scheduler"
 NAME=hap-scheduler.pl
-DAEMON="/opt/hap-svn/bin/$NAME"
+DAEMON="/opt/hap/bin/$NAME"
 DAEMON_ARGS=""
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
