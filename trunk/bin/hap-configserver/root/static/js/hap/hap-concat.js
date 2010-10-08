@@ -295,6 +295,24 @@ Ext.extend(HAP.GridChartObject, Ext.form.TriggerField, {
     }
 });
 
+
+HAP.GridChart5Object = function(config){
+    this.conf = {
+        redimWrapper: true
+    };
+    Ext.apply(this.conf, config);
+    HAP.GridChart5Object.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.GridChart5Object, Ext.form.TriggerField, {
+    onTriggerClick: function(event){
+        var oThis = this;
+        var chartDisplayObj = Ext.getCmp(oThis.conf.targetGrid).conf.display;
+        var chooser = new HAP.Chart5PropWindow(chartDisplayObj);
+        chooser.show();
+    }
+});
+
 HAP.GridColorField = function(gridId, rowName, confObj){ // Extending doesnt work
     this.gridId = gridId;
     this.gridRowName = rowName;
@@ -502,6 +520,25 @@ HAP.GridComboScene = function(confObj){
 }
 
 Ext.extend(HAP.GridComboScene, Ext.form.ComboBox, {});
+
+
+HAP.GridComboChartType = function(confObj){
+    this.id = confObj.id;
+    this.store = [ 'Line', 'Bar', 'HBar', 'HProgress', 'VProgress', 'Meter', 'Odometer' ];
+    this.valueField = 'id';
+    this.displayField = 'name';
+    this.typeAhead = true;
+    this.mode = 'local';
+    this.triggerAction = 'all';
+    this.emptyText = 'Select a Type...';
+    this.forceSelection = false;
+    this.selectOnFocus = true;
+    this.editable = false;
+    this.allowBlank = true;
+    HAP.GridComboChartType.superclass.constructor.call(this);
+}
+Ext.extend(HAP.GridComboChartType, Ext.form.ComboBox, {});
+
 
 var gridRenderer = function(editor, v){
     var rv = editor.field.emptyText;
@@ -1331,6 +1368,7 @@ var storeUserRoles = new Ext.data.Store({
     }])
 });
 
+
 var loadStores = function(){
     storeModules.load();
     storeNotifyModules.load();
@@ -1348,7 +1386,7 @@ var loadStores = function(){
     storeSchedulerCommands.load();
     storeGuiViews.load();
     storeGuiScenes.load();
-		storeASInputValueTemplates.load();
+    storeASInputValueTemplates.load();
 }
 HAP.TextName = function(url){
     this.id = url + '/textName';
@@ -3209,9 +3247,7 @@ HAP.ManageSchedulerWindow = function(item){
 //////////////////////////////////////////////////
 
 HAP.TreeChartProp = function(chartDisplayObj){
-    //this.loader = new Ext.tree.TreeLoader();
     this.chartDisplayObj = chartDisplayObj;
-    
     this.id = 'treeChartProp';
     this.title = 'Chart Properties';
     this.region = 'west';
@@ -3377,10 +3413,7 @@ HAP.TreeGraphContextMenu = function(node, event){
         Ext.getCmp('treeChartProp').getNodeById('elements').appendChild(newNode);
     }
     
-    
     HAP.TreeGraphContextMenu.superclass.constructor.call(this);
-    
-    
 }
 
 Ext.extend(HAP.TreeGraphContextMenu, Ext.menu.Menu, {
@@ -3415,6 +3448,179 @@ HAP.ChartPropWindow = function(treeObject, callback){
 }
 
 Ext.extend(HAP.ChartPropWindow, Ext.Window, {});
+
+//////////////////////////////////////////////////
+// Tree
+//////////////////////////////////////////////////
+
+HAP.TreeChart5Prop = function(chartDisplayObj){
+    this.chartDisplayObj = chartDisplayObj;
+    this.id = 'treeChartProp';
+    this.title = 'Chart Properties';
+    this.region = 'west';
+    this.width = 175;
+    this.split = true;
+    this.autoScroll = true;
+    this.margins = '3 0 3 3';
+    this.cmargins = '3 3 3 3';
+    this.animate = true;
+    this.rootVisible = true;
+    this.root = new Ext.tree.AsyncTreeNode({
+        loader: new HAP.Chart5TreeLoader({
+            data: chartDisplayObj
+        }),
+        text: 'Chart',
+        cObj: this.chartDisplayObj.chart,
+        draggable: false,
+        expanded: true,
+        id: 'chart/0/root'
+    });
+    this.listeners = {
+        'click': this.showProps,
+        'contextmenu': this.contextMenuHandler
+    };
+
+    HAP.TreeChart5Prop.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.TreeChart5Prop, Ext.tree.TreePanel, {
+    showProps: function(node, event) {
+        Ext.getCmp('chartPropertyGrid').setSource(node.attributes.cObj);
+    },
+    contextMenuHandler: function(node, e){
+        if (node.text == 'Data-Source' || node.parentNode.text == 'Data-Source') {
+            if (!this.menu) {
+                this.menu = new HAP.TreeChart5ContextMenu(node, e);
+            }
+            this.menu.setActiveNode(node);
+            this.menu.showAt(e.getXY());
+        }
+    }
+});
+
+
+//////////////////////////////////////////////////
+// TREE LOADER
+//////////////////////////////////////////////////
+
+HAP.Chart5TreeLoader = function(conf){
+    this.conf = conf;
+    HAP.Chart5TreeLoader.superclass.constructor.call(this);
+}
+Ext.extend(HAP.Chart5TreeLoader, Ext.tree.TreeLoader, {
+    load: function(node, callback){
+        var sourceNode = new Ext.tree.TreeNode({
+            text: 'Data-Source',
+            id: 'data-source',
+            cObj: {},
+            leaf: false,
+            expanded: true
+        });
+        node.appendChild(sourceNode);
+        var size = this.conf.data.dataSources.length;
+        for (var z = 0; z < size; z++) {
+            var newNode = new Ext.tree.TreeNode({
+                text: this.conf.data.dataSources[z].Description,
+                cObj: this.conf.data.dataSources[z],
+                leaf: false
+            });
+            sourceNode.appendChild(newNode);
+        }
+        var propNode = new Ext.tree.TreeNode({
+            text: 'Properties',
+            cObj: {},
+            leaf: false
+        });
+        node.appendChild(propNode);
+        for (obj in this.conf.data.chart) {
+            var newNode = new Ext.tree.TreeNode({
+                text: obj,
+                cObj: this.conf.data.chart[obj],
+                leaf: true
+            });
+            propNode.appendChild(newNode);
+        }
+        callback();
+    }
+});
+
+
+//////////////////////////////////////////////////
+// CONTEXT MENU
+//////////////////////////////////////////////////
+
+HAP.TreeChart5ContextMenu = function(node, event){
+    this.id = 'treeGraphContextMenu';
+    this.items = [{
+        text: 'Add Source',
+        iconCls: 'add',
+        scope: this,
+        handler: addChart5ObjectHandler
+    }, {
+        text: 'Delete',
+        iconCls: 'delete',
+        scope: this,
+        handler: function(){
+            if (this.node.parentNode.text == 'Data-Source') {
+                var array = Ext.getCmp('treeChartProp').chartDisplayObj.dataSources;
+                var len = array.length;
+                for (var i = 0; i < len; i++) {
+                    if (array[i] == this.node.attributes.cObj) {
+                        array.splice(i, 1);
+                    }
+                }
+                this.node.remove();
+            }
+        }
+    }];
+    
+    function addChart5ObjectHandler(menu, menuItem, event){
+        var chartObj = apply({}, Ext.getCmp('treeChartProp').chartDisplayObj.sourceTemplate);
+        var newNode = new Ext.tree.TreeNode({
+            text: 'Source',
+            cObj: chartObj,
+            leaf: false
+        });
+        var tmp = Ext.getCmp('treeChartProp');
+        Ext.getCmp('treeChartProp').chartDisplayObj.dataSources.push(chartObj);
+        Ext.getCmp('treeChartProp').getNodeById('data-source').appendChild(newNode);
+    }
+    
+    HAP.TreeChart5ContextMenu.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.TreeChart5ContextMenu, Ext.menu.Menu, {
+    setActiveNode: function(node){
+        this.node = node;
+    }
+});
+
+
+//////////////////////////////////////////////////
+// WIN
+//////////////////////////////////////////////////
+
+HAP.Chart5PropWindow = function(treeObject, callback){
+    this.callback = callback;
+    this.title = 'Manage Chart Properties';
+    this.layout = 'border';
+    this.iconCls = 'macro';
+    this.closable = true;
+    this.width = 800;
+    this.height = 550;
+    this.items = [new HAP.TreeChart5Prop(treeObject), new HAP.GUIPropertyGrid({
+        id: 'chartPropertyGrid'
+    })];
+    var oThis = this;
+    this.listeners = {
+        show: function(){
+            oThis.setZIndex(10001); // firefox 3 fix
+        }
+    };
+    HAP.Chart5PropWindow.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.Chart5PropWindow, Ext.Window, {});
 HAP.LoginWindow = function(){
     this.loginButtonHandler = function(){
         if (!this.loginForm.getForm().isValid()) {
@@ -7171,9 +7377,12 @@ HAP.ACPanel = function(attrib){
             
             workflow = new draw2d.Workflow(attrib.id + '/workflowSequenceBody');
             //var bla = document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id;
-						//alert (bla);
-						//workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            //alert (bla);
+            //workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
+            if (Ext.isIE) 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            else 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.setSnapToGrid(true);
@@ -7190,8 +7399,8 @@ HAP.ACPanel = function(attrib){
                     //var offX = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollLeft;
                     //var offY = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollTop;
                     var offX = workflow.getScrollLeft();
-										var offY = workflow.getScrollTop();
-										var fig = classFactory(data.className, data.conf);
+                    var offY = workflow.getScrollTop();
+                    var fig = classFactory(data.className, data.conf);
                     workflow.addFigure(fig, Math.floor((e.xy[0] - xOffset + offX) / 10) * 10, Math.floor((e.xy[1] - yOffset + offY) / 10) * 10);
                     workflow.showResizeHandles(fig);
                     workflow.setCurrentSelection(fig);
@@ -7469,8 +7678,10 @@ HAP.LCDGuiPanel = function(attrib){
             Ext.getCmp(attrib.id + '/textName').focus();
             
             workflow = new draw2d.Workflow(attrib.id + '/workflowSequenceBody');
-            //workflow.setViewPort(attrib.id + '/workflowSequenceScrollViewPort');
-            workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            if (Ext.isIE) 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            else 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.setSnapToGrid(true);
@@ -9239,11 +9450,23 @@ HAP.GUIScenePanel = function(attrib){
             workflow.getContextMenu = function(){
                 var menu = new draw2d.Menu();
                 var wf = this;
+                var figure = this.getCurrentSelection();
+                if (figure) {
+                  menu.appendMenuItem(new draw2d.MenuItem('Copy', null, function(){
+                    figure.guiObject.id = 0;
+                    figure.guiObject.conf.id = 0;
+                    cutNPaste = Ext.ux.clone(figure.guiObject.conf);
+                  }));
+                  menu.appendMenuItem(new draw2d.MenuItem('Delete', null, function(){
+                    wf.removeFigure(figure);
+                    
+                  }));
+                }
                 menu.appendMenuItem(new draw2d.MenuItem('Paste', null, function(){
                     //var offX = Ext.getCmp(wf.scrollArea.id).body.dom.scrollLeft;
                     //var offY = Ext.getCmp(wf.scrollArea.id).body.dom.scrollTop;
-										var offX = this.workflow.getScrollLeft();
-										var offY = this.workflow.getScrollTop();
+                    var offX = wf.getScrollLeft();
+                    var offY = wf.getScrollTop();
                     var fig = new HAP.GUIObject(cutNPaste);
                     wf.addFigure(fig, wf.mouseDownPosX + offX, wf.mouseDownPosY + offY);
                 }));
@@ -9257,8 +9480,12 @@ HAP.GUIScenePanel = function(attrib){
                     wf.setSnapToGrid(wf.snap);
                 }));
                 return menu;
+                
             };
-						workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            if (Ext.isIE) 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').parentElement.id);
+            else 
+                workflow.setViewPort(document.getElementById(attrib.id + '/workflowSequenceBody').getParent().id);
             workflow.setBackgroundImage('/static/images/grid_10.png', true);
             workflow.setGridWidth(10, 10);
             workflow.snap = true; // custom !
@@ -9275,8 +9502,8 @@ HAP.GUIScenePanel = function(attrib){
                     var yOffset = workflow.getAbsoluteY();
                     //var offX = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollLeft;
                     //var offY = Ext.getCmp(workflow.scrollArea.id).body.dom.scrollTop;
-										var offX = workflow.getScrollLeft();
-										var offY = workflow.getScrollTop();
+                    var offX = workflow.getScrollLeft();
+                    var offY = workflow.getScrollTop();
                     var fig = new HAP.GUIObject(data);
                     workflow.addFigure(fig, Math.floor((e.xy[0] - xOffset + offX) / 10) * 10, Math.floor((e.xy[1] - yOffset + offY) / 10) * 10);
                     workflow.showResizeHandles(fig);
@@ -9325,6 +9552,7 @@ HAP.GUIWorkflowSelector = function(workflow){
 HAP.GUIWorkflowSelector.prototype.type = 'GUIWorkflowSelector';
 
 HAP.GUIWorkflowSelector.prototype.onSelectionChanged = function(figure){
+    
     if (this.currentSelection != null) {
         this.currentSelection.detachMoveListener(this);
     }
@@ -9337,6 +9565,7 @@ HAP.GUIWorkflowSelector.prototype.onSelectionChanged = function(figure){
       Ext.getCmp('guiPropertyGrid').blank();
     }
 }
+
 
 HAP.GUIWorkflowSelector.prototype.onOtherFigureMoved = function(figure){
 }
@@ -9409,6 +9638,8 @@ HAP.GUIObject.prototype.onDragend = function(){
     Ext.getCmp('guiPropertyGrid').setSource(this.guiObject.conf.display);
 };
 
+
+/*
 HAP.GUIObject.prototype.getContextMenu = function(){
     var menu = new draw2d.Menu();
     var figure = this;
@@ -9441,6 +9672,7 @@ HAP.GUIObject.prototype.getContextMenu = function(){
     }));
     return menu;
 }
+*/
 
 HAP.GUIObject.prototype.setGUIObjectConfig = function(){
     this.guiObject.setConfig(this.guiObject.conf, true);
@@ -9453,19 +9685,19 @@ HAP.GUIObject.prototype.setGUIObjectConfig = function(){
 }
 
 
-draw2d.Workflow.prototype.showMenu = function(/*:draw2d.Menu*/menu,/*:int*/ xPos,/*:int*/ yPos){
-    if (this.menu != null) {
-        this.html.removeChild(this.menu.getHTMLElement());
-        this.menu.setWorkflow();
-    }
-    this.menu = menu;
-    if (this.menu != null) {
-        this.menu.setWorkflow(this);
-				this.menu.setPosition(xPos, yPos);
-        this.html.appendChild(this.menu.getHTMLElement());
-        this.menu.paint();
-    }
-}
+//draw2d.Workflow.prototype.showMenu = function(/*:draw2d.Menu*/menu,/*:int*/ xPos,/*:int*/ yPos){
+//    if (this.menu != null) {
+//        this.html.removeChild(this.menu.getHTMLElement());
+//        this.menu.setWorkflow();
+//    }
+//    this.menu = menu;
+//    if (this.menu != null) {
+ //       this.menu.setWorkflow(this);
+//				this.menu.setPosition(xPos, yPos);
+ //       this.html.appendChild(this.menu.getHTMLElement());
+  //      this.menu.paint();
+  //  }
+//}
 /**
  * @author bendowski
  */
@@ -10729,6 +10961,705 @@ HAP.ChartImage = function(conf){
     
     return div;
 }
+HAP.Chart5 = function(config, viewPortCall){
+    this.conf = {};
+    this.conf.id = 0;
+    this.conf.tmpId = 'x' + Math.random() + 'x';
+    this.conf.type = 'HAP.Chart5';
+    this.conf.imagePath = '/static/images/gui/';
+    this.conf.display = {
+        x: 0,
+        y: 0,
+        height: 150,
+        width: 150,
+        'z-Index': 2,
+        'Update Interval (s)': 3600,
+        'Start-Offset (m)': 60,
+        'Chart-Properties': '',
+        'Chart-Type': 'Line',
+        'Chart-X-Interval': 1,
+        'sourceTemplate': {
+            'HAP-Module': '',
+            'HAP-Device': '',
+            'Description': '',
+            'chart.colors': '',
+            'chart.fillstyle': '',
+            'chart.key': ''
+        },
+        'dataSources': [],
+        'chart': {
+            'Line': {
+                'chart.background.barcolor1': 'rgba(0,0,0,0)',
+                'chart.background.barcolor2': 'rgba(0,0,0,0)',
+                'chart.background.grid': 1,
+                'chart.background.grid.width': 1,
+                'chart.background.grid.hsize': 25,
+                'chart.background.grid.vsize': 25,
+                'chart.background.grid.color': '#ddd',
+                'chart.background.grid.vlines': true,
+                'chart.background.grid.hlines': true,
+                'chart.background.grid.border': true,
+                'chart.background.grid.autofit': false,
+                'chart.background.grid.autofit.numhlines': 7,
+                'chart.background.grid.autofit.numvlines': 20,
+                'chart.background.hbars': null,
+                'chart.labels': null,
+                'chart.labels.ingraph': null,
+                'chart.xtickgap': 20,
+                'chart.smallxticks': 3,
+                'chart.largexticks': 5,
+                'chart.ytickgap': 20,
+                'chart.smallyticks': 3,
+                'chart.largeyticks': 5,
+                'chart.linewidth': 1,
+                'chart.colors': ['red', '#0f0', '#00f', '#f0f', '#ff0', '#0ff'],
+                'chart.hmargin': 0,
+                'chart.tickmarks.dot.color': 'white',
+                'chart.tickmarks': '',
+                'chart.ticksize': 3,
+                'chart.gutter': 45,
+                'chart.tickdirection': -1,
+                'chart.yaxispoints': 5,
+                'chart.fillstyle': '',
+                'chart.xaxispos': 'bottom',
+                'chart.yaxispos': 'left',
+                'chart.xticks': '',
+                'chart.text.size': 10,
+                'chart.text.angle': 90,
+                'chart.text.color': 'black',
+                'chart.text.font': 'Verdana',
+                'chart.ymin': 0,
+                'chart.ymax': 100,
+                'chart.title': '',
+                'chart.title.hpos': '',
+                'chart.title.vpos': '',
+                'chart.title.xaxis': '',
+                'chart.title.yaxis': '',
+                'chart.title.xaxis.pos': 0.25,
+                'chart.title.yaxis.pos': 0.25,
+                'chart.shadow': false,
+                'chart.shadow.offsetx': 2,
+                'chart.shadow.offsety': 2,
+                'chart.shadow.blur': 3,
+                'chart.shadow.color': 'rgba(0,0,0,0.5)',
+                'chart.tooltips': [],
+                'chart.tooltips.effect': 'fade',
+                'chart.tooltips.css.class': 'RGraph_tooltip',
+                'chart.tooltips.coords.adjust': [0, 0],
+                'chart.tooltips.highlight': true,
+                'chart.stepped': false,
+                'chart.key': [],
+                'chart.key.background': 'white',
+                'chart.key.position': 'graph',
+                'chart.key.shadow': false,
+                'chart.key.shadow.color': '#666',
+                'chart.key.shadow.blur': 3,
+                'chart.key.shadow.offsetx': 2,
+                'chart.key.shadow.offsety': 2,
+                'chart.contextmenu': null,
+                'chart.ylabels': true,
+                'chart.ylabels.count': 5,
+                'chart.ylabels.inside': false,
+                'chart.ylabels.invert': false,
+                'chart.xlabels.inside': false,
+                'chart.xlabels.inside.color': 'rgba(255,255,255,0.5)',
+                'chart.noaxes': false,
+                'chart.noyaxis': false,
+                'chart.noxaxis': false,
+                'chart.noendxtick': false,
+                'chart.units.post': '',
+                'chart.units.pre': '',
+                'chart.scale.decimals': 0,
+                'chart.scale.point': '.',
+                'chart.scale.thousand': ',',
+                'chart.crosshairs': false,
+                'chart.crosshairs.color': '#333',
+                'chart.annotatable': false,
+                'chart.annotate.color': 'black',
+                'chart.axesontop': false,
+                'chart.filled.range': false,
+                'chart.variant': '',
+                'chart.axis.color': 'black',
+                'chart.zoom.factor': 1.5,
+                'chart.zoom.fade.in': true,
+                'chart.zoom.fade.out': true,
+                'chart.zoom.hdir': 'right',
+                'chart.zoom.vdir': 'down',
+                'chart.zoom.frames': 15,
+                'chart.zoom.delay': 33,
+                'chart.zoom.shadow': true,
+                'chart.zoom.mode': 'canvas',
+                'chart.zoom.thumbnail.width': 75,
+                'chart.zoom.thumbnail.height': 75,
+                'chart.zoom.background': true,
+                'chart.zoom.action': 'zoom',
+                'chart.backdrop': false,
+                'chart.backdrop.size': 30,
+                'chart.backdrop.alpha': 0.2,
+                'chart.resizable': false,
+                'chart.adjustable': false,
+                'chart.noredraw': false,
+            },
+            'Bar': {
+                'chart.background.barcolor1': 'rgba(0,0,0,0)',
+                'chart.background.barcolor2': 'rgba(0,0,0,0)',
+                'chart.background.grid': true,
+                'chart.background.grid.color': '#ddd',
+                'chart.background.grid.width': 1,
+                'chart.background.grid.hsize': 20,
+                'chart.background.grid.vsize': 20,
+                'chart.background.grid.vlines': true,
+                'chart.background.grid.hlines': true,
+                'chart.background.grid.border': true,
+                'chart.background.grid.autofit': false,
+                'chart.background.grid.autofit.numhlines': 7,
+                'chart.background.grid.autofit.numvlines': 20,
+                'chart.ytickgap': 20,
+                'chart.smallyticks': 3,
+                'chart.largeyticks': 5,
+                'chart.numyticks': 10,
+                'chart.hmargin': 5,
+                'chart.strokecolor': '#666',
+                'chart.axis.color': 'black',
+                'chart.gutter': 25,
+                'chart.labels': null,
+                'chart.labels.ingraph': null,
+                'chart.labels.above': false,
+                'chart.ylabels': true,
+                'chart.ylabels.count': 5,
+                'chart.ylabels.inside': false,
+                'chart.ymax': 100,
+                'chart.xlabels.offset': 0,
+                'chart.xaxispos': 'bottom',
+                'chart.yaxispos': 'left',
+                'chart.text.color': 'black',
+                'chart.text.size': 10,
+                'chart.text.angle': 0,
+                'chart.text.font': 'Verdana',
+                'chart.ymax': null,
+                'chart.title': '',
+                'chart.title.hpos': null,
+                'chart.title.vpos': null,
+                'chart.title.xaxis': '',
+                'chart.title.yaxis': '',
+                'chart.title.xaxis.pos': 0.25,
+                'chart.title.yaxis.pos': 0.25,
+                'chart.colors': ['rgb(0,0,255)', '#0f0', '#00f', '#ff0', '#0ff', '#0f0'],
+                'chart.grouping': 'grouped',
+                'chart.variant': 'bar',
+                'chart.shadow': false,
+                'chart.shadow.color': '#666',
+                'chart.shadow.offsetx': 3,
+                'chart.shadow.offsety': 3,
+                'chart.shadow.blur': 3,
+                'chart.tooltips': [],
+                'chart.tooltips.effect': 'fade',
+                'chart.tooltips.css.class': 'RGraph_tooltip',
+                'chart.tooltips.event': 'onclick',
+                'chart.tooltips.coords.adjust': [0, 0],
+                'chart.tooltips.highlight': true,
+                'chart.background.hbars': null,
+                'chart.key': [],
+                'chart.key.background': 'white',
+                'chart.key.position': 'graph',
+                'chart.key.shadow': false,
+                'chart.key.shadow.color': '#666',
+                'chart.key.shadow.blur': 3,
+                'chart.key.shadow.offsetx': 2,
+                'chart.key.shadow.offsety': 2,
+                'chart.contextmenu': null,
+                'chart.line': null,
+                'chart.units.pre': '',
+                'chart.units.post': '',
+                'chart.scale.decimals': 0,
+                'chart.scale.point': '.',
+                'chart.scale.thousand': ',',
+                'chart.crosshairs': false,
+                'chart.crosshairs.color': '#333',
+                'chart.linewidth': 1,
+                'chart.annotatable': false,
+                'chart.annotate.color': 'black',
+                'chart.zoom.factor': 1.5,
+                'chart.zoom.fade.in': true,
+                'chart.zoom.fade.out': true,
+                'chart.zoom.hdir': 'right',
+                'chart.zoom.vdir': 'down',
+                'chart.zoom.frames': 10,
+                'chart.zoom.delay': 50,
+                'chart.zoom.shadow': true,
+                'chart.zoom.mode': 'canvas',
+                'chart.zoom.thumbnail.width': 75,
+                'chart.zoom.thumbnail.height': 75,
+                'chart.zoom.background': true,
+                'chart.resizable': false,
+                'chart.adjustable': false
+            },
+            'HBar': {
+                'chart.gutter': 25,
+                'chart.background.grid': true,
+                'chart.background.grid.color': '#ddd',
+                'chart.background.grid.width': 1,
+                'chart.background.grid.hsize': 25,
+                'chart.background.grid.vsize': 25,
+                'chart.background.barcolor1': 'white',
+                'chart.background.barcolor2': 'white',
+                'chart.background.grid.hlines': true,
+                'chart.background.grid.vlines': true,
+                'chart.background.grid.border': true,
+                'chart.background.grid.autofit': false,
+                'chart.background.grid.autofit.numhlines': 14,
+                'chart.background.grid.autofit.numvlines': 20,
+                'chart.title': '',
+                'chart.title.xaxis': '',
+                'chart.title.yaxis': '',
+                'chart.title.xaxis.pos': 0.25,
+                'chart.title.yaxis.pos': 0.5,
+                'chart.title.hpos': null,
+                'chart.title.vpos': null,
+                'chart.text.size': 10,
+                'chart.text.color': 'black',
+                'chart.text.font': 'Verdana',
+                'chart.colors': ['rgb(0,0,255)', '#0f0', '#00f', '#ff0', '#0ff', '#0f0'],
+                'chart.labels': [],
+                'chart.labels.above': false,
+                'chart.contextmenu': null,
+                'chart.key': [],
+                'chart.key.background': 'white',
+                'chart.key.position': 'graph',
+                'chart.units.pre': '',
+                'chart.units.post': '',
+                'chart.units.ingraph': false,
+                'chart.strokestyle': 'black',
+                'chart.xmax': 0,
+                'chart.axis.color': 'black',
+                'chart.shadow': false,
+                'chart.shadow.color': '#666',
+                'chart.shadow.blur': 3,
+                'chart.shadow.offsetx': 3,
+                'chart.shadow.offsety': 3,
+                'chart.vmargin': 3,
+                'chart.grouping': 'grouped',
+                'chart.tooltips': [],
+                'chart.tooltips.effect': 'fade',
+                'chart.tooltips.css.class': 'RGraph_tooltip',
+                'chart.tooltips.highlight': true,
+                'chart.annotatable': false,
+                'chart.annotate.color': 'black',
+                'chart.zoom.factor': 1.5,
+                'chart.zoom.fade.in': true,
+                'chart.zoom.fade.out': true,
+                'chart.zoom.hdir': 'right',
+                'chart.zoom.vdir': 'down',
+                'chart.zoom.frames': 10,
+                'chart.zoom.delay': 50,
+                'chart.zoom.shadow': true,
+                'chart.zoom.mode': 'canvas',
+                'chart.zoom.thumbnail.width': 75,
+                'chart.zoom.thumbnail.height': 75,
+                'chart.zoom.background': true,
+                'chart.zoom.action': 'zoom',
+                'chart.resizable': false,
+                'chart.scale.point': '.',
+                'chart.scale.thousand': ',',
+                'chart.ymax': 100,
+            },
+            'HProgress': {
+                'chart.colors': ['#0c0'],
+                'chart.tickmarks': true,
+                'chart.tickmarks.color': 'black',
+                'chart.tickmarks.inner': false,
+                'chart.gutter': 25,
+                'chart.numticks': 10,
+                'chart.numticks.inner': 50,
+                'chart.background.color': '#eee',
+                'chart.shadow': false,
+                'chart.shadow.color': 'rgba(0,0,0,0.5)',
+                'chart.shadow.blur': 3,
+                'chart.shadow.offsetx': 3,
+                'chart.shadow.offsety': 3,
+                'chart.title': '',
+                'chart.title.hpos': null,
+                'chart.title.vpos': null,
+                'chart.width': 0,
+                'chart.height': 0,
+                'chart.text.size': 10,
+                'chart.text.color': 'black',
+                'chart.text.font': 'Verdana',
+                'chart.contextmenu': null,
+                'chart.units.pre': '',
+                'chart.units.post': '',
+                'chart.tooltips': [],
+                'chart.tooltips.effect': 'fade',
+                'chart.tooltips.css.class': 'RGraph_tooltip',
+                'chart.tooltips.highlight': true,
+                'chart.annotatable': false,
+                'chart.annotate.color': 'black',
+                'chart.zoom.mode': 'canvas',
+                'chart.zoom.factor': 1.5,
+                'chart.zoom.fade.in': true,
+                'chart.zoom.fade.out': true,
+                'chart.zoom.hdir': 'right',
+                'chart.zoom.vdir': 'down',
+                'chart.zoom.frames': 10,
+                'chart.zoom.delay': 50,
+                'chart.zoom.shadow': true,
+                'chart.zoom.background': true,
+                'chart.zoom.action': 'zoom',
+                'chart.arrows': false,
+                'chart.margin': 0,
+                'chart.resizable': false,
+                'chart.label.inner': false,
+                'chart.adjustable': false
+            },
+            'VProgress': {
+                'chart.colors': ['#0c0'],
+                'chart.tickmarks': true,
+                'chart.tickmarks.color': 'black',
+                'chart.tickmarks.inner': false,
+                'chart.gutter': 25,
+                'chart.numticks': 10,
+                'chart.numticks.inner': 50,
+                'chart.background.color': '#eee',
+                'chart.shadow': false,
+                'chart.shadow.color': 'rgba(0,0,0,0.5)',
+                'chart.shadow.blur': 3,
+                'chart.shadow.offsetx': 3,
+                'chart.shadow.offsety': 3,
+                'chart.title': '',
+                'chart.title.hpos': null,
+                'chart.title.vpos': null,
+                'chart.width': 0,
+                'chart.height': 0,
+                'chart.text.size': 10,
+                'chart.text.color': 'black',
+                'chart.text.font': 'Verdana',
+                'chart.contextmenu': null,
+                'chart.units.pre': '',
+                'chart.units.post': '',
+                'chart.tooltips': [],
+                'chart.tooltips.effect': 'fade',
+                'chart.tooltips.css.class': 'RGraph_tooltip',
+                'chart.tooltips.highlight': true,
+                'chart.annotatable': false,
+                'chart.annotate.color': 'black',
+                'chart.zoom.mode': 'canvas',
+                'chart.zoom.factor': 1.5,
+                'chart.zoom.fade.in': true,
+                'chart.zoom.fade.out': true,
+                'chart.zoom.hdir': 'right',
+                'chart.zoom.vdir': 'down',
+                'chart.zoom.frames': 10,
+                'chart.zoom.delay': 50,
+                'chart.zoom.shadow': true,
+                'chart.zoom.background': true,
+                'chart.zoom.action': 'zoom',
+                'chart.arrows': false,
+                'chart.margin': 0,
+                'chart.resizable': false,
+                'chart.label.inner': false,
+                'chart.adjustable': false
+            },
+            'Meter': {
+                'chart.gutter': 25,
+                'chart.linewidth': 2,
+                'chart.border.color': 'black',
+                'chart.text.font': 'Verdana',
+                'chart.text.size': 10,
+                'chart.text.color': 'black',
+                'chart.title': '',
+                'chart.title.hpos': null,
+                'chart.title.vpos': null,
+                'chart.title.color': 'black',
+                'chart.green.start': ((this.max - this.min) * 0.35) + this.min,
+                'chart.green.end': this.max,
+                'chart.green.color': '#207A20',
+                'chart.yellow.start': ((this.max - this.min) * 0.1) + this.min,
+                'chart.yellow.end': ((this.max - this.min) * 0.35) + this.min,
+                'chart.yellow.color': '#D0AC41',
+                'chart.red.start': this.min,
+                'chart.red.end': ((this.max - this.min) * 0.1) + this.min,
+                'chart.red.color': '#9E1E1E',
+                'chart.units.pre': '',
+                'chart.units.post': '',
+                'chart.contextmenu': null,
+                'chart.zoom.factor': 1.5,
+                'chart.zoom.fade.in': true,
+                'chart.zoom.fade.out': true,
+                'chart.zoom.hdir': 'right',
+                'chart.zoom.vdir': 'down',
+                'chart.zoom.frames': 15,
+                'chart.zoom.delay': 33,
+                'chart.zoom.shadow': true,
+                'chart.zoom.mode': 'canvas',
+                'chart.zoom.thumbnail.width': 75,
+                'chart.zoom.thumbnail.height': 75,
+                'chart.zoom.background': true,
+                'chart.zoom.action': 'zoom',
+                'chart.annotatable': false,
+                'chart.annotate.color': 'black',
+                'chart.shadow': false,
+                'chart.shadow.color': 'rgba(0,0,0,0.5)',
+                'chart.shadow.blur': 3,
+                'chart.shadow.offsetx': 3,
+                'chart.shadow.offsety': 3,
+                'chart.reszable': false
+            },
+            'Odometer': {
+                'chart.value.text': false,
+                'chart.needle.color': 'black',
+                'chart.needle.width': 2,
+                'chart.needle.head': true,
+                'chart.needle.tail': true,
+                'chart.needle.type': 'pointer',
+                'chart.needle.extra': [],
+                'chart.text.size': 10,
+                'chart.text.color': 'black',
+                'chart.text.font': 'Verdana',
+                'chart.green.max': this.end * 0.75,
+                'chart.red.min': this.end * 0.9,
+                'chart.green.color': 'green',
+                'chart.yellow.color': 'yellow',
+                'chart.red.color': 'red',
+                'chart.label.area': 35,
+                'chart.gutter': 25,
+                'chart.title': '',
+                'chart.title.hpos': null,
+                'chart.title.vpos': null,
+                'chart.contextmenu': null,
+                'chart.linewidth': 1,
+                'chart.shadow.inner': false,
+                'chart.shadow.inner.color': 'black',
+                'chart.shadow.inner.offsetx': 3,
+                'chart.shadow.inner.offsety': 3,
+                'chart.shadow.inner.blur': 6,
+                'chart.shadow.outer': false,
+                'chart.shadow.outer.color': '#666',
+                'chart.shadow.outer.offsetx': 0,
+                'chart.shadow.outer.offsety': 0,
+                'chart.shadow.outer.blur': 15,
+                'chart.annotatable': false,
+                'chart.annotate.color': 'black',
+                'chart.scale.decimals': 0,
+                'chart.zoom.factor': 1.5,
+                'chart.zoom.fade.in': true,
+                'chart.zoom.fade.out': true,
+                'chart.zoom.hdir': 'right',
+                'chart.zoom.vdir': 'down',
+                'chart.zoom.frames': 10,
+                'chart.zoom.delay': 50,
+                'chart.zoom.shadow': true,
+                'chart.zoom.mode': 'canvas',
+                'chart.zoom.thumbnail.width': 75,
+                'chart.zoom.thumbnail.height': 75,
+                'chart.zoom.background': true,
+                'chart.zoom.action': 'zoom',
+                'chart.resizable': false,
+                'chart.units.pre': '',
+                'chart.units.post': '',
+                'chart.border': false,
+                'chart.tickmarks.highlighted': false,
+                'chart.zerostart': false,
+                'chart.labels': null,
+                'chart.units.pre': '',
+                'chart.units.post': '',
+                'chart.value.units.pre': '',
+                'chart.value.units.post': ''
+            }
+        }
+    };
+    this.conf = apply(this.conf, config);
+    this.create(this.conf)
+    var oThis = this;
+    //canvas creation takes some time, so we have to wait, until the element is available
+    function check(){
+        if (document.getElementById(oThis.conf.tmpId)) 
+            oThis.setConfig(oThis.conf, viewPortCall);
+        else 
+            window.setTimeout(check, 100);
+    }
+    window.setTimeout(check, 100);
+    return this;
+}
+
+HAP.Chart5.prototype.create = function(conf){
+    this.div = document.createElement('canvas');
+    this.div.id = this.conf.tmpId;
+    return this.div;
+}
+
+HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
+    this.conf = conf;
+    this.div.style.position = 'absolute';
+    this.div.style.width = this.conf.display['width'] + 'px';
+    this.div.style.height = this.conf.display['height'] + 'px';
+    
+    if (!viewPortCall) {
+        this.div.style.left = this.conf.display['x'] + 'px';
+        this.div.style.top = this.conf.display['y'] + 'px';
+    }
+    
+    if (document.getElementById(this.conf.tmpId)) {
+        if (this.chart  && viewPortCall) {
+            RGraph.Clear(this.chart.canvas);
+            var p = this.div.getParent();
+            p.removeChild(document.getElementById(this.conf.tmpId));
+            p.appendChild(this.create());
+        }
+        var type = this.conf.display['Chart-Type'];
+        this.chart = new RGraph[type](this.conf.tmpId, [1, 2, 3]);
+        this.chart.canvas.width = this.conf.display['width'];
+        this.chart.canvas.height = this.conf.display['height'];
+        
+        // To optimize : set properties directly not via loop !
+        for (var prop in this.conf.display.chart[type]) {
+            var val = this.conf.display.chart[type][prop];
+            this.chart.Set(prop, val);
+        }
+        
+        // set datasource props
+        var size = this.conf.display.dataSources.length;
+        for (var i = 0; i < size; i++) {
+            var cObj = this.conf.display.dataSources[i];
+            for (var cProp in cObj) {
+                if (this.conf.display.chart[type][cProp] instanceof Array && this.conf.display.dataSources[i][cProp]) {
+                    if (i == 0) 
+                        this.conf.display.chart[type][cProp] = [];
+                    this.conf.display.chart[type][cProp].push(this.conf.display.dataSources[i][cProp]);
+                    this.chart.Set(cProp, this.conf.display.chart[type][cProp]);
+                }
+            }
+        }
+        if (viewPortCall)
+          this.fillChartData(this.conf.display.dataSources, viewPortCall);
+    }
+    this.div.style.zIndex = this.conf.display['z-Index'];
+}
+
+HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
+    var oThis = this;
+    if (viewPortCall) {
+        Ext.Ajax.request({
+            url: 'gui/getChartData',
+            params: {
+                'data': Ext.encode(dataSources),
+                'startOffset': this.conf.display['Start-Offset (m)'],
+                'xSkip': this.conf.display['Chart-X-Interval']
+            },
+            success: function(res, req){
+                var data = Ext.decode(res.responseText).data;
+                process(data);
+            }
+        });
+    }
+    else {
+        YAHOO.util.Connect.asyncRequest('POST', '/gui/getChartData', {
+            success: function(o){
+                if (YAHOO.lang.JSON.isValid(o.responseText)) {
+                    var response = YAHOO.lang.JSON.parse(o.responseText);
+                    if (response.success) {
+                        var data = response.data;
+                        process(data);
+                    }
+                }
+            }
+        }, 'data=' + YAHOO.lang.JSON.stringify(dataSources) + '&startOffset=' + this.conf.display['Start-Offset (m)'] + '&xSkip=' + this.conf.display['Chart-X-Interval']);
+    }
+    function process(data){
+        if (!data) { //some dummy data
+            data = {
+                labels: ['a', 'b', 'c'],
+                values: [[1, 2, 3]]
+            };
+        }
+        RGraph.Clear(oThis.chart.canvas);
+        oThis.chart.Set('chart.labels', data.labels);
+        switch (oThis.conf.display['Chart-Type']) {
+            case 'Line':
+                oThis.chart.original_data = data.values;
+                break;
+            case 'Bar':
+                oThis.chart.data = data.values;
+                break;
+            case 'HBar':
+                oThis.chart.data = data.values;
+                break;
+        }
+        oThis.chart.Draw();
+    }
+}
+
+HAP.Chart5.prototype.setValue = function(){
+    this.fillChartData(this.conf.display.dataSources, false);
+}
+
+HAP.Chart5.prototype.attachEvent = function(event, handler, viewPortCall){
+    if (!viewPortCall && event == 'onclick') {
+        this.layer.onclick = handler;
+    }
+}
+
+HAP.Chart5.prototype.setWidth = function(width){
+    this.conf.display['width'] = width;
+    this.div.style.width = width + 'px';
+    if (this.chart) {
+        RGraph.Clear(this.chart.canvas);
+        this.chart.canvas.width = width;
+        this.chart.Draw();
+    }
+}
+
+HAP.Chart5.prototype.setHeight = function(height){
+    this.conf.display['height'] = height;
+    this.div.style.height = height + 'px';
+    if (this.chart) {
+        RGraph.Clear(this.chart.canvas);
+        this.chart.canvas.height = height;
+        this.chart.Draw();
+    }
+}
+
+HAP.Chart5.prototype.setX = function(x, viewPortCall){
+    this.conf.display['x'] = x;
+    if (!viewPortCall) {
+        this.div.style.left = x + 'px';
+    }
+}
+
+HAP.Chart5.prototype.setY = function(y, viewPortCall){
+    this.conf.display['y'] = y;
+    if (!viewPortCall) {
+        this.div.style.top = y + 'px';
+    }
+}
+
+HAP.Chart5.prototype.setRequest = function(value){
+}
+
+HAP.Chart5Image = function(conf){
+    this.conf = conf;
+    this.conf.imagePath = '/static/images/gui/';
+    var div = document.createElement('div');
+    div.id = this.conf.id;
+    div.style.height = this.conf.height + 'px';
+    div.style.width = this.conf.width + 'px';
+    div.style.top = this.conf.top + 'px';
+    div.style.left = this.conf.left + 'px';
+    div.style.textAlign = 'center';
+    div.style.position = 'absolute';
+    
+    var img = document.createElement('img');
+    img.src = this.conf.imagePath + 'Chart_60x60.png';
+    img.style.textAlign = 'center'; // required for d&d
+    div.appendChild(img);
+    
+    var textDiv = document.createElement('div');
+    textDiv.style.fontSize = '10px';
+    textDiv.style.textAlign = 'center'; // required for d&d
+    textDiv.innerHTML = this.conf.name;
+    div.appendChild(textDiv);
+    
+    return div;
+}
 /**
  * @author bendowski
  */
@@ -10884,10 +11815,15 @@ HAP.GUIPropertyGrid = function(confObj){
                 'change': clearOtherViews
             }
         })),
-        /* --- Chart/Flotr ----*/
+        /* --- Chart ----*/
         'Chart-Data': new Ext.grid.GridEditor(new HAP.GridChartObject({
             targetGrid: this.id,
             targetRowName: 'Chart-Data',
+            redimWrapper: false
+        })),
+        'Chart-Properties': new Ext.grid.GridEditor(new HAP.GridChart5Object({
+            targetGrid: this.id,
+            targetRowName: 'Chart-Properties',
             redimWrapper: false
         })),
         'backgroundColor': new Ext.grid.GridEditor(new HAP.GridColorField(this.id, 'Font-color', {
@@ -10904,17 +11840,25 @@ HAP.GUIPropertyGrid = function(confObj){
         })),
         'labelBackgroundColor': new Ext.grid.GridEditor(new HAP.GridColorField(this.id, 'Font-color', {
             showHexValue: true
+        })),
+        'Chart-Type': new Ext.grid.GridEditor(new HAP.GridComboChartType({
+            id: 'gridComboChartType'
         }))
-    
     };
     this.source = {};
     HAP.GUIPropertyGrid.superclass.constructor.call(this);
     
     //this.store.sortInfo = null; // this little fu** statement avoids sorting
-    var oThis = this;
-    this.on('propertychange', function(){
-        if (oThis.getCurrentFigure()) {
-            oThis.getCurrentFigure().setGUIObjectConfig();
+    
+    this.on('propertychange', function(prop , b){
+        if (Ext.getCmp('guiPropertyGrid').getCurrentFigure()) {
+          Ext.getCmp('guiPropertyGrid').getCurrentFigure().setGUIObjectConfig();
+        }
+        if (Ext.getCmp('treeChartProp')) {
+          var node = Ext.getCmp('treeChartProp').getSelectionModel().getSelectedNode();
+          if (node && prop.Description) {
+            node.setText(prop.Description);
+          }
         }
     });
     
