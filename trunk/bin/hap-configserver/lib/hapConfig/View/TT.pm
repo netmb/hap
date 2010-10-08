@@ -11,8 +11,6 @@ __PACKAGE__->config(
       hapConfig->path_to( 'root', 'lib' )
     ],
     PRE_PROCESS => 'config/main',
-    ## Ben Remove Wrapper headers
-    ##WRAPPER     => 'site/wrapper',
     ERROR       => 'error.tt2',         
     TIMER       => 0
   }
