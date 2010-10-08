@@ -200,46 +200,46 @@ sub refresh : Local {
   my $jsonData = JSON::XS->new->utf8(0)->decode( $c->request->params->{data} );
   foreach (@$jsonData) {
     my $o = $_;
-    if ( $o->{type} eq "HAP.Chart5" ) {
-
-#      my $rc =
-#        $c->model('hapModel::GuiObjects')->search( { id => $o->{id} } )->first;
-#      my $displayObject = JSON::XS->new->utf8(0)->decode( $rc->configobject );
-#      my $chartObj      = $displayObject->{'chart'};
-#      foreach ( @{ $chartObj->{'elements'} } ) {
-#        my $element = $_;
-#        my @rcdata  = $c->model('hapModel::Status')->search(
-#          {
-#            ts => { '>', ( time() - $o->{startOffset} * 60 ) },
-#            module  => $element->{'HAP-Module'},
-#            address => $element->{'HAP-Device'}
-#          },
-#          { order_by => 'TS ASC' }
-#        )->all;
-#        my ( @labels, @values );
-#        foreach (@rcdata) {
-#          my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
-#            localtime( $_->ts );
-#          $hour = sprintf( "%02d", $hour );
-#          $min  = sprintf( "%02d", $min );
-#          if ( $chartObj->{'x_axis_labels'}->{'show_date'} ) {
-#            $mday = sprintf( "%02d", $mday );
-#            $mon  = sprintf( "%02d", $mon );
-#            $year = $year + 1900;
-#            push @labels, "$mday.$mon.$year $hour:$min";
-#          }
-#          else {
-#            push @labels, "$hour:$min";
-#          }
-#          $element->{'Scale'} = 1 if ( !$element->{'Scale'} );
-#          push @values, $_->status * $element->{'Scale'};
-#        }
-#        $chartObj->{'x_axis_labels'}->{'labels'} = \@labels;
-#        $chartObj->{'x_axis'}->{'labels'}        = $chartObj->{'x_axis_labels'};
-#        $chartObj->{'x_axis_labels'}             = undef;
-#        $element->{values}                       = \@values;
-#      }
-
+    if ( $o->{type} eq "HAP.Chart"  ) {
+      my $rc =
+        $c->model('hapModel::GuiObjects')->search( { id => $o->{id} } )->first;
+      my $displayObject = JSON::XS->new->utf8(0)->decode( $rc->configobject );
+      my $chartObj      = $displayObject->{'chart'};
+      foreach ( @{ $chartObj->{'elements'} } ) {
+        my $element = $_;
+        my @rcdata  = $c->model('hapModel::Status')->search(
+          {
+            ts => { '>', ( time() - $o->{startOffset} * 60 ) },
+            module  => $element->{'HAP-Module'},
+            address => $element->{'HAP-Device'}
+          },
+          { order_by => 'TS ASC' }
+        )->all;
+        my ( @labels, @values );
+        foreach (@rcdata) {
+          my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
+            localtime( $_->ts );
+          $hour = sprintf( "%02d", $hour );
+          $min  = sprintf( "%02d", $min );
+          if ( $chartObj->{'x_axis_labels'}->{'show_date'} ) {
+            $mday = sprintf( "%02d", $mday );
+            $mon  = sprintf( "%02d", $mon );
+            $year = $year + 1900;
+            push @labels, "$mday.$mon.$year $hour:$min";
+          }
+          else {
+            push @labels, "$hour:$min";
+          }
+          $element->{'Scale'} = 1 if ( !$element->{'Scale'} );
+          push @values, $_->status * $element->{'Scale'};
+        }
+        $chartObj->{'x_axis_labels'}->{'labels'} = \@labels;
+        $chartObj->{'x_axis'}->{'labels'}        = $chartObj->{'x_axis_labels'};
+        $chartObj->{'x_axis_labels'}             = undef;
+        $element->{values}                       = \@values;
+      }
+    }
+    elsif ( $o->{type} eq "HAP.Chart5" ) {
       push @data,
         {
         id    => $o->{id},
@@ -269,45 +269,6 @@ sub refresh : Local {
   $c->forward('View::JSON');
 }
 
-#sub getChartData1 : Local {
-#  my ( $self, $c ) = @_;
-#  my @labelsAll;
-#  my @valuesAll;
-#  my $jsonData = JSON::XS->new->utf8(0)->decode( $c->request->params->{data} );
-#  my $startOffset = $c->request->params->{startOffset};
-#  foreach (@$jsonData) {
-#    my $o      = $_;
-#    my @rcdata = $c->model('hapModel::Status')->search(
-#      {
-#        ts => { '>', ( time() - $startOffset * 60 ) },
-#        module  => $o->{'HAP-Module'},
-#        address => $o->{'HAP-Device'}
-#      },
-#      { order_by => 'TS ASC' }
-#    )->all;
-#    my @labels;
-#    my @values;
-#    foreach (@rcdata) {
-#      my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
-#        localtime( $_->ts );
-#      $hour = sprintf( "%02d", $hour );
-#      $min  = sprintf( "%02d", $min );
-#      push @labels, "$hour:$min";
-#      push @values, $_->status;
-#    }
-#    push @labelsAll, \@labels;
-#    push @valuesAll, \@values;
-#  }
-#  $c->stash->{success} = \1;
-#  $c->stash->{data} = { labels => \@labelsAll, values => \@valuesAll };
-#  $c->forward('View::JSON');
-#}
-
-sub access_denied : Private {
-  my ( $self, $c ) = @_;
-  $c->response->redirect( $c->uri_for('/login') );
-}
-
 sub getChartData : Local {
   my ( $self, $c ) = @_;
   my $jsonData = JSON::XS->new->utf8(0)->decode( $c->request->params->{data} );
@@ -317,7 +278,45 @@ sub getChartData : Local {
   }
 
   my $startOffset = $c->request->params->{startOffset};
-  my $xSkip = $c->request->params->{xSkip} || 1;
+  my $xSkip       = $c->request->params->{xSkip} || 1;
+  my $type        = $c->request->params->{type};
+
+  if ( $type eq "HProgress"
+    or $type eq "VProgress"
+    or $type eq "Odometer"
+    or $type eq "Meter" )
+  {
+    my $max   = 100;
+    my $value = 1;
+    my $start = 0;
+    my $end   = 10;
+    my $min   = 0;
+    foreach (@$jsonData) {
+      my $o      = $_;
+      my $rcdata = $c->model('hapModel::Status')->search(
+        {
+          ts => { '>', ( time() - $startOffset * 60 ) },
+          module  => $o->{'HAP-Module'},
+          address => $o->{'HAP-Device'}
+        },
+        { order_by => 'TS DESC' }
+      );
+      $min   = $rcdata->get_column('Status')->min   || 0;
+      $max   = $rcdata->get_column('Status')->max   || 100;
+      $start = $rcdata->get_column('Status')->min   || 0;
+      $end   = $rcdata->get_column('Status')->max   || 100;
+      $value = $rcdata->get_column('Status')->first || 1;
+    }
+    $c->stash->{success} = \1;
+    $c->stash->{data}    = {
+      min   => $min,
+      max   => $max,
+      start => $start,
+      end   => $end,
+      value => [$value]
+    };
+    $c->detach('View::JSON');
+  }
 
   # build search
   my @ors;
@@ -394,6 +393,11 @@ sub getChartData : Local {
   $c->stash->{success} = \1;
   $c->stash->{data} = { labels => \@tStamps, values => \@values };
   $c->forward('View::JSON');
+}
+
+sub access_denied : Private {
+  my ( $self, $c ) = @_;
+  $c->response->redirect( $c->uri_for('/login') );
 }
 
 =head1 AUTHOR
