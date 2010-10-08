@@ -407,14 +407,14 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.title.hpos': null,
                 'chart.title.vpos': null,
                 'chart.title.color': 'black',
-                'chart.green.start': ((this.max - this.min) * 0.35) + this.min,
-                'chart.green.end': this.max,
+                'chart.green.start': 0,
+                'chart.green.end': 33,
                 'chart.green.color': '#207A20',
-                'chart.yellow.start': ((this.max - this.min) * 0.1) + this.min,
-                'chart.yellow.end': ((this.max - this.min) * 0.35) + this.min,
+                'chart.yellow.start': 33,
+                'chart.yellow.end': 66,
                 'chart.yellow.color': '#D0AC41',
-                'chart.red.start': this.min,
-                'chart.red.end': ((this.max - this.min) * 0.1) + this.min,
+                'chart.red.start': 66,
+                'chart.red.end': 100,
                 'chart.red.color': '#9E1E1E',
                 'chart.units.pre': '',
                 'chart.units.post': '',
@@ -439,10 +439,10 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.shadow.blur': 3,
                 'chart.shadow.offsetx': 3,
                 'chart.shadow.offsety': 3,
-                'chart.reszable': false
+                'chart.resizable': false
             },
             'Odometer': {
-                'chart.value.text': false,
+                'chart.value.text': true,
                 'chart.needle.color': 'black',
                 'chart.needle.width': 2,
                 'chart.needle.head': true,
@@ -452,8 +452,8 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.text.size': 10,
                 'chart.text.color': 'black',
                 'chart.text.font': 'Verdana',
-                'chart.green.max': this.end * 0.75,
-                'chart.red.min': this.end * 0.9,
+                'chart.green.max': 30,
+                'chart.red.min': 50,
                 'chart.green.color': 'green',
                 'chart.yellow.color': 'yellow',
                 'chart.red.color': 'red',
@@ -547,6 +547,21 @@ HAP.Chart5.prototype.setConfig = function(conf, viewPortCall){
         this.chart.canvas.width = this.conf.display['width'];
         this.chart.canvas.height = this.conf.display['height'];
         
+        
+        // Prevent Javascript-failure
+        if (type == 'HProgress' || type == 'VProgress') 
+            this.chart.max = 100;
+        if (type == 'Meter') {
+            this.chart.min = 0;
+            this.chart.max = 100;
+            this.chart.value = 0;
+        }
+        if (type == 'Odometer') {
+            this.chart.start = 0;
+            this.chart.end = 100;
+            this.chart.value = 0;
+        }
+        
         // To optimize : set properties directly not via loop !
         for (var prop in this.conf.display.chart[type]) {
             var val = this.conf.display.chart[type][prop];
@@ -606,7 +621,12 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
         if (!data) { //some dummy data
             data = {
                 labels: ['a', 'b', 'c'],
-                values: [[1, 2, 3]]
+                values: [[1, 2, 3]],
+                min: 0,
+                max: 100,
+                start: 0,
+                end: 100,
+                value: 1
             };
         }
         RGraph.Clear(oThis.chart.canvas);
@@ -621,6 +641,24 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
                 break;
             case 'HBar':
                 oThis.chart.data = data.values;
+                break;
+            case 'HProgress':
+                oThis.chart.value = data.value;
+                oThis.chart.max = data.max;
+                break;
+            case 'VProgress':
+                oThis.chart.value = data.value;
+                oThis.chart.max = data.max;
+                break;
+            case 'Odometer':
+                oThis.chart.start = data.start;
+                oThis.chart.end = data.end;
+                oThis.chart.value = data.value;
+                break;
+            case 'Meter':
+                oThis.chart.min = data.min;
+                oThis.chart.max = data.max;
+                oThis.chart.value = data.value;
                 break;
         }
         oThis.chart.Draw();
