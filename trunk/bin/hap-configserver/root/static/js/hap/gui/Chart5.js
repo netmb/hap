@@ -631,14 +631,7 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
         }
         RGraph.Clear(oThis.chart.canvas);
         oThis.chart.Set('chart.labels', data.labels);
-<<<<<<< .mine
-        if (data.values.length == 1) 
-            oThis.chart.Set('chart.tooltips', data.values[0]);
-        else 
-            oThis.chart.Set('chart.tooltips', data.values);
-=======
         
->>>>>>> .r27
         switch (oThis.conf.display['Chart-Type']) {
             case 'Line':
                 oThis.chart.original_data = data.values;
