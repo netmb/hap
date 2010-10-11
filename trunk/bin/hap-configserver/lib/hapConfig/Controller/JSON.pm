@@ -270,6 +270,22 @@ sub getAllDevices : Local {
   $c->forward('View::JSON');
 }
 
+sub getAllTriggerDevices : Local {
+  my ( $self, $c, $mId ) = @_;
+  my @devices;
+  my @tmp =
+    map { { 'address' => $_->address, 'name' => $_->name } }
+    $c->model('hapModel::AnalogInput')->search( { config => $c->session->{config}, module => $mId }, { order_by => 'Name ASC' } )->all;
+  push @devices, @tmp;
+  @tmp =
+    map { { 'address' => $_->address, 'name' => $_->name } }
+    $c->model('hapModel::DigitalInput')->search( { config => $c->session->{config}, module => $mId }, { order_by => 'Name ASC' } )->all;
+  push @devices, @tmp;
+  $c->stash->{devices} = \@devices;
+  $c->forward('View::JSON');
+}
+
+
 sub getMacros : Local {
   my ( $self, $c ) = @_;
   $c->stash->{macros} =

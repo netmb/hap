@@ -1,20 +1,22 @@
 /**
  * @author bendowski
  */
-HAP.Macro = function(config, viewPortCall){
+HAP.Trigger = function(config, viewPortCall){
     this.conf = {};
     this.conf.id = 0;
-    this.conf.type = 'HAP.Macro';
+    this.conf.type = 'HAP.Trigger';
     this.conf.imagePath = '/static/images/gui/';
     this.conf.display = {
-        'HAP-Macro': 0,
+        'HAP-Module': 0,
+        'HAP-TriggerDevices': 0,
+        'Trigger': 0,
         x: 0,
         y: 0,
         height: 60,
         width: 60,
-        'On-Image': this.conf.imagePath + 'btnMacroOn.png',
-        'Off-Image': this.conf.imagePath + 'btnMacroOff.png',
-        'Transition-Image': this.conf.imagePath + 'btnMacroTransition.png',
+        'On-Image': this.conf.imagePath + 'btnTriggerOn.png',
+        'Off-Image': this.conf.imagePath + 'btnTriggerOff.png',
+        'Transition-Image': this.conf.imagePath + 'btnTriggerTransition.png',
         'z-Index': 2,
         'Show status text': false,
         'Font-family': 'sans-serif',
@@ -23,9 +25,7 @@ HAP.Macro = function(config, viewPortCall){
         'Font-color': '000000',
         'Value-Suffix': '%',
         'Update Interval (s)': 3600,
-        'Value': 0,
-        'Off-Value': 0,
-        'On-Value': 100
+        'Value': 0
     };
     this.conf = apply(this.conf, config);
     this.value = this.conf.display['Value'];
@@ -34,7 +34,7 @@ HAP.Macro = function(config, viewPortCall){
     return this;
 }
 
-HAP.Macro.prototype.create = function(conf){
+HAP.Trigger.prototype.create = function(conf){
     this.div = document.createElement('div');
     this.img = document.createElement('img');
     this.stat = document.createElement('div');
@@ -45,7 +45,7 @@ HAP.Macro.prototype.create = function(conf){
     return this.div;
 }
 
-HAP.Macro.prototype.setConfig = function(conf, viewPortCall){
+HAP.Trigger.prototype.setConfig = function(conf, viewPortCall){
     this.conf = conf;
     this.div.style.position = 'absolute';
     this.div.style.width = this.conf.display['width'] + 'px';
@@ -100,13 +100,13 @@ HAP.Macro.prototype.setConfig = function(conf, viewPortCall){
 }
 
 
-HAP.Macro.prototype.attachEvent = function(event, handler, viewPortCall){
+HAP.Trigger.prototype.attachEvent = function(event, handler, viewPortCall){
     if (!viewPortCall && event == 'onclick') {
         this.layer.onclick = handler;
     }
 }
 
-HAP.Macro.prototype.setWidth = function(width){
+HAP.Trigger.prototype.setWidth = function(width){
     this.conf.display['width'] = width;
     this.div.style.width = width + 'px';
     this.img.style.width = width + 'px';
@@ -114,7 +114,7 @@ HAP.Macro.prototype.setWidth = function(width){
     this.layer.style.width = width + 'px';
 }
 
-HAP.Macro.prototype.setHeight = function(height){
+HAP.Trigger.prototype.setHeight = function(height){
     this.conf.display['height'] = height;
     this.div.style.height = height + 'px';
     this.img.style.height = height + 'px';
@@ -123,37 +123,37 @@ HAP.Macro.prototype.setHeight = function(height){
     this.layer.style.height = height + 'px';
 }
 
-HAP.Macro.prototype.setX = function(x, viewPortCall){
+HAP.Trigger.prototype.setX = function(x, viewPortCall){
     this.conf.display['x'] = x;
     if (!viewPortCall) {
         this.div.style.left = x + 'px';
     }
 }
 
-HAP.Macro.prototype.setY = function(y, viewPortCall){
+HAP.Trigger.prototype.setY = function(y, viewPortCall){
     this.conf.display['y'] = y;
     if (!viewPortCall) {
         this.div.style.top = y + 'px';
     }
 }
 
-HAP.Macro.prototype.setImage = function(img){
+HAP.Trigger.prototype.setImage = function(img){
     this.img.src = img;
 }
 
-HAP.Macro.prototype.setFontSize = function(size){
+HAP.Trigger.prototype.setFontSize = function(size){
     this.stat.style.fontSize = size + 'px';
 }
 
-HAP.Macro.prototype.setFontWeight = function(weight){
+HAP.Trigger.prototype.setFontWeight = function(weight){
     this.stat.style.fontWeight = weight;
 }
 
-HAP.Macro.prototype.setFontColor = function(color){
+HAP.Trigger.prototype.setFontColor = function(color){
     this.stat.style.color = color;
 }
 
-HAP.Macro.prototype.showStatusText = function(show){
+HAP.Trigger.prototype.showStatusText = function(show){
     if (show) {
         this.stat.style.display = 'block';
     }
@@ -162,12 +162,12 @@ HAP.Macro.prototype.showStatusText = function(show){
     }
 }
 
-HAP.Macro.prototype.setRequest = function(value){
+HAP.Trigger.prototype.setRequest = function(value){
     if (this.conf.display['Transition-Image']) {
         this.img.src = this.conf.display['Transition-Image'];
     }
     var oThis = this;
-    YAHOO.util.Connect.asyncRequest('get', '/gui/executeMacro/' + this.conf.display['HAP-Macro'], {
+    YAHOO.util.Connect.asyncRequest('get', '/gui/modifyTrigger/' + this.conf.display['HAP-Module'] + '/' + this.conf.display['HAP-TriggerDevices'] + '/'+ this.conf.display['Trigger'] + '/' + this.conf.display['Value'], {
         success: function(o){
             if (YAHOO.lang.JSON.isValid(o.responseText)) {
                 var response = YAHOO.lang.JSON.parse(o.responseText);
@@ -182,7 +182,7 @@ HAP.Macro.prototype.setRequest = function(value){
     });
 }
 
-HAP.Macro.prototype.setValue = function(value){
+HAP.Trigger.prototype.setValue = function(value){
     if (value > 0) {
         this.img.src = this.conf.display['On-Image'];
     }
@@ -194,7 +194,7 @@ HAP.Macro.prototype.setValue = function(value){
     return;
 }
 
-HAP.MacroImage = function(conf){
+HAP.TriggerImage = function(conf){
     this.conf = conf;
     this.conf.imagePath = '/static/images/gui/';
     var div = document.createElement('div');
@@ -207,7 +207,7 @@ HAP.MacroImage = function(conf){
     div.style.position = 'absolute';
     
     var img = document.createElement('img');
-    img.src = this.conf.imagePath + 'Macro_60x60.png';
+    img.src = this.conf.imagePath + 'Trigger_60x60.png';
     img.style.textAlign = 'center'; // required for d&d
     div.appendChild(img);
     

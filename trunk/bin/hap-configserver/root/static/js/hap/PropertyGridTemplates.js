@@ -148,7 +148,12 @@ HAP.GridComboModules = function(confObj){
     this.allowBlank = false;
     HAP.GridComboModules.superclass.constructor.call(this);
     this.on('select', function(){
-        Ext.getCmp('gridComboDevices').loadDevices(this.value);
+        var devCombo = Ext.getCmp('gridComboDevices');
+        var triggerCombo = Ext.getCmp('gridComboTriggerDevices');
+        if (devCombo)
+          devCombo.loadDevices(this.value);
+        if (triggerCombo)
+          triggerCombo.loadDevices(this.value);
     });
 }
 
@@ -172,6 +177,29 @@ Ext.extend(HAP.GridComboDevices, Ext.form.ComboBox, {
     loadDevices: function(mId){
         this.store.proxy = new Ext.data.HttpProxy({
             url: '/json/getAllDevices/' + mId
+        });
+        this.store.load();
+    }
+});
+
+HAP.GridComboTriggerDevices = function(confObj){
+    this.id = confObj.id;
+    this.store = storeAllTriggerDevices;
+    this.valueField = 'address';
+    this.displayField = 'name';
+    this.typeAhead = true;
+    this.mode = 'local';
+    this.triggerAction = 'all';
+    this.emptyText = 'Select a device...';
+    this.selectOnFocus = true;
+    this.editable = false;
+    HAP.GridComboTriggerDevices.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.GridComboTriggerDevices, Ext.form.ComboBox, {
+    loadDevices: function(mId){
+        this.store.proxy = new Ext.data.HttpProxy({
+            url: '/json/getAllTriggerDevices/' + mId
         });
         this.store.load();
     }
