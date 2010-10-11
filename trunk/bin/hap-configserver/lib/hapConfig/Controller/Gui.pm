@@ -153,7 +153,7 @@ sub executeMacro : Local {
     $sock->autoflush(1);
 
     $sock->close();
-    if ( $data =~ /.*value\s*(\d+).*/ ) {
+    if ( $data =~ /\[ACK\].*/ ) {
       $c->stash->{success} = \1;
       $c->stash->{data} = { value => $1 };
     }
