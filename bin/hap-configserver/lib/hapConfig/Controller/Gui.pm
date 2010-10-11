@@ -164,6 +164,44 @@ sub executeMacro : Local {
   $c->forward('View::JSON');
 }
 
+sub modifyTrigger : Local {
+  my ( $self, $c, $module, $device, $trigger, $value ) = @_;
+  my $data;
+  my $triggerVal = ( $value * 16 & 0xFF ) | ( ( ( $value * 16 >> 8 ) & 0xFF ) << 8 );
+  my $sock = new IO::Socket::INET(
+    PeerAddr => $c->config->{MessageProcessor}->{Host},
+    PeerPort => $c->config->{MessageProcessor}->{Port},
+    Proto    => 'tcp'
+  );
+  eval {
+    local $SIG{ALRM} = sub { die 'Alarm'; };
+    alarm 2;
+    $data = <$sock>;    # Welcome ?
+    alarm 0;
+  };
+  if ($@) {
+    $c->stash->{success} = \0;
+    $c->stash->{info}    = "Cant connect to the MessageProcessor.";
+  }
+  else {
+    print $sock "destination "
+      . $c->config->{hap}->getModuleAddress($module)
+      . " digital-input-device $device trigger $trigger value $triggerVal\n";
+
+    $data = <$sock>;
+    $sock->autoflush(1);
+
+    $sock->close();
+    if ( $data =~ /\[ACK\].*/ ) {
+      $c->stash->{success} = \1;
+      $c->stash->{data} = { value => $value };
+    }
+    else {
+      $c->stash->{success} = \0;
+    }
+  }
+  $c->forward('View::JSON');
+}
 
 sub queryDevice : Local {
   my ( $self, $c, $module, $device ) = @_;

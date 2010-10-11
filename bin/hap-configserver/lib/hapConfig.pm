@@ -51,7 +51,8 @@ my $hap = new HAP::Init();
 __PACKAGE__->config(
   name                   => 'hapConfig',
   'Plugin::ConfigLoader' => { file => $hap->{'BasePath'} . "/etc/hap.yml" },
-  hap                    => $hap
+  hap          => $hap,
+  default_view => 'index'
 );
 __PACKAGE__->config->{static}->{include_path} = [
   __PACKAGE__->config->{root}, __PACKAGE__->config->{root} . '/static',

@@ -230,6 +230,19 @@ var storeAllDevices = new Ext.data.Store({
     }])
 });
 
+var storeAllTriggerDevices = new Ext.data.Store({
+    url: '/json/getAllTriggerDevices',
+    reader: new Ext.data.JsonReader({
+        root: 'devices'
+    }, [{
+        name: 'name'
+    }, {
+        name: 'address'
+    }, {
+        name: 'module'
+    }])
+});
+
 var storeLogicalInputs = new Ext.data.Store({
     url: '/json/getLogicalInputs',
     reader: new Ext.data.JsonReader({
