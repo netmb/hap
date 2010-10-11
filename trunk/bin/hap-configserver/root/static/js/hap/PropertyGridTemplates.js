@@ -177,6 +177,25 @@ Ext.extend(HAP.GridComboDevices, Ext.form.ComboBox, {
     }
 });
 
+HAP.GridComboMacros = function(confObj){
+    this.id = confObj.id;
+    this.store = storeMacros;
+    this.valueField = 'id';
+    this.displayField = 'name';
+    this.hiddenName = 'makro';
+    this.typeAhead = true;
+    this.mode = 'local';
+    this.triggerAction = 'all';
+    this.emptyText = 'Select a macro...';
+    this.forceSelection = true;
+    this.selectOnFocus = true;
+    this.editable = false;
+    this.allowBlank = false;
+    HAP.GridComboMacros.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.GridComboMacros, Ext.form.ComboBox, {});
+
 HAP.GridComboTimeBase = function(confObj){
     this.id = confObj.id;
     this.store = storeTimeBase;

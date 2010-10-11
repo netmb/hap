@@ -154,6 +154,8 @@
         </script>
         <script type='text/javascript' src='./static/js/hap/gui/Switch.js'>
         </script>
+        <script type='text/javascript' src='./static/js/hap/gui/Macro.js'>
+        </script>
         <script type='text/javascript' src='./static/js/hap/gui/Slider.js'>
         </script>
         <script type='text/javascript' src='./static/js/hap/gui/ImageLayer.js'>
