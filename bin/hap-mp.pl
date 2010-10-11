@@ -28,7 +28,7 @@ my $json = new JSON::XS;
 $json = $json->allow_unknown(1);
 my $mroutine = new HAP::MessageRoutines();
 
-my $c      = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", SKIP_DB => 1 );
+my $c = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", SKIP_DB => 1 );
 my $parser = new HAP::Parser($c);
 
 my %mapping;
@@ -56,7 +56,8 @@ POE::Session->create(
         $_[KERNEL]->yield('serialSetup');
         $_[KERNEL]->yield('serialCheck');
       }
-      $_[KERNEL]->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Startup complete.' );
+      $_[KERNEL]
+        ->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Startup complete.' );
     },
     serialSetup             => \&serialSetup,
     serverCuIn              => \&serverCuIn,
@@ -93,8 +94,9 @@ if ( $c->{ServerCUConnection}->{Type} eq 'Network' ) {
     ConnectError  => \&tcpServerReconnect,
     Disconnected  => \&tcpServerReconnect,
     Connected     => sub {
-      print "Success. Connected to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port}\n";
-    },    
+      print
+"Success. Connected to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port}\n";
+    },
     ServerInput  => \&serverCuIn,
     InlineStates => {
       ServerOutput => sub {
@@ -118,7 +120,9 @@ sub serialSetup {
   my $i      = 0;
   while ( !$port || !$port->rts_active("YES") ) {
     print "Trying to open $c->{ServerCUConnection}->{Ports}[$i]\n";
-    $port = tie( *$handle, "Device::SerialPort", $c->{ServerCUConnection}->{Ports}[$i] );
+    $port =
+      tie( *$handle, "Device::SerialPort",
+      $c->{ServerCUConnection}->{Ports}[$i] );
     $i++;
     $i = 0 if ( $i >= scalar( @{ $c->{ServerCUConnection}->{Ports} } ) );
     select( undef, undef, undef, 0.5 );
@@ -148,29 +152,46 @@ sub serialSetup {
 sub serverCuIn {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
   if ( !$c->{Crypto} ) {
-    $data = $mroutine->decrypt( $data, $c->{CryptKey}, $c->{CryptOption} );    #$kernel->delay('serverCuOut'); # clear retransmit
+    $data =
+      $mroutine->decrypt( $data, $c->{CryptKey}, $c->{CryptOption} )
+      ;    #$kernel->delay('serverCuOut'); # clear retransmit
   }
   print &composeAnswer( "Serial in:", $data ) . "\n";
   if ( $data->{mtype} == 9 || $data->{mtype} == 16 ) {
-
-    #$kernel->post( 'main' => dbGetDeviceData => $data => $mapping{ $data->{destination} }->{c} || $c );
-    #$kernel->post( 'main' => dbGetDeviceData => $data );
     $kernel->post( 'main' => dbGetModuleId => $data );
   }
-  elsif ( $data->{mtype} == 123 ) {                                            # Timesync
+  elsif ( $data->{mtype} == 123 ) {    # Timesync
     $kernel->post( main => serverCuOut => $mroutine->getTime($data) );
     return;
   }
-  elsif ( $data->{mtype} == 24 ) {                                             # Makro
+  elsif ( $data->{mtype} == 24 ) {     # Makro
     $kernel->post( 'main' => dbGetMakro => $data );
   }
-  elsif ( $data->{mtype} == 77 && $data->{device} == 28 ) {                    # Firmware-Version
+  elsif ( $data->{mtype} == 77 && $data->{device} == 28 ) {   # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareId => $data );
   }
-  elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {                    # Firmware-Version
+  elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {   # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareOptions => $data );
   }
-  $kernel->post( $mapping{ $data->{destination} }->{session} => ClientOutput => $data );
+  # Special handling for loopback communication (Server himself is destination)
+  if ( $data->{destination} == $c->{CCUAddress} ) {
+    my $sData = {
+      vlan        => $data->{vlan},
+      source      => $c->{CCUAddress},
+      destination => $data->{source},
+      mtype       => $data->{mtype} + 1,
+      v0          => $data->{v0},
+      v1          => $data->{v1},
+      v2          => $data->{v2}
+    };
+    $kernel->post(
+      $mapping{ $data->{source} }->{session} => ClientOutput => $sData )
+      ;
+  }
+  else {
+    $kernel->post(
+      $mapping{ $data->{destination} }->{session} => ClientOutput => $data );
+  }
   return;
 }
 
@@ -194,7 +215,8 @@ sub serialCheck {
   my ( $kernel, $heap ) = @_[ KERNEL, HEAP ];
   if ( !$heap->{port}->rts_active("YES") ) {
     print "Detected Serial-Connection is lost.\n";
-    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Detected Serial-Connection lost.' );
+    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
+      'Detected Serial-Connection lost.' );
     $kernel->yield('serialSetup');
   }
   $kernel->delay_add( 'serialCheck', 60 );
@@ -205,11 +227,13 @@ sub serialCheck {
 ################################################################################
 
 sub dbGetModuleId {
-  my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
+  my ( $kernel, $heap, $session, $data ) =
+    @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
   $kernel->post(
     'database',
     'single' => {
-      sql     => "SELECT ID from module WHERE Config=$c->{DefaultConfig} AND Address=$data->{source}",
+      sql =>
+"SELECT ID from module WHERE Config=$c->{DefaultConfig} AND Address=$data->{source}",
       hapData => $data,
       event   => 'dbGetDeviceData',
     },
@@ -218,7 +242,8 @@ sub dbGetModuleId {
 }
 
 sub dbGetDeviceData {
-  my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
+  my ( $kernel, $heap, $session, $data ) =
+    @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
   if ( $data->{result} ) {
     my $module = $data->{result};
     my $device = $data->{hapData}->{device};
@@ -245,8 +270,11 @@ sub dbUpdateStatus {
   my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
   foreach ( @{ $data->{result} } ) {
     my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
-    if ( $data->{hapData}->{mtype} == 16 && ( $_->{'Type'} == 32 || $_->{'Type'} == 40 )) {
-#   Trigger der Analog- u. Digitaleingänge nicht als Status speichern
+    if ( $data->{hapData}->{mtype} == 16
+      && ( $_->{'Type'} == 32 || $_->{'Type'} == 40 ) )
+    {
+
+      #   Trigger der Analog- u. Digitaleingänge nicht als Status speichern
     }
     else {
       if ( $_->{'Formula'} ) {
@@ -257,12 +285,18 @@ sub dbUpdateStatus {
       $kernel->post(
         'database',
         insert => {
-          sql          => 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
-          placeholders => [ time(), $_->{'Type'}, $data->{dbModuleId}, $data->{hapData}->{device}, $status, $c->{DefaultConfig} ],
-          event        => '',
+          sql =>
+'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
+          placeholders => [
+            time(),              $_->{'Type'},
+            $data->{dbModuleId}, $data->{hapData}->{device},
+            $status,             $c->{DefaultConfig}
+          ],
+          event => '',
         }
       );
-      $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "$_->{Name} Status $status" );
+      $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
+        "$_->{Name} Status $status" );
     }
   }
 }
@@ -272,7 +306,8 @@ sub dbGetFirmwareId {
   $kernel->post(
     'database',
     'arrayhash' => {
-      sql      => "SELECT ID FROM firmware WHERE VMajor = $data->{v0} AND VMinor = $data->{v1} AND VPhase = $data->{v2}",
+      sql =>
+"SELECT ID FROM firmware WHERE VMajor = $data->{v0} AND VMinor = $data->{v1} AND VPhase = $data->{v2}",
       datagram => $data,
       event    => 'dbUpdateFirmwareVersion',
     },
@@ -285,9 +320,13 @@ sub dbUpdateFirmwareVersion {
     $kernel->post(
       'database',
       do => {
-        sql          => 'UPDATE module SET FirmwareVersion = ?, CurrentFirmwareID = ? WHERE Address = ? AND Config = ?',
-        placeholders =>
-          [ "$data->{datagram}->{v0}.$data->{datagram}->{v1}.$data->{datagram}->{v1}", $_->{ID}, $data->{datagram}->{source}, $c->{DefaultConfig} ],
+        sql =>
+'UPDATE module SET FirmwareVersion = ?, CurrentFirmwareID = ? WHERE Address = ? AND Config = ?',
+        placeholders => [
+"$data->{datagram}->{v0}.$data->{datagram}->{v1}.$data->{datagram}->{v1}",
+          $_->{ID}, $data->{datagram}->{source},
+          $c->{DefaultConfig}
+        ],
         event => '',
       }
     );
@@ -299,7 +338,8 @@ sub dbGetFirmwareOptions {
   $kernel->post(
     'database',
     'arrayhash' => {
-      sql      => "SELECT CurrentFirmwareOptions FROM module WHERE Address = $data->{source}  AND Config = $c->{DefaultConfig}",
+      sql =>
+"SELECT CurrentFirmwareOptions FROM module WHERE Address = $data->{source}  AND Config = $c->{DefaultConfig}",
       datagram => $data,
       event    => 'dbUpdateFirmwareOptions',
     },
@@ -312,9 +352,14 @@ sub dbUpdateFirmwareOptions {
     $kernel->post(
       'database',
       do => {
-        sql          => 'UPDATE module SET CurrentFirmwareOptions = ? WHERE Address = ? AND Config = ?',
-        placeholders =>
-          [ $_->{CurrentFirmwareOptions} | ( $data->{datagram}->{v1} << ( 8 * $data->{datagram}->{v0} ) ), $data->{datagram}->{source}, $c->{DefaultConfig} ],
+        sql =>
+'UPDATE module SET CurrentFirmwareOptions = ? WHERE Address = ? AND Config = ?',
+        placeholders => [
+          $_->{CurrentFirmwareOptions} |
+            ( $data->{datagram}->{v1} << ( 8 * $data->{datagram}->{v0} ) ),
+          $data->{datagram}->{source},
+          $c->{DefaultConfig}
+        ],
         event => '',
       }
     );
@@ -327,20 +372,27 @@ sub dbGetMakro {
   $kernel->post(
     'database',
     'arrayhash' => {
-      sql   => "SELECT Name, ID FROM makro WHERE MakroNr = $makroNr AND Config = $c->{DefaultConfig}",
+      sql =>
+"SELECT Name, ID FROM makro WHERE MakroNr = $makroNr AND Config = $c->{DefaultConfig}",
       event => 'executeMakroScript',
     },
   );
 }
 
 sub dbAddLogEntry {
-  my ( $kernel, $heap, $session, $pid, $source, $type, $message ) = @_[ KERNEL, HEAP, SESSION, ARG0, ARG1, ARG2, ARG3 ];
+  my ( $kernel, $heap, $session, $pid, $source, $type, $message ) =
+    @_[ KERNEL, HEAP, SESSION, ARG0, ARG1, ARG2, ARG3 ];
   my ( $sec, $min, $hour, $mday, $mon, $year ) = localtime(time);
-  my $time = sprintf( "%4d-%02d-%02d %02d:%02d:%02d ", $year + 1900, $mon + 1, $mday, $hour, $min, $sec );
+  my $time = sprintf(
+    "%4d-%02d-%02d %02d:%02d:%02d ",
+    $year + 1900,
+    $mon + 1, $mday, $hour, $min, $sec
+  );
   $kernel->post(
     'database',
     insert => {
-      sql          => 'INSERT INTO log (Time, PID, Source, Type, Message) VALUES (?,?,?,?,?)',
+      sql =>
+        'INSERT INTO log (Time, PID, Source, Type, Message) VALUES (?,?,?,?,?)',
       placeholders => [ $time, $pid, $source, $type, $message ],
       event        => '',
     }
@@ -395,7 +447,10 @@ sub tcpClientInput {
       return;
     }
     if ( defined( $cObj->{DefaultConfig} ) ) {
-      $c = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", CONFIG => $cObj->{DefaultConfig} );
+      $c = new HAP::Init(
+        FILE   => "$FindBin::Bin/../etc/hap.yml",
+        CONFIG => $cObj->{DefaultConfig}
+      );
       $parser = new HAP::Parser($c);
       print "Set Config to $cObj->{DefaultConfig}\n";
       $heap->{client}->put("[ACK] Set Config to $cObj->{DefaultConfig}");
@@ -430,7 +485,8 @@ sub tcpClientInput {
       }
       else {
         $heap->{MCastAddress} = $cObj->{MCastAddress};
-        $heap->{client}->put("[ACK] Set Multicast Addresses to $cObj->{MCastAddress}");
+        $heap->{client}
+          ->put("[ACK] Set Multicast Addresses to $cObj->{MCastAddress}");
       }
     }
     return;
@@ -441,32 +497,45 @@ sub tcpClientInput {
     return;
   }
 
-  my ( $error, $dgram ) = $parser->parse( $data, $heap->{'SessionSource'} );    # command line parsing
+  my ( $error, $dgram ) =
+    $parser->parse( $data, $heap->{'SessionSource'} );    # command line parsing
   if ($error) {
     $heap->{client}->put($error);
   }
   else {
-    $heap->{predictions} = $mroutine->getPrediction( $dgram, $heap->{MCastGroup} );
-    if ( $dgram->{mtype} != 60 ) {                                              # raw-data
-      $kernel->delay_add( 'ClientOutput', $mroutine->getTimeout($dgram), "[ERR] No Answer." );
+    $heap->{predictions} =
+      $mroutine->getPrediction( $dgram, $heap->{MCastGroup} );
+    if ( $dgram->{mtype} != 60 ) {                        # raw-data
+      $kernel->delay_add(
+        'ClientOutput',
+        $mroutine->getTimeout($dgram),
+        "[ERR] No Answer."
+      );
     }
-    $kernel->post( main => serverCuOut => $dgram );
+    # Message for server 
+    if ( $dgram->{destination} == $c->{CCUAddress} ) {
+      $kernel->post( main => serverCuIn => $dgram );
+    }
+    else {
+      $kernel->post( main => serverCuOut => $dgram );
+    }
   }
 }
 
 sub tcpClientOutput {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-  if ( ref($data) ) {                                                           # looks like an datagram-object
-    my $compareResult = $mroutine->compare( $heap->{predictions}, $data, $heap->{MCastGroup} );
-    if ( $compareResult == 1 ) {                                                # we're fine
-      $kernel->delay('ClientOutput');                                           # clear delay
+  if ( ref($data) ) {    # looks like an datagram-object
+    my $compareResult =
+      $mroutine->compare( $heap->{predictions}, $data, $heap->{MCastGroup} );
+    if ( $compareResult == 1 ) {    # we're fine
+      $kernel->delay('ClientOutput');    # clear delay
       $heap->{client}->put( $parser->reverseParse($data) );
 
       #$heap->{client}->put( &composeAnswer("[ACK]", $data) );
     }
     elsif ( $compareResult == 3 ) {
-      $kernel->delay('ClientOutput');                                           # clear delay
-                                                                                #$heap->{client}->put( &composeAnswer( "[ACK]", $data ) );
+      $kernel->delay('ClientOutput');    # clear delay
+          #$heap->{client}->put( &composeAnswer( "[ACK]", $data ) );
       $data->{source} = $heap->{MCastAddress} || $data->{source};
 
       $heap->{client}->put( &composeAnswer( "[ACK]", $data ) );
@@ -474,17 +543,17 @@ sub tcpClientOutput {
       #$heap->{client}->put( $parser->reverseParse($data) );
     }
     elsif ( $compareResult == 4 ) {
-      $kernel->delay('ClientOutput');                                           # clear delay
+      $kernel->delay('ClientOutput');    # clear delay
       $data->{source} = $heap->{MCastAddress} || $data->{source};
       $heap->{client}->put( &composeAnswer( "[ERR]", $data ) );
     }
     elsif ( $compareResult == 0 ) {
-      $kernel->delay('ClientOutput');                                           # clear delay
+      $kernel->delay('ClientOutput');    # clear delay
       $heap->{client}->put( &composeAnswer( "[ERR Prediction]", $data ) );
     }
   }
   else {
-    if ( $heap->{client} ) {                                                    # if client closes to fast, this one gets undefined
+    if ( $heap->{client} ) { # if client closes to fast, this one gets undefined
       $heap->{client}->put($data);
     }
     else {
@@ -500,8 +569,10 @@ sub tcpClientOutput {
 
 sub tcpServerReconnect {
   my ( $kernel, $heap ) = @_[ KERNEL, HEAP ];
-  print "Connection to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port} lost. Trying reconnect...\n";
-  $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Detected ServerCU-Connection lost.' );
+  print
+"Connection to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port} lost. Trying reconnect...\n";
+  $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
+    'Detected ServerCU-Connection lost.' );
   $kernel->delay( reconnect => 2 );
 }
 
