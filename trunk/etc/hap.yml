@@ -20,11 +20,11 @@ AVRPath: '/usr/local/avr'
 AVRBinPath: '/usr/local/avr/bin'
 MacroPath: '/opt/hap/var/macro'
 LogFile: '/var/log/hap.log'
-CCUAddress: 123
+CCUAddress: 1
 ServerCU: 124
 ServerCUConnection: 
   Type: 'Network'
-  Host: 192.168.165.1
+  Host: 127.0.0.1
   Port: 4567
 #ServerCUConnection:
 #  Type: 'Serial'
