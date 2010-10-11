@@ -155,7 +155,7 @@ sub executeMacro : Local {
     $sock->close();
     if ( $data =~ /\[ACK\].*/ ) {
       $c->stash->{success} = \1;
-      $c->stash->{data} = { value => $1 };
+      $c->stash->{data} = { value => 100 };
     }
     else {
       $c->stash->{success} = \0;
