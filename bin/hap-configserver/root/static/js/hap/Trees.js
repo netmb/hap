@@ -521,7 +521,7 @@ HAP.TreeContextMenu = function(){
         handler: function(){
             var target = this.node.id;
             if (target.split('/')[1] == 0) {
-                this.node.fireEvent('click', this.node, e);
+                this.node.fireEvent('click', this.node);
             }
             else {
                 var tmpNode = this.node;

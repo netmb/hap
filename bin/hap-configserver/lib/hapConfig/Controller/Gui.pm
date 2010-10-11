@@ -122,6 +122,49 @@ sub setDevice : Local {
   $c->forward('View::JSON');
 }
 
+
+sub executeMacro : Local {
+  my ( $self, $c, $macro ) = @_;
+  my $data;
+  
+  my $macroNo = $c->model('hapModel::Makro')->search( { id => $macro } )->first->makronr;
+  
+  my $sock = new IO::Socket::INET(
+    PeerAddr => $c->config->{MessageProcessor}->{Host},
+    PeerPort => $c->config->{MessageProcessor}->{Port},
+    Proto    => 'tcp'
+  );
+  eval {
+    local $SIG{ALRM} = sub { die 'Alarm'; };
+    alarm 2;
+    $data = <$sock>;    # Welcome ?
+    alarm 0;
+  };
+  if ($@) {
+    $c->stash->{success} = \0;
+    $c->stash->{info}    = "Cant connect to the MessageProcessor.";
+  }
+  else {
+    print $sock "destination "
+      . $c->config->{hap}->{CCUAddress}
+      . " makro $macroNo\n";
+
+    $data = <$sock>;
+    $sock->autoflush(1);
+
+    $sock->close();
+    if ( $data =~ /.*value\s*(\d+).*/ ) {
+      $c->stash->{success} = \1;
+      $c->stash->{data} = { value => $1 };
+    }
+    else {
+      $c->stash->{success} = \0;
+    }
+  }
+  $c->forward('View::JSON');
+}
+
+
 sub queryDevice : Local {
   my ( $self, $c, $module, $device ) = @_;
   my ( $data, $sData );

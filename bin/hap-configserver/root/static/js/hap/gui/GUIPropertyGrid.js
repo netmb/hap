@@ -25,6 +25,7 @@ HAP.GUIPropertyGrid = function(confObj){
     this.customRenderers = { //Extension
         'HAP-Module': gridRenderer,
         'HAP-Device': gridRenderer,
+        'HAP-Macro': gridRenderer,
         'Target View': gridRenderer,
         'Target Scene': gridRenderer
     };
@@ -37,6 +38,9 @@ HAP.GUIPropertyGrid = function(confObj){
         })),
         'HAP-Device': new Ext.grid.GridEditor(new HAP.GridComboDevices({
             id: 'gridComboDevices'
+        })),
+        'HAP-Macro': new Ext.grid.GridEditor(new HAP.GridComboMacros({
+            id: 'gridMacros'
         })),
         'Label': new Ext.grid.GridEditor(new HAP.GridTextLabel(this.id, {
             id: 'gridTextLabel',
