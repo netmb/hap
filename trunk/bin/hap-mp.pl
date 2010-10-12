@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-
 =head1 NAME
 
 hap-mp.pl - The Home Automation Project Message Processing Daemon
@@ -173,6 +172,7 @@ sub serverCuIn {
   elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {   # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareOptions => $data );
   }
+
   # Special handling for loopback communication (Server himself is destination)
   if ( $data->{destination} == $c->{CCUAddress} ) {
     my $sData = {
@@ -185,8 +185,7 @@ sub serverCuIn {
       v2          => $data->{v2}
     };
     $kernel->post(
-      $mapping{ $data->{source} }->{session} => ClientOutput => $sData )
-      ;
+      $mapping{ $data->{source} }->{session} => ClientOutput => $sData );
   }
   else {
     $kernel->post(
@@ -247,6 +246,14 @@ sub dbGetDeviceData {
   if ( $data->{result} ) {
     my $module = $data->{result};
     my $device = $data->{hapData}->{device};
+    if (
+      $data->{hapData}->{mtype} == 76
+      && ( $data->{hapData}->{device} == 128
+        || $data->{hapData}->{device} == 130 )
+      ) {
+        $device = $data->{hapData}->{v0};
+      }
+    
     $kernel->post(
       'database',
       'arrayhash' => {
@@ -269,14 +276,13 @@ SELECT abstractdevice.Name, NULL, 192 AS \"Type\" FROM abstractdevice WHERE abst
 sub dbUpdateStatus {
   my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
   foreach ( @{ $data->{result} } ) {
-    my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
-    if ( $data->{hapData}->{mtype} == 16
-      && ( $_->{'Type'} == 32 || $_->{'Type'} == 40 ) )
+    if (
+      $data->{hapData}->{mtype} == 76
+      && ( $data->{hapData}->{device} == 128
+        || $data->{hapData}->{device} == 130 )
+      )
     {
-
-      #   Trigger der Analog- u. Digitaleingänge nicht als Status speichern
-    }
-    else {
+      my $status = $data->{hapData}->{v2} * 256 + $data->{hapData}->{v1};
       if ( $_->{'Formula'} ) {
         my $formula = $_->{'Formula'};
         $formula =~ s/x|X/$status/g;
@@ -289,15 +295,36 @@ sub dbUpdateStatus {
 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
           placeholders => [
             time(),              $_->{'Type'},
-            $data->{dbModuleId}, $data->{hapData}->{device},
+            $data->{dbModuleId}, $data->{hapData}->{v0},
             $status,             $c->{DefaultConfig}
           ],
           event => '',
         }
       );
-      $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
-        "$_->{Name} Status $status" );
+
     }
+    my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
+    if ( $_->{'Formula'} ) {
+      my $formula = $_->{'Formula'};
+      $formula =~ s/x|X/$status/g;
+      $status = eval($formula);
+    }
+    $kernel->post(
+      'database',
+      insert => {
+        sql =>
+'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
+        placeholders => [
+          time(),              $_->{'Type'},
+          $data->{dbModuleId}, $data->{hapData}->{device},
+          $status,             $c->{DefaultConfig}
+        ],
+        event => '',
+      }
+    );
+    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
+      "$_->{Name} Status $status" );
+
   }
 }
 
@@ -512,7 +539,8 @@ sub tcpClientInput {
         "[ERR] No Answer."
       );
     }
-    # Message for server 
+
+    # Message for server
     if ( $dgram->{destination} == $c->{CCUAddress} ) {
       $kernel->post( main => serverCuIn => $dgram );
     }
