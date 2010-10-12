@@ -156,6 +156,9 @@ sub serverCuIn {
       ;    #$kernel->delay('serverCuOut'); # clear retransmit
   }
   print &composeAnswer( "Serial in:", $data ) . "\n";
+  if ($data->{mtype} == 77 && ($data->{device} == 128 || $data->{device} == 130)) {
+    $kernel->post( 'main' => dbGetModuleId => $data );  
+  }
   if ( $data->{mtype} == 9 || $data->{mtype} == 16 ) {
     $kernel->post( 'main' => dbGetModuleId => $data );
   }
@@ -247,7 +250,7 @@ sub dbGetDeviceData {
     my $module = $data->{result};
     my $device = $data->{hapData}->{device};
     if (
-      $data->{hapData}->{mtype} == 76
+      $data->{hapData}->{mtype} == 77
       && ( $data->{hapData}->{device} == 128
         || $data->{hapData}->{device} == 130 )
       ) {
@@ -277,7 +280,7 @@ sub dbUpdateStatus {
   my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
   foreach ( @{ $data->{result} } ) {
     if (
-      $data->{hapData}->{mtype} == 76
+      $data->{hapData}->{mtype} == 77
       && ( $data->{hapData}->{device} == 128
         || $data->{hapData}->{device} == 130 )
       )
@@ -294,7 +297,7 @@ sub dbUpdateStatus {
           sql =>
 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
           placeholders => [
-            time(),              $_->{'Type'},
+            time(),              76,
             $data->{dbModuleId}, $data->{hapData}->{v0},
             $status,             $c->{DefaultConfig}
           ],
@@ -303,6 +306,7 @@ sub dbUpdateStatus {
       );
 
     }
+    else {
     my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
     if ( $_->{'Formula'} ) {
       my $formula = $_->{'Formula'};
@@ -324,7 +328,7 @@ sub dbUpdateStatus {
     );
     $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
       "$_->{Name} Status $status" );
-
+    }
   }
 }
 

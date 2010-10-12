@@ -24,7 +24,7 @@ CCUAddress: 1
 ServerCU: 124
 ServerCUConnection: 
   Type: 'Network'
-  Host: 127.0.0.1
+  Host: 192.168.165.7
   Port: 4567
 #ServerCUConnection:
 #  Type: 'Serial'
