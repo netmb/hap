@@ -183,14 +183,14 @@ HAP.Trigger.prototype.setRequest = function(value){
 }
 
 HAP.Trigger.prototype.setValue = function(value){
-    if (value > 0) {
+    if (value > (this.value-0.0625) && value < (this.value+0.0625)) {
         this.img.src = this.conf.display['On-Image'];
+        this.value = value;
+        this.stat.innerHTML = value + this.conf.display['Value-Suffix'];
     }
     else {
         this.img.src = this.conf.display['Off-Image'];
     }
-    this.value = value;
-    this.stat.innerHTML = value + this.conf.display['Value-Suffix'];
     return;
 }
 

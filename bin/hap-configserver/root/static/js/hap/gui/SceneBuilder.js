@@ -75,6 +75,9 @@ HAP.SceneBuilder.prototype.refresh = function(){
             }
             tmpObj.module = objects[obj].conf.display['HAP-Module'];
             tmpObj.address = objects[obj].conf.display['HAP-Device'];
+            if (objects[obj].conf.type == 'HAP.Trigger') {
+              tmpObj.address = objects[obj].conf.display['HAP-TriggerDevices'];            
+            }
             request.push(tmpObj);
             objects[obj].time = time + objects[obj].conf.display['Update Interval (s)'] * 1000;
         }
@@ -85,7 +88,8 @@ HAP.SceneBuilder.prototype.refresh = function(){
                 var response = YAHOO.lang.JSON.parse(o.responseText);
                 for (var obj in response.data) {
                     var cObj = response.data[obj];
-                    objects[cObj.id].setValue(cObj.value);
+                    if (!(cObj.type && cObj.type == 76 && objects[cObj.id].conf.type == 'HAP.ValueLayer'))
+                      objects[cObj.id].setValue(cObj.value);
                 }
             }
         }, 'data=' + YAHOO.lang.JSON.stringify(request));
