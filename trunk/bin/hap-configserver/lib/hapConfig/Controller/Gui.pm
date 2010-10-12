@@ -233,7 +233,8 @@ sub queryDevice : Local {
       {
         module  => $module,
         address => $device,
-        config  => $c->session->{config}
+        config  => $c->session->{config},
+        type => {'!=', 76}
       },
       { order_by => "TS DESC", rows => 1 }
     )->first;
@@ -292,7 +293,8 @@ sub refresh : Local {
           {
             ts => { '>', ( time() - $o->{startOffset} * 60 ) },
             module  => $element->{'HAP-Module'},
-            address => $element->{'HAP-Device'}
+            address => $element->{'HAP-Device'},
+            type => {'!=', 76}
           },
           { order_by => 'TS ASC' }
         )->all;
@@ -340,7 +342,8 @@ sub refresh : Local {
         push @data,
           {
           id    => $_->{id},
-          value => $rc->status
+          value => $rc->status,
+          type => $rc->type
           };
       }
     }
@@ -378,7 +381,8 @@ sub getChartData : Local {
         {
           ts => { '>', ( time() - $startOffset * 60 ) },
           module  => $o->{'HAP-Module'},
-          address => $o->{'HAP-Device'}
+          address => $o->{'HAP-Device'},
+          type => {'!=', 76}
         },
         { order_by => 'TS DESC' }
       );
@@ -405,7 +409,7 @@ sub getChartData : Local {
   foreach (@$jsonData) {
     my $o = $_;
     push @ands,
-      { -and => [ module => $o->{'HAP-Module'}, address => $o->{'HAP-Device'} ]
+      { -and => [ module => $o->{'HAP-Module'}, address => $o->{'HAP-Device'}, type => {'!=', 76} ]
       };
   }
 
@@ -426,7 +430,8 @@ sub getChartData : Local {
       {
         ts => { '>', ( time() - $startOffset * 60 ) },
         module  => $o->{'HAP-Module'},
-        address => $o->{'HAP-Device'}
+        address => $o->{'HAP-Device'},
+        type => {'!=', 76}
       },
       { order_by => 'TS ASC' }
     )->all;
