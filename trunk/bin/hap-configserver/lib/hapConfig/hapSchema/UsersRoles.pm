@@ -21,4 +21,5 @@ __PACKAGE__->set_primary_key("user", "role");
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
+#__PACKAGE__->has_one('rolename' => 'hapConfig::hapSchema::Roles',{'foreign.id' => 'self.role'});
 1;

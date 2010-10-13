@@ -55,6 +55,6 @@ __PACKAGE__->set_primary_key("id");
 
 # You can replace this text with custom content, and it will be preserved on regeneration
 
-__PACKAGE__->has_many('map_user_role' => 'hapConfig::hapSchema::UsersRoles' => 'user');
+__PACKAGE__->has_many('map_user_role' => 'hapConfig::hapSchema::UsersRoles' => {'foreign.user' => 'self.id'});
 
 1;
