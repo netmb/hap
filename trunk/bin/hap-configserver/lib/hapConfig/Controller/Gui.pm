@@ -364,6 +364,7 @@ sub getChartData : Local {
   my $startOffset = $c->request->params->{startOffset};
   my $xSkip       = $c->request->params->{xSkip} || 1;
   my $type        = $c->request->params->{type};
+  my $interval    = $c->request->params->{interval} || 60;
 
   if ( $type eq "HProgress"
     or $type eq "VProgress"
@@ -379,7 +380,7 @@ sub getChartData : Local {
       my $o      = $_;
       my $rcdata = $c->model('hapModel::Status')->search(
         {
-          ts => { '>', ( time() - $startOffset * 60 ) },
+          -and => [ ts => { '>', ( time() - $startOffset * 60 ) }, ts => {'<', ( time() - $startOffset * 60 + $interval * 60)}],
           module  => $o->{'HAP-Module'},
           address => $o->{'HAP-Device'},
           type => {'!=', 76}
@@ -417,7 +418,7 @@ sub getChartData : Local {
   my @timestamps = $c->model('hapModel::Status')->search(
     {
       -or => \@ands,
-      ts  => { '>', ( time() - $startOffset * 60 ) },
+      -and => [ ts => { '>', ( time() - $startOffset * 60 ) }, ts => {'<', ( time() - $startOffset * 60 + $interval * 60)}],,
     },
     { order_by => 'TS ASC', columns => [qw/ts/], distinct => 1 }
   )->all;
@@ -428,7 +429,7 @@ sub getChartData : Local {
     my $o      = $_;
     my @rcdata = $c->model('hapModel::Status')->search(
       {
-        ts => { '>', ( time() - $startOffset * 60 ) },
+        -and => [ ts => { '>', ( time() - $startOffset * 60 ) }, ts => {'<', ( time() - $startOffset * 60 + $interval * 60)}],
         module  => $o->{'HAP-Module'},
         address => $o->{'HAP-Device'},
         type => {'!=', 76}

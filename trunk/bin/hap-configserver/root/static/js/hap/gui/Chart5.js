@@ -12,6 +12,7 @@ HAP.Chart5 = function(config, viewPortCall){
         'z-Index': 2,
         'Update Interval (s)': 3600,
         'Start-Offset (m)': 60,
+        'Interval (m)': 60,
         'Chart-Properties': '',
         'Chart-Type': 'Line',
         'Chart-X-Interval': 1,
@@ -596,7 +597,8 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
                 'data': Ext.encode(dataSources),
                 'startOffset': this.conf.display['Start-Offset (m)'],
                 'xSkip': this.conf.display['Chart-X-Interval'],
-                'type': this.conf.display['Chart-Type']
+                'type': this.conf.display['Chart-Type'],
+                'interval': this.conf.display['Interval (m)']
             },
             success: function(res, req){
                 var data = Ext.decode(res.responseText).data;
@@ -615,7 +617,7 @@ HAP.Chart5.prototype.fillChartData = function(dataSources, viewPortCall){
                     }
                 }
             }
-        }, 'data=' + YAHOO.lang.JSON.stringify(dataSources) + '&startOffset=' + this.conf.display['Start-Offset (m)'] + '&xSkip=' + this.conf.display['Chart-X-Interval'] + '&type=' + this.conf.display['Chart-Type']);
+        }, 'data=' + YAHOO.lang.JSON.stringify(dataSources) + '&startOffset=' + this.conf.display['Start-Offset (m)'] + '&xSkip=' + this.conf.display['Chart-X-Interval'] + '&type=' + this.conf.display['Chart-Type'] + '&interval=' + this.conf.display['Interval (m)']);
     }
     function process(data){
         if (!data) { //some dummy data
