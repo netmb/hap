@@ -51,8 +51,8 @@ my $hap = new HAP::Init();
 __PACKAGE__->config(
   name                   => 'hapConfig',
   'Plugin::ConfigLoader' => { file => $hap->{'BasePath'} . "/etc/hap.yml" },
-  hap          => $hap,
-  default_view => 'index'
+  hap                    => $hap,
+  default_view           => 'index'
 );
 __PACKAGE__->config->{static}->{include_path} = [
   __PACKAGE__->config->{root}, __PACKAGE__->config->{root} . '/static',
@@ -77,19 +77,20 @@ __PACKAGE__->config->{authorization}{dbic} = {
 #__PACKAGE__->config->{authentication} = {
 #  default_realm => 'default',
 #  realms        => {
-#    credential => {
-#      class              => 'Password',
-#      password_field     => 'password',
-#      password_type      => 'hashed',
-#      password_hash_type => 'SHA-1',
-#    },
-#    store => {
-#      class                => 'DBIx::Class',
-#      user_model           => 'hapModel::Users',
-#      role_model           => 'hapModel::Roles',
-#      role_relation        => 'map_user_role',
-#      role_field           => 'role',
-#      user_role_user_field => 'user',
+#    'default' => {
+#      credential => {
+#        class              => 'Password',
+#        password_field     => 'password',
+#        password_type      => 'hashed',
+#        password_hash_type => 'SHA-1',
+#      },
+#      store => {
+#        class                => 'DBIx::Class',
+#        user_model           => 'hapModel::Users',
+#        role_relation        => 'map_user_role',
+#        role_field           => 'role',
+#        user_role_user_field  => 'user'   
+#      }
 #    }
 #  }
 #};
