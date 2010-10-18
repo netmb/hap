@@ -281,6 +281,11 @@ sub submit : Local {
 				$objs{$key}->{prop1} = $objs{ $confObj->{inPort1} }->{nr};
 				$objs{$key}->{prop3} = $display->{'HAP-Device'};
 			}
+			elsif ( $confObj->{type} == 123 ) {
+				$objs{$key}->{prop1} = $objs{ $confObj->{inPort1} }->{nr};
+				$objs{$key}->{prop2} = $display->{'ON-Makro'};
+				$objs{$key}->{prop3} = $display->{'OFF-Makro'};
+			}
 			elsif ( $confObj->{type} == 127 ) {
 				$objs{$key}->{prop1} = $objs{ $confObj->{inPort1} }->{nr};
 				$objs{$key}->{prop2} = $display->{'Delay (1/10s)'} & 0xFF;
