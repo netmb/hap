@@ -27,11 +27,11 @@ HAP.ACPropertyGrid = function(){
             selectOnFocus: true,
             decimalPrecision: 1
         })),
-        'Start Value (mm: ss)': new Ext.grid.GridEditor(new Ext.form.TextField({
+        'Start Value (mm:ss)': new Ext.grid.GridEditor(new Ext.form.TextField({
             regex: /^[0-5]{0,1}[0-9]{1}:[0-5]{1}[0-9]{1}$/,
             selectOnFocus: true
         })),
-        'Start Value (hh: mm)': new Ext.grid.GridEditor(new Ext.form.TextField({
+        'Start Value (hh:mm)': new Ext.grid.GridEditor(new Ext.form.TextField({
             regex: /^(([0-2]{1}[0-3]{1})|([0-1]{1}[0-9]{1})):[0-5]{1}[0-9]{1}$/,
             selectOnFocus: true
         })),
