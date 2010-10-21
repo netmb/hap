@@ -26,7 +26,9 @@ HAP.Switch = function(config, viewPortCall){
         'Update Interval (s)': 10,
         'Value': 0,
         'Off-Value': 0,
-        'On-Value': 100
+        'On-Value': 100,
+        'On-Image-Value': 0,
+	 'Off-Image-Value': 0 
     };
     this.conf = apply(this.conf, config);
     this.value = this.conf.display['Value'];
@@ -184,11 +186,21 @@ HAP.Switch.prototype.setRequest = function(value){
 }
 
 HAP.Switch.prototype.setValue = function(value){
-    if (value > 0) {
-        this.img.src = this.conf.display['On-Image'];
-    }
+    if (this.conf.display['On-Image-Value'] > 0) {
+      if (value == this.conf.display['On-Image-Value']) { 
+          this.img.src = this.conf.display['On-Image'];
+      }
+      else if (value == this.conf.display['Off-Image-Value']) {
+          this.img.src = this.conf.display['Off-Image'];
+      }
+    }  
     else {
-        this.img.src = this.conf.display['Off-Image'];
+      if (value > 0) { 
+          this.img.src = this.conf.display['On-Image'];
+      }
+      else {
+          this.img.src = this.conf.display['Off-Image'];
+      }
     }
     this.value = value;
     this.stat.innerHTML = value + this.conf.display['Value-Suffix'];
