@@ -53,12 +53,9 @@ sub setConfig : Local {
   my ( $self, $c, $configId, $viewId, $sceneId, $p ) = @_;
   $c->stash->{sceneId}  = 0;
   $c->session->{config} = $configId;
-  my $rc =
-    $c->model('hapModel::GuiView')
-    ->search( { config => $configId, isdefault => 1 } )->first;
+  my $rc =$c->model('hapModel::GuiView')->search( { config => $configId, isdefault => 1 } )->first;
   if ( !$rc ) {
-    $rc =
-      $c->model('hapModel::GuiView')->search( { config => $configId } )->first;
+    $rc = $c->model('hapModel::GuiView')->search( { config => $configId } )->first;
   }
   if ( $rc || $viewId ) {
     my $id = $viewId || $rc->id;
