@@ -364,7 +364,7 @@ sub getChartData : Local {
   my $startOffset = $c->request->params->{startOffset};
   my $xSkip       = $c->request->params->{xSkip} || 1;
   my $type        = $c->request->params->{type};
-  my $interval    = $c->request->params->{interval} || 60;
+  my $interval    = $c->request->params->{interval} || $startOffset;
 
   if ( $type eq "HProgress"
     or $type eq "VProgress"

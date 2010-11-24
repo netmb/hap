@@ -111,7 +111,8 @@
             'chart.zoom.action':            'zoom',
             'chart.resizable':              false,
             'chart.scale.point':            '.',
-            'chart.scale.thousand':         ','
+            'chart.scale.thousand':         ',',
+            'chart.scale.decimals':         null
         }
 
         // Check for support
@@ -179,6 +180,11 @@
         * Clear all of this canvases event handlers (the ones installed by RGraph)
         */
         RGraph.ClearEventListeners(this.id);
+        
+        /**
+        * Resolves the colors array, which allows the colors to be a function
+        */
+        RGraph.ResolveColors(this, this.Get('chart.colors'));
 
 
         var gutter = this.Get('chart.gutter');
@@ -667,8 +673,14 @@
         * Work out the max value
         */
         if (this.Get('chart.xmax')) {
-            this.scale = RGraph.getScale(this.Get('chart.xmax'));
-            this.max   = this.scale[4];
+            this.scale = [
+                          (this.Get('chart.xmax') * 0.2).toFixed(this.Get('chart.scale.decimals')),
+                          (this.Get('chart.xmax') * 0.4).toFixed(this.Get('chart.scale.decimals')),
+                          (this.Get('chart.xmax') * 0.6).toFixed(this.Get('chart.scale.decimals')),
+                          (this.Get('chart.xmax') * 0.8).toFixed(this.Get('chart.scale.decimals')),
+                          (this.Get('chart.xmax')).toFixed(this.Get('chart.scale.decimals'))
+                         ];
+            this.max = this.scale[4];
         } else {
             var grouping = this.Get('chart.grouping');
 
@@ -682,7 +694,7 @@
                 this.max = Math.max(Math.abs(this.max), Math.abs(value));
             }
 
-            this.scale = RGraph.getScale(this.max);
+            this.scale = RGraph.getScale(this.max, this);
             this.max   = this.scale[4];
         }
 
