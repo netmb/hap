@@ -62,6 +62,7 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.xaxispos': 'bottom',
                 'chart.yaxispos': 'left',
                 'chart.xticks': '',
+                'chart.yticks': '',
                 'chart.text.size': 10,
                 'chart.text.angle': 90,
                 'chart.text.color': 'black',

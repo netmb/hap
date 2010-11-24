@@ -40,6 +40,7 @@
         RGraph.OldBrowserCompat(this.context);
 
         this.properties = {
+            'chart.min':                0,
             'chart.colors':             ['#0c0'],
             'chart.tickmarks':          true,
             'chart.tickmarks.color':    'black',
@@ -80,12 +81,14 @@
             'chart.zoom.delay':         50,
             'chart.zoom.shadow':        true,
             'chart.zoom.background':    true,
-            'chart.zoom.action':        'zoom',
+            'chart.zoom.thumbnail.width': 100,
+            'chart.zoom.thumbnail.height': 100,
             'chart.arrows':             false,
             'chart.margin':             0,
             'chart.resizable':          false,
             'chart.label.inner':        false,
-            'chart.adjustable':         false
+            'chart.adjustable':         false,
+            'chart.scale.decimals':     0
         }
 
         // Check for support
@@ -134,6 +137,16 @@
         */
         RGraph.FireCustomEvent(this, 'onbeforedraw');
 
+        /**
+        * Clear all of this canvases event handlers (the ones installed by RGraph)
+        */
+        RGraph.ClearEventListeners(this.id);
+        
+        /**
+        * Resolves the colors array, which allows the colors to be a function
+        */
+        RGraph.ResolveColors(this, this.Get('chart.colors'));
+
         // Figure out the width and height
         this.width  = this.canvas.width - (2 * this.Get('chart.gutter'));
         this.height = this.canvas.height - (2 * this.Get('chart.gutter'));
@@ -173,7 +186,7 @@
             /**
             * Install the onclick event handler for the tooltips
             */
-            this.canvas.onclick = function (e)
+            var canvas_onclick_func = function (e)
             {
                 e = RGraph.FixEventObject(e);
 
@@ -246,11 +259,13 @@
                 */
                 e.stopPropagation();
             }
+            this.canvas.addEventListener('click', canvas_onclick_func, false);
+            RGraph.AddEventListener(this.id, 'click', canvas_onclick_func);
 
             /**
             * If the cursor is over a hotspot, change the cursor to a hand
             */
-            this.canvas.onmousemove = function (e)
+            var canvas_onmousemove_func = function (e)
             {
                 e = RGraph.FixEventObject(e);
 
@@ -282,6 +297,8 @@
                     canvas.style.cursor = 'default';
                 }
             }
+            this.canvas.addEventListener('mousemove', canvas_onmousemove_func, false);
+            RGraph.AddEventListener(this.id, 'mousemove', canvas_onmousemove_func);
         }
         
         /**
@@ -350,8 +367,8 @@
         var margin = this.Get('chart.margin');
 
         // Draw the actual bar itself
-        var barWidth = Math.min(this.width, (RGraph.array_sum(this.value) / this.max) * this.width);
-        
+        var barWidth = Math.min(this.width, ((RGraph.array_sum(this.value) - this.Get('chart.min')) / (this.max - this.Get('chart.min')) ) * this.width);
+
         if (this.Get('chart.tickmarks.inner')) {
 
             var spacing = (this.canvas.width - this.Get('chart.gutter') - this.Get('chart.gutter')) / this.Get('chart.numticks.inner');
@@ -495,18 +512,13 @@
 
         var xAlignment = 'center';
         var yAlignment = 'top';
+        var font       = this.Get('chart.text.font');
+        var size       = this.Get('chart.text.size');
 
         this.context.beginPath();
         for (i=0; i<xPoints.length; ++i) {
 
-            RGraph.Text(this.context,
-                        this.Get('chart.text.font'),
-                        this.Get('chart.text.size'),
-                        xPoints[i],
-                        yPoints[i],
-                        this.Get('chart.units.pre') + String( parseInt( (this.max / xPoints.length) * (i + 1) )) + this.Get('chart.units.post'),
-                        yAlignment,
-                        xAlignment);
+            RGraph.Text(this.context,font,size,xPoints[i],yPoints[i],this.Get('chart.units.pre') + String((((this.max - this.Get('chart.min')) / xPoints.length) * (i + 1) + this.Get('chart.min')).toFixed(this.Get('chart.scale.decimals'))) + this.Get('chart.units.post'),yAlignment,xAlignment);
 
         }
 
