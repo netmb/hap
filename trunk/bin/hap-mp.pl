@@ -306,7 +306,8 @@ sub dbUpdateStatus {
       );
 
     }
-    else {
+    # Skip Trigger-Status Messages
+    elsif  ( !(($data->{hapData}->{v0} == 64 || $data->{hapData}->{v0} == 65 || $data->{hapData}->{v0} == 192 || $data->{hapData}->{v0} == 193) &&  $data->{hapData}->{v1} == 0 && $data->{hapData}->{v2} == 0)) {
     my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
     if ( $_->{'Formula'} ) {
       my $formula = $_->{'Formula'};
