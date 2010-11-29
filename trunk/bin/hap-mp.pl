@@ -306,17 +306,17 @@ sub dbUpdateStatus {
       );
 
     }
-    # Skip Trigger-Status Messages
-    elsif  ( !(($data->{hapData}->{v0} == 64 || $data->{hapData}->{v0} == 65 || $data->{hapData}->{v0} == 192 || $data->{hapData}->{v0} == 193) &&  $data->{hapData}->{v1} == 0 && $data->{hapData}->{v2} == 0)) {
-    my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
-    if ( $_->{'Formula'} ) {
-      my $formula = $_->{'Formula'};
-      $formula =~ s/x|X/$status/g;
-      $status = eval($formula);
-    }
-    $kernel->post(
-      'database',
-      insert => {
+    # Update Status only if message is not a Digital- or Analog-Input trigger-Status-Message
+    elsif (!(($_->{'Type'} == 32 || $_->{'Type'} == 40) && $data->{hapData}->{mtype} == 16)) {
+      my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
+      if ( $_->{'Formula'} ) {
+        my $formula = $_->{'Formula'};
+        $formula =~ s/x|X/$status/g;
+        $status = eval($formula);
+      }
+      $kernel->post(
+        'database',
+        insert => {
         sql =>
 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
         placeholders => [
@@ -325,10 +325,9 @@ sub dbUpdateStatus {
           $status,             $c->{DefaultConfig}
         ],
         event => '',
-      }
-    );
-    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
-      "$_->{Name} Status $status" );
+        }
+      );
+      $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "$_->{Name} Status $status" );
     }
   }
 }
