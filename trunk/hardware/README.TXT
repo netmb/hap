@@ -35,3 +35,6 @@ http://www.reichelt.de/?ACTION=20;AWKID=96181;PROVID=2084
 
 HAP-4xJalousieaktor-1.0:
 http://www.reichelt.de/?ACTION=20;AWKID=174350;PROVID=2084
+
+HAP-4xPolwender-1.0:
+http://www.reichelt.de/?ACTION=20;AWKID=174350;PROVID=2084
