@@ -144,13 +144,7 @@
         * Fire the onbeforedraw event
         */
         RGraph.FireCustomEvent(this, 'onbeforedraw');
-        
-        /**
-        * Resolves the colors array, which allows the colors to be a function
-        */
-        this.Set('chart.green.color', RGraph.ResolveColors(this, this.Get('chart.green.color')));
-        this.Set('chart.yellow.color', RGraph.ResolveColors(this, this.Get('chart.yellow.color')));
-        this.Set('chart.red.color', RGraph.ResolveColors(this, this.Get('chart.red.color')));
+
 
         // Cache the gutter as a object variable because it's used a lot
         this.gutter  = this.Get('chart.gutter');

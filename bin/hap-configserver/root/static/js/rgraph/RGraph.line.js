@@ -298,11 +298,6 @@
         * Clear all of this canvases event handlers (the ones installed by RGraph)
         */
         RGraph.ClearEventListeners(this.id);
-        
-        /**
-        * Resolves the colors array, which allows the colors to be a function
-        */
-        RGraph.ResolveColors(this, this.Get('chart.colors'));
 
 
         /**
@@ -998,15 +993,15 @@
                     var interval = (this.grapharea / numYLabels) / 2;
                 
                     for (var i=0; i<numYLabels; ++i) {
-                        // This draws the upper haqlves labels
-                        RGraph.Text(context, font, text_size, xpos, gutter + this.halfTextHeight + ((i/20) * (this.grapharea) ), RGraph.number_format(this, (this.scale[4] / numYLabels) * (numYLabels - i),units_pre, units_post), null, align, bounding, null, bgcolor);
+                        // This draws the upper halves labels
+                        RGraph.Text(context,font, text_size, xpos, gutter + this.halfTextHeight + ((i/20) * (this.grapharea) ), RGraph.number_format(this, ((this.scale[4] / numYLabels) * (numYLabels - i)).toFixed((this.Get('chart.scale.decimals'))),units_pre, units_post), null, align, bounding, null, bgcolor);
                         
                         // And this draws the lower halves labels
                         RGraph.Text(context, font, text_size, xpos,
                         
                         gutter + this.halfTextHeight + ((i/20) * this.grapharea) + (this.grapharea / 2) + (this.grapharea / 20),
                         
-                        '-' + RGraph.number_format(this, this.scale[4] - ((this.scale[4] / numYLabels) * (numYLabels - i - 1)),units_pre, units_post), null, align, bounding, null, bgcolor);
+                        '-' + RGraph.number_format(this, (this.scale[4] - ((this.scale[4] / numYLabels) * (numYLabels - i - 1))).toFixed((this.Get('chart.scale.decimals'))),units_pre, units_post), null, align, bounding, null, bgcolor);
                     }
                     
                 } else {
@@ -1055,7 +1050,7 @@
                     var interval = (this.grapharea / numYLabels) / 2;
                 
                     for (var i=0; i<numYLabels; ++i) {
-                        RGraph.Text(context, font, text_size, xpos, gutter + this.halfTextHeight + ((i/10) * (this.grapharea) ), RGraph.number_format(this, (this.scale[4] / numYLabels) * (numYLabels - i),units_pre, units_post), null, align, bounding, null, bgcolor);
+                        RGraph.Text(context,font,text_size,xpos,gutter + this.halfTextHeight + ((i/10) * (this.grapharea) ),RGraph.number_format(this,((this.scale[4] / numYLabels) * (numYLabels - i)).toFixed((this.Get('chart.scale.decimals'))),units_pre,units_post),null,align,bounding,null,bgcolor);
                     }
 
                 } else {
