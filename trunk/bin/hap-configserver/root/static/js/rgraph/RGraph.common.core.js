@@ -388,7 +388,7 @@
 
         context = canvas.getContext('2d');
         context.beginPath();
-        context.fillRect(-1000,-1000,canvas.width + 2000,canvas.height + 2000);
+        context.fillRect(-5,-5,canvas.width + 5,canvas.height + 5);
         context.fill();
         
         if (RGraph.ClearAnnotations) {
@@ -928,6 +928,7 @@
             context.fillStyle   = obj.Get('chart.key.background');
             context.strokeStyle = 'black';
 
+            // TODO Allow for chart.key.x and chart.key.y here
             // The x position of the key box
             var xpos = canvas.width - width - gutter;
             
@@ -984,6 +985,7 @@
             context.beginPath();
 
             // Turns off the shadow
+            // TODO Use RGraph.NoShadow(); instead ????
             context.shadowColor = 'rgba(0,0,0,0)';
 
             // Draw the labels given
@@ -2173,29 +2175,6 @@
         len = obj.context.measureText(str).width + 5;
 
         return (obj.type == 'hbar' ? len / 3 : len);
-    }
-    
-    
-    /**
-    * Resolves all colors (before the graph is drawn). This simply loops through the colors array,
-    * and if a color is a function calls the function and uses the return value as the actual color.
-    * 
-    * @param object obj    The graph object
-    * @param object colors The colors as supplied by you
-    */
-    RGraph.ResolveColors = function (obj, colors)
-    {
-        if (typeof(colors) == 'object') {
-            for (var i=0; i<colors.length; ++i) {
-                if (typeof(colors[i]) == 'function') {
-                    colors[i] = colors[i](obj, i);
-                }
-            }
-        } else if (typeof(colors) == 'function') {
-            colors = colors(obj, null);
-        }
-        
-        return colors;
     }
 
 

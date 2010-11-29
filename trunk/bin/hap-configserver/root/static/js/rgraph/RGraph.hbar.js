@@ -180,11 +180,6 @@
         * Clear all of this canvases event handlers (the ones installed by RGraph)
         */
         RGraph.ClearEventListeners(this.id);
-        
-        /**
-        * Resolves the colors array, which allows the colors to be a function
-        */
-        RGraph.ResolveColors(this, this.Get('chart.colors'));
 
 
         var gutter = this.Get('chart.gutter');

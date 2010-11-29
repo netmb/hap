@@ -151,13 +151,6 @@
         * Fire the onbeforedraw event
         */
         RGraph.FireCustomEvent(this, 'onbeforedraw');
-        
-        /**
-        * Resolves the colors array, which allows the colors to be a function
-        */
-        this.Set('chart.red.color', RGraph.ResolveColors(this, this.Get('chart.red.color')));
-        this.Set('chart.yellow.color', RGraph.ResolveColors(this, this.Get('chart.yellow.color')));
-        this.Set('chart.green.color', RGraph.ResolveColors(this, this.Get('chart.green.color')));
 
         // Work out a few things
         this.radius   = Math.min(this.canvas.width / 2, this.canvas.height / 2) - this.Get('chart.gutter') - (this.Get('chart.border') ? 25 : 0);
