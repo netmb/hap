@@ -138,6 +138,7 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.resizable': false,
                 'chart.adjustable': false,
                 'chart.noredraw': false,
+                'chart.outofbounds': false
             },
             'Bar': {
                 'chart.background.barcolor1': 'rgba(0,0,0,0)',
@@ -300,7 +301,7 @@ HAP.Chart5 = function(config, viewPortCall){
                 'chart.resizable': false,
                 'chart.scale.point': '.',
                 'chart.scale.thousand': ',',
-                'chart.ymax': 100,
+                'chart.ymax': 100
             },
             'HProgress': {
                 'chart.colors': ['#0c0'],
