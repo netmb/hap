@@ -233,7 +233,7 @@ sub queryDevice : Local {
         config  => $c->session->{config},
         type => {'!=', 76}
       },
-      { order_by => "TS DESC", rows => 1 }
+      { order_by => "ID DESC", rows => 1 }
     )->first;
 
     if ($rc) {
@@ -293,7 +293,7 @@ sub refresh : Local {
             address => $element->{'HAP-Device'},
             type => {'!=', 76}
           },
-          { order_by => 'TS ASC' }
+          { order_by => 'ID ASC' }
         )->all;
         my ( @labels, @values );
         foreach (@rcdata) {
@@ -333,7 +333,7 @@ sub refresh : Local {
       }
       my $rc = $c->model('hapModel::Status')->search(
         $search,
-        { order_by => "TS DESC", rows => 1 }
+        { order_by => "ID DESC", rows => 1 }
       )->first;
       if ($rc) {
         push @data,
@@ -382,7 +382,7 @@ sub getChartData : Local {
           address => $o->{'HAP-Device'},
           type => {'!=', 76}
         },
-        { order_by => 'TS DESC' }
+        { order_by => 'ID DESC' }
       );
       $min   = $rcdata->get_column('Status')->min   || 0;
       $max   = $rcdata->get_column('Status')->max   || 100;
@@ -417,7 +417,7 @@ sub getChartData : Local {
       -or => \@ands,
       -and => [ ts => { '>', ( time() - $startOffset * 60 ) }, ts => {'<', ( time() - $startOffset * 60 + $interval * 60)}],,
     },
-    { order_by => 'TS ASC', columns => [qw/ts/], distinct => 1 }
+    { order_by => 'ID ASC', columns => [qw/ts/], distinct => 1 }
   )->all;
 
   # fetch all device data
@@ -431,7 +431,7 @@ sub getChartData : Local {
         address => $o->{'HAP-Device'},
         type => {'!=', 76}
       },
-      { order_by => 'TS ASC' }
+      { order_by => 'ID ASC' }
     )->all;
     my %devArray;
     foreach (@rcdata) {
