@@ -1,11 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Projekt:              Home-Automation                                      //
 // Modul:                Dimmer                                               //
-// Version:              2.2 (6)                                              //
+// Version:              2.2 (7)                                              //
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          28.12.2005                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  15.02.2010                                           //
+// Zuletzt geändert am:  11.08.2011                                           //
 // Zuletzt geändert von: Carsten Wolff                                        //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -249,6 +249,7 @@ void DMSetValue(tByte pX, tByte pPHW, tWord pDelay) {
   tWord Delay;
   int ZZP;
 
+  if(pPHW > 0) DMS.E[pX].ValueInvert = pPHW; // Wert speichern
   if((DMS.E[pX].Prop & KMIODMSD) == KMIODMSD && pDelay < DMSoftDelay)
     Delay = DMSoftDelay;
   else
