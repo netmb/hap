@@ -1,11 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Projekt:              Home-Automation                                      //
 // Modul:                Rollladensteuerung                                   //
-// Version:              1.0 (0)                                              //
+// Version:              1.0 (1)                                              //
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          11.01.2007                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  01.12.2010                                           //
+// Zuletzt geändert am:  13.08.2011                                           //
 // Zuletzt geändert von: Carsten Wolff                                        //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -64,7 +64,7 @@ typedef struct {
   tAMProp *CP;
   tByte Value;
   tByte ValueNew;
-  tByte Counter;
+  tWord Counter;
   tByte Status;
   signed char ImpSteuerUpC;
   signed char ImpSteuerDownC;
