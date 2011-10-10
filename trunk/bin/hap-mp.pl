@@ -71,7 +71,8 @@ POE::Session->create(
     dbGetFirmwareOptions    => \&dbGetFirmwareOptions,
     dbUpdateFirmwareVersion => \&dbUpdateFirmwareVersion,
     dbUpdateFirmwareOptions => \&dbUpdateFirmwareOptions,
-    executeMakroScript      => \&executeMakroScript
+    executeMakroScript      => \&executeMakroScript,
+	MulticastAlert          => \&MulticastAlert
   },
 );
 
@@ -175,7 +176,7 @@ sub serverCuIn {
   elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {   # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareOptions => $data );
   }
-
+  
   # Special handling for loopback communication (Server himself is destination)
   if ( $data->{destination} == $c->{CCUAddress} ) {
     my $sData = {
@@ -194,6 +195,12 @@ sub serverCuIn {
     $kernel->post(
       $mapping{ $data->{destination} }->{session} => ClientOutput => $data );
   }
+  
+  # Start Script on Multicast
+  if ( $data->{destination} >= 240 && $data->{destination} <= 253 && $data->{mtype} == 16 ) {
+    $kernel->post( 'main' => MulticastAlert => $data );
+  }
+  
   return;
 }
 
@@ -625,6 +632,26 @@ sub executeMakroScript {
       CloseEvent  => '',
     );
   }
+}
+
+################################################################################
+# MulticastAlert
+################################################################################
+
+sub MulticastAlert {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+  my $val = $data->{v1} *256 + $data->{v0}; 
+  my @parameters = ( $data->{destination}, $data->{source}, $data->{device}, $val );
+  print "MulicastAlert $data->{destination}\n";
+  my $wheel = POE::Wheel::Run->new(
+    Program     => "/opt/hap/var/scripts/MulticastAlert.pl",
+    ProgramArgs =>  \@parameters,
+    StdinEvent  => '',
+    StdoutEvent => '',
+    StderrEvent => '',
+    ErrorEvent  => '',
+    CloseEvent  => '',
+  );
 }
 
 ################################################################################
