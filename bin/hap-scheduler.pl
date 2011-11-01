@@ -21,12 +21,13 @@ use HAP::Init;
 my %mapping;
 my %wheelToDb;
 my $c      = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", SKIP_DB => 1 );
-my $regex  = "hap-sendcmd|hap-configbuilder|hap-firmwarebuilder|hap-lcdguibuilder";
+my $regex  = "hap-sendcmd|hap-configbuilder|hap-firmwarebuilder|hap-lcdguibuilder|hap-dbcleanup";
 my %action = (
 	'hap-sendcmd'         => $c->{BasePath} . "/bin/helper/hap-sendcmd.pl",
 	'hap-configbuilder'   => $c->{BasePath} . "/bin/helper/hap-configbuilder.pl",
 	'hap-firmwarebuilder' => $c->{BasePath} . "/bin/helper/hap-firmwarebuilder.pl",
-	'hap-lcdguibuilder'   => $c->{BasePath} . "/bin/helper/hap-lcdguibuilder.pl"
+	'hap-lcdguibuilder'   => $c->{BasePath} . "/bin/helper/hap-lcdguibuilder.pl",
+	'hap-dbcleanup'       => $c->{BasePath} . "/bin/helper/hap-dbcleanup.pl"
 );
 
 POE::Session->create(

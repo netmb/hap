@@ -327,7 +327,7 @@ sub refresh : Local {
         };
     }
     else {
-      my $search = {module => $_->{module}, address => $_->{address}, config => $c->session->{config}, type => {'!=', 76}};
+      my $search = { module => $_->{module}, address => $_->{address}, config => $c->session->{config}, type => {'!=', 76}};
       if ($o->{type} eq 'HAP.Trigger' ) {
         $search->{type} = 76;
       }
