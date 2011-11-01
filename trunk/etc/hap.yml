@@ -25,7 +25,7 @@ ServerCU: 124
 ServerCUConnection: 
   Type: 'Network'
   Host: 192.168.165.7
-  Port: 4567
+  Port: 10001
 #ServerCUConnection:
 #  Type: 'Serial'
 #  Ports: [ '/dev/ttyUSB0', '/dev/ttyUSB1' ]
