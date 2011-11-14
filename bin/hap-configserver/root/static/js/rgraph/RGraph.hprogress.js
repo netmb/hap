@@ -32,6 +32,7 @@
         this.type              = 'hprogress';
         this.coords            = [];
         this.isRGraph          = true;
+        this.currentValue      = null;
 
 
         /**
@@ -42,10 +43,14 @@
         this.properties = {
             'chart.min':                0,
             'chart.colors':             ['#0c0'],
+            'chart.strokestyle':        '#999',
             'chart.tickmarks':          true,
             'chart.tickmarks.color':    'black',
             'chart.tickmarks.inner':    false,
-            'chart.gutter':             25,
+            'chart.gutter.left':        25,
+            'chart.gutter.right':       25,
+            'chart.gutter.top':         25,
+            'chart.gutter.bottom':      25,
             'chart.numticks':           10,
             'chart.numticks.inner':     50,
             'chart.background.color':   '#eee',
@@ -55,10 +60,11 @@
             'chart.shadow.offsetx':     3,
             'chart.shadow.offsety':     3,
             'chart.title':              '',
+            'chart.title.background':   null,
             'chart.title.hpos':         null,
             'chart.title.vpos':         null,
-            'chart.width':              0,
-            'chart.height':             0,
+            'chart.title.bold':         true,
+            'chart.title.font':         null,
             'chart.text.size':          10,
             'chart.text.color':         'black',
             'chart.text.font':          'Verdana',
@@ -66,9 +72,11 @@
             'chart.units.pre':          '',
             'chart.units.post':         '',
             'chart.tooltips':           [],
-            'chart.tooltips.effect':     'fade',
-            'chart.tooltips.css.class':  'RGraph_tooltip',
-            'chart.tooltips.highlight':     true,
+            'chart.tooltips.effect':    'fade',
+            'chart.tooltips.css.class': 'RGraph_tooltip',
+            'chart.tooltips.highlight': true,
+            'chart.highlight.stroke':   'black',
+            'chart.highlight.fill':     'rgba(255,255,255,0.5)',
             'chart.annotatable':        false,
             'chart.annotate.color':     'black',
             'chart.zoom.mode':          'canvas',
@@ -77,18 +85,37 @@
             'chart.zoom.fade.out':      true,
             'chart.zoom.hdir':          'right',
             'chart.zoom.vdir':          'down',
-            'chart.zoom.frames':        10,
-            'chart.zoom.delay':         50,
+            'chart.zoom.frames':            25,
+            'chart.zoom.delay':             16.666,
             'chart.zoom.shadow':        true,
             'chart.zoom.background':    true,
             'chart.zoom.thumbnail.width': 100,
             'chart.zoom.thumbnail.height': 100,
             'chart.arrows':             false,
             'chart.margin':             0,
-            'chart.resizable':          false,
+            'chart.resizable':              false,
+            'chart.resize.handle.adjust':   [0,0],
+            'chart.resize.handle.background': null,
             'chart.label.inner':        false,
             'chart.adjustable':         false,
-            'chart.scale.decimals':     0
+            'chart.scale.decimals':     0,
+            'chart.key':                [],
+            'chart.key.background':     'white',
+            'chart.key.position':       'gutter',
+            'chart.key.halign':             'right',
+            'chart.key.shadow':         false,
+            'chart.key.shadow.color':   '#666',
+            'chart.key.shadow.blur':    3,
+            'chart.key.shadow.offsetx': 2,
+            'chart.key.shadow.offsety': 2,
+            'chart.key.position.gutter.boxed': false,
+            'chart.key.position.x':     null,
+            'chart.key.position.y':     null,
+            'chart.key.color.shape':    'square',
+            'chart.key.rounded':        true,
+            'chart.key.linewidth':      1,
+            'chart.key.color.shape':    'square',
+            'chart.labels.position':     'bottom'
         }
 
         // Check for support
@@ -97,10 +124,11 @@
             return;
         }
 
-        // Check the common library has been included
-        if (typeof(RGraph) == 'undefined') {
-            alert('[PROGRESS] Fatal error: The common library does not appear to have been included');
-        }
+
+        /**
+        * Set the .getShape commonly named method
+        */
+        this.getShape = this.getBar;
     }
 
 
@@ -141,10 +169,24 @@
         * Clear all of this canvases event handlers (the ones installed by RGraph)
         */
         RGraph.ClearEventListeners(this.id);
+        
+        /**
+        * Set the current value
+        */
+        this.currentValue = this.value;
+        
+        /**
+        * This is new in May 2011 and facilitates individual gutter settings,
+        * eg chart.gutter.left
+        */
+        this.gutterLeft   = this.Get('chart.gutter.left');
+        this.gutterRight  = this.Get('chart.gutter.right');
+        this.gutterTop    = this.Get('chart.gutter.top');
+        this.gutterBottom = this.Get('chart.gutter.bottom');
 
         // Figure out the width and height
-        this.width  = this.canvas.width - (2 * this.Get('chart.gutter'));
-        this.height = this.canvas.height - (2 * this.Get('chart.gutter'));
+        this.width  = this.canvas.width - this.gutterLeft - this.gutterRight;
+        this.height = this.canvas.height - this.gutterTop - this.gutterBottom;
         this.coords = [];
 
         this.Drawbar();
@@ -172,10 +214,9 @@
             /**
             * Install the window onclick handler
             */
-            window.onclick = function ()
-            {
-                RGraph.Redraw();
-            }
+            var window_onclick = function () {RGraph.Redraw();}
+            window.addEventListener('click', window_onclick, false);
+            RGraph.AddEventListener('window_' + this.id, 'click', window_onclick);
 
 
             /**
@@ -185,67 +226,39 @@
             {
                 e = RGraph.FixEventObject(e);
 
-                var canvas = document.getElementById(this.id);
-                var obj = canvas.__object__;
+                var canvas      = document.getElementById(this.id);
+                var obj         = canvas.__object__;
+                var bar         = obj.getBar(e);
 
                 /**
                 * Redraw the graph first, in effect resetting the graph to as it was when it was first drawn
                 * This "deselects" any already selected bar
                 */
                 RGraph.Redraw();
-    
-                /**
-                * Get the mouse X/Y coordinates
-                */
-                var mouseCoords = RGraph.getMouseXY(e);
 
                 /**
-                * Loop through the bars determining if the mouse is over a bar
+                * Was the mouse over the bar
                 */
-                for (var i=0; i<obj.coords.length; i++) {
+                if (bar) {
 
-                    var mouseX = mouseCoords[0];
-                    var mouseY = mouseCoords[1];
-                    var left   = obj.coords[i][0];
-                    var top    = obj.coords[i][1];
-                    var width  = obj.coords[i][2];
-                    var height = obj.coords[i][3];
-                    var idx    = i;
+                    var text = RGraph.parseTooltipText(obj.Get('chart.tooltips'), bar[5]);
 
-                    if (mouseX >= left && mouseX <= (left + width) && mouseY >= top && mouseY <= (top + height) ) {
+                    /**
+                    * Show a tooltip if it's defined
+                    */
+                    if (text) {
+
+                        obj.context.beginPath();
+                        obj.context.strokeStyle = obj.Get('chart.highlight.stroke');
+                        obj.context.fillStyle   = obj.Get('chart.highlight.fill');
+
+                        obj.context.strokeRect(bar[1], bar[2], bar[3], bar[4]);
+                        obj.context.fillRect(bar[1], bar[2], bar[3], bar[4]);
     
-                        /**
-                        * Get the tooltip text
-                        */
-                        if (typeof(obj.Get('chart.tooltips')) == 'function') {
-                            var text = obj.Get('chart.tooltips')(idx);
-                        
-                        } else if (typeof(obj.Get('chart.tooltips')) == 'object' && typeof(obj.Get('chart.tooltips')[idx]) == 'function') {
-                            var text = obj.Get('chart.tooltips')[idx](idx);
-                        
-                        } else if (typeof(obj.Get('chart.tooltips')) == 'object') {
-                            var text = obj.Get('chart.tooltips')[idx];
+                        obj.context.stroke();
+                        obj.context.fill();
 
-                        } else {
-                            var text = null;
-                        }
-
-                        /**
-                        * Show a tooltip if it's defined
-                        */
-                        if (text) {
-
-                            obj.context.beginPath();
-                            obj.context.strokeStyle = 'black';
-                            obj.context.fillStyle   = 'rgba(255,255,255,0.5)';
-                            obj.context.strokeRect(left, top, width, height);
-                            obj.context.fillRect(left, top, width, height);
-        
-                            obj.context.stroke();
-                            obj.context.fill();
-
-                            RGraph.Tooltip(canvas, text, e.pageX, e.pageY, i);
-                        }
+                        RGraph.Tooltip(canvas, text, e.pageX, e.pageY, bar[5]);
                     }
                 }
 
@@ -265,32 +278,20 @@
                 e = RGraph.FixEventObject(e);
 
                 var canvas = document.getElementById(this.id);
-                var obj = canvas.__object__;
+                var obj    = canvas.__object__;
+                var bar    = obj.getBar(e);
 
-                /**
-                * Get the mouse X/Y coordinates
-                */
-                var mouseCoords = RGraph.getMouseXY(e);
+                // Is there a focused bar
+                if (bar){
+                    var text = RGraph.parseTooltipText(obj.Get('chart.tooltips'), bar[5]);
 
-                /**
-                * Loop through the bars determining if the mouse is over a bar
-                */
-                for (var i=0; i<obj.coords.length; i++) {
-
-                    var mouseX = mouseCoords[0];  // In relation to the canvas
-                    var mouseY = mouseCoords[1];  // In relation to the canvas
-                    var left   = obj.coords[i][0];
-                    var top    = obj.coords[i][1];
-                    var width  = obj.coords[i][2];
-                    var height = obj.coords[i][3];
-
-                    if (mouseX >= left && mouseX <= (left + width) && mouseY >= top && mouseY <= (top + height) ) {
+                    if (text) {
                         canvas.style.cursor = 'pointer';
-                        break;
+                        return;
                     }
-                    
-                    canvas.style.cursor = 'default';
                 }
+
+                canvas.style.cursor = 'default';
             }
             this.canvas.addEventListener('mousemove', canvas_onmousemove_func, false);
             RGraph.AddEventListener(this.id, 'mousemove', canvas_onmousemove_func);
@@ -301,6 +302,12 @@
         */
         if (this.Get('chart.annotatable')) {
             RGraph.Annotate(this);
+        }
+
+
+        // Draw the key if necessary
+        if (this.Get('chart.key').length) {
+            RGraph.DrawKey(this, this.Get('chart.key'), this.Get('chart.colors'));
         }
         
         /**
@@ -344,20 +351,20 @@
         // Draw the shadow for MSIE
         if (RGraph.isIE8() && this.Get('chart.shadow')) {
             this.context.fillStyle = this.Get('chart.shadow.color');
-            this.context.fillRect(this.Get('chart.gutter') + this.Get('chart.shadow.offsetx'), this.Get('chart.gutter') + this.Get('chart.shadow.offsety'), this.width, this.height);
+            this.context.fillRect(this.gutterLeft + this.Get('chart.shadow.offsetx'), this.gutterTop + this.Get('chart.shadow.offsety'), this.width, this.height);
         }
 
         // Draw the outline
         this.context.fillStyle   = this.Get('chart.background.color');
-        this.context.strokeStyle = 'black';
-        this.context.strokeRect(this.Get('chart.gutter'), this.Get('chart.gutter'), this.width, this.height);
-        this.context.fillRect(this.Get('chart.gutter'), this.Get('chart.gutter'), this.width, this.height);
+        this.context.strokeStyle = this.Get('chart.strokestyle');
+        this.context.strokeRect(this.gutterLeft, this.gutterTop, this.width, this.height);
+        this.context.fillRect(this.gutterLeft, this.gutterTop, this.width, this.height);
 
         // Turn off any shadow
         RGraph.NoShadow(this);
 
         this.context.fillStyle   = this.Get('chart.color');
-        this.context.strokeStyle = 'black';
+        this.context.strokeStyle = this.Get('chart.strokestyle');
         
         var margin = this.Get('chart.margin');
 
@@ -366,18 +373,18 @@
 
         if (this.Get('chart.tickmarks.inner')) {
 
-            var spacing = (this.canvas.width - this.Get('chart.gutter') - this.Get('chart.gutter')) / this.Get('chart.numticks.inner');
+            var spacing = (RGraph.GetWidth(this) - this.gutterLeft - this.gutterRight) / this.Get('chart.numticks.inner');
 
             this.context.lineWidth   = 1;
-            this.context.strokeStyle = '#999';
+            this.context.strokeStyle = this.Get('chart.strokestyle');
 
             this.context.beginPath();
-            for (var x = this.Get('chart.gutter'); x<this.canvas.width - this.Get('chart.gutter'); x+=spacing) {
-                this.context.moveTo(x, this.Get('chart.gutter'));
-                this.context.lineTo(x, this.Get('chart.gutter') + 2);
+            for (var x = this.gutterLeft; x<RGraph.GetWidth(this) - this.gutterRight; x+=spacing) {
+                this.context.moveTo(x, this.gutterTop);
+                this.context.lineTo(x, this.gutterTop + 2);
 
-                this.context.moveTo(x, this.canvas.height - this.Get('chart.gutter'));
-                this.context.lineTo(x, this.canvas.height - this.Get('chart.gutter') - 2);
+                this.context.moveTo(x, RGraph.GetHeight(this) - this.gutterBottom);
+                this.context.lineTo(x, RGraph.GetHeight(this) - this.gutterBottom - 2);
             }
             this.context.stroke();
         }
@@ -387,36 +394,36 @@
         */
         if (typeof(this.value) == 'number') {
             this.context.beginPath();
-            this.context.strokeStyle = 'black';
+            this.context.strokeStyle = this.Get('chart.strokestyle');
             this.context.fillStyle = this.Get('chart.colors')[0];
-            this.context.strokeRect(this.Get('chart.gutter'), this.Get('chart.gutter') + margin, barWidth, this.height - margin - margin);
-            this.context.fillRect(this.Get('chart.gutter'), this.Get('chart.gutter') + margin, barWidth, this.height - margin - margin);
+            this.context.strokeRect(this.gutterLeft, this.gutterTop + margin, barWidth, this.height - margin - margin);
+            this.context.fillRect(this.gutterLeft, this.gutterTop + margin, barWidth, this.height - margin - margin);
 
             // Store the coords
-            this.coords.push([this.Get('chart.gutter'),
-                              this.Get('chart.gutter') + margin,
+            this.coords.push([this.gutterLeft,
+                              this.gutterTop + margin,
                               barWidth,
                               this.height - margin - margin]);
 
         } else if (typeof(this.value) == 'object') {
 
             this.context.beginPath();
-            this.context.strokeStyle = 'black';
+            this.context.strokeStyle = this.Get('chart.strokestyle');
 
-            var startPoint = this.Get('chart.gutter');
+            var startPoint = this.gutterLeft;
             
             for (var i=0; i<this.value.length; ++i) {
 
                 var segmentLength = (this.value[i] / RGraph.array_sum(this.value)) * barWidth;
                 this.context.fillStyle = this.Get('chart.colors')[i];
 
-                this.context.strokeRect(startPoint, this.Get('chart.gutter') + margin, segmentLength, this.height - margin - margin);
-                this.context.fillRect(startPoint, this.Get('chart.gutter') + margin, segmentLength, this.height - margin - margin);
+                this.context.strokeRect(startPoint, this.gutterTop + margin, segmentLength, this.height - margin - margin);
+                this.context.fillRect(startPoint, this.gutterTop + margin, segmentLength, this.height - margin - margin);
 
 
                 // Store the coords
                 this.coords.push([startPoint,
-                                  this.Get('chart.gutter') + margin,
+                                  this.gutterTop + margin,
                                   segmentLength,
                                   this.height - margin - margin]);
 
@@ -428,8 +435,8 @@
         * Draw the arrows indicating the level if requested
         */
         if (this.Get('chart.arrows')) {
-            var x = this.Get('chart.gutter') + barWidth;
-            var y = this.Get('chart.gutter');
+            var x = this.gutterLeft + barWidth;
+            var y = this.gutterTop;
             
             this.context.lineWidth = 1;
             this.context.fillStyle = 'black';
@@ -460,7 +467,7 @@
             if (this.Get('chart.label.inner')) {
                 this.context.beginPath();
                 this.context.fillStyle = 'black';
-                RGraph.Text(this.context, this.Get('chart.text.font'), this.Get('chart.text.size') + 2, this.Get('chart.gutter') + barWidth + 5, this.canvas.height / 2, String(this.Get('chart.units.pre') + this.value + this.Get('chart.units.post')), 'center', 'left');
+                RGraph.Text(this.context, this.Get('chart.text.font'), this.Get('chart.text.size') + 2, this.gutterLeft + barWidth + 5, RGraph.GetHeight(this) / 2, String(this.Get('chart.units.pre') + this.value + this.Get('chart.units.post')), 'center', 'left');
                 this.context.fill();
             }
         }
@@ -472,21 +479,35 @@
     */
     RGraph.HProgress.prototype.DrawTickMarks = function ()
     {
-        this.context.strokeStyle = this.Get('chart.tickmarks.color');
+        var context = this.context;
+
+        context.strokeStyle = this.Get('chart.tickmarks.color');
 
         if (this.Get('chart.tickmarks')) {
+            
+            this.context.beginPath();        
 
             // This is used by the label function below
             this.tickInterval = this.width / this.Get('chart.numticks');
-    
-            for (var i=this.Get('chart.gutter') + this.tickInterval; i<=(this.width + this.Get('chart.gutter')); i+=this.tickInterval) {
-                this.context.moveTo(i, this.Get('chart.gutter') + this.height);
-                this.context.lineTo(i, this.Get('chart.gutter') + this.height + 4);
-            }
-        
-        }
+            
+            var start   = this.Get('chart.tickmarks.zerostart') ? 0 : this.tickInterval;
 
-        this.context.stroke();
+            if (this.Get('chart.labels.position') == 'top') {
+                for (var i=this.gutterLeft + start; i<=(this.width + this.gutterLeft + 0.1); i+=this.tickInterval) {
+                    context.moveTo(i, this.gutterTop);
+                    context.lineTo(i, this.gutterTop - 4);
+                }
+
+            } else {
+
+                for (var i=this.gutterLeft + start; i<=(this.width + this.gutterLeft + 0.1); i+=this.tickInterval) {
+                    context.moveTo(i, this.gutterTop + this.height);
+                    context.lineTo(i, this.gutterTop + this.height + 4);
+                }
+            }
+
+            this.context.stroke();
+        }
     }
 
 
@@ -495,31 +516,80 @@
     */
     RGraph.HProgress.prototype.DrawLabels = function ()
     {
+        var context = this.context;
         this.context.fillStyle = this.Get('chart.text.color');
 
         var xPoints = [];
         var yPoints = [];
 
-        for (i=this.Get('chart.gutter') + this.tickInterval; i <= (this.Get('chart.gutter') + this.width); i+= this.tickInterval) {
-            xPoints.push(i);
-            yPoints.push(this.Get('chart.gutter') + this.height + 4);
+        for (i=0; i<this.Get('chart.numticks'); i++) {
+
+            var font       = this.Get('chart.text.font');
+            var size       = this.Get('chart.text.size');
+
+            if (this.Get('chart.labels.position') == 'top') {
+                var x = this.width * (i/this.Get('chart.numticks')) + this.gutterLeft + (this.width / this.Get('chart.numticks'));
+                var y = this.gutterTop - 6;
+                var valign = 'bottom';
+            } else {
+                var x = this.width * (i/this.Get('chart.numticks')) + this.gutterLeft + (this.width / this.Get('chart.numticks'));
+                var y = this.height + this.gutterTop + 4;
+                var valign = 'top';
+            }
+                
+            RGraph.Text(this.context,font,size,x,y,this.Get('chart.units.pre') + String((((this.max - this.Get('chart.min')) / this.Get('chart.numticks') ) * (i + 1) + this.Get('chart.min')).toFixed(this.Get('chart.scale.decimals'))) + this.Get('chart.units.post'),valign,'center');
         }
 
-        var xAlignment = 'center';
-        var yAlignment = 'top';
-        var font       = this.Get('chart.text.font');
-        var size       = this.Get('chart.text.size');
-
-        this.context.beginPath();
-        for (i=0; i<xPoints.length; ++i) {
-
-            RGraph.Text(this.context,font,size,xPoints[i],yPoints[i],this.Get('chart.units.pre') + String((((this.max - this.Get('chart.min')) / xPoints.length) * (i + 1) + this.Get('chart.min')).toFixed(this.Get('chart.scale.decimals'))) + this.Get('chart.units.post'),yAlignment,xAlignment);
-
+        if (this.Get('chart.tickmarks.zerostart')) {
+            if (this.Get('chart.labels.position') == 'top') {
+                RGraph.Text(this.context,font,size,this.gutterLeft,this.gutterTop - 6,this.Get('chart.units.pre') + Number(this.Get('chart.min')).toFixed(this.Get('chart.scale.decimals')) + this.Get('chart.units.post'),'bottom','center');
+            } else {
+                RGraph.Text(this.context,font,size,this.gutterLeft,this.canvas.height - this.gutterBottom + 5,this.Get('chart.units.pre') + Number(this.Get('chart.min')).toFixed(this.Get('chart.scale.decimals')) + this.Get('chart.units.post'),'top','center');
+            }
         }
+
 
 
         // Draw the title text
         if (this.Get('chart.title')) {
-            RGraph.DrawTitle(this.canvas, this.Get('chart.title'), this.Get('chart.gutter'), 0, this.Get('chart.text.size') + 2);
+            var vpos = this.gutterTop + this.Get('chart.text.size');
+            
+            if (this.Get('chart.labels.position') == 'top' && this.Get('chart.title.vpos') == null) {
+                this.Set('chart.title.vpos', (this.canvas.height / this.gutterTop) - (this.gutterBottom / this.gutterTop));
+            }
+
+            RGraph.DrawTitle(this.canvas,
+                             this.Get('chart.title'),
+                             vpos,
+                             0,
+                             this.Get('chart.title.size') ? this.Get('chart.title.size') : this.Get('chart.text.size') + 2);
+        }
+    }
+
+
+    /**
+    * Returns the focused bar
+    * 
+    * @param event e The event object
+    */
+    RGraph.HProgress.prototype.getBar = function (e)
+    {
+        var obj         = e.target.__object__;
+        var mouseCoords = RGraph.getMouseXY(e)
+
+        for (var i=0; i<obj.coords.length; i++) {
+
+            var mouseCoords = RGraph.getMouseXY(e);
+            var mouseX = mouseCoords[0];
+            var mouseY = mouseCoords[1];
+            var left   = obj.coords[i][0];
+            var top    = obj.coords[i][1];
+            var width  = obj.coords[i][2];
+            var height = obj.coords[i][3];
+            var idx    = i;
+
+            if (mouseX >= left && mouseX <= (left + width) && mouseY >= top && mouseY <= (top + height) ) {
+                return [obj, left, top, width, height, idx];
+            }
         }
     }
