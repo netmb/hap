@@ -22,6 +22,7 @@
         </script>
         <!-- rgraph -->
         <script type="text/javascript" src="/static/js/rgraph/RGraph.common.core.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.common.tooltips.js"></script>
         <script type="text/javascript" src="/static/js/rgraph/RGraph.line.js"></script>
         <script type="text/javascript" src="/static/js/rgraph/RGraph.bar.js"></script>
         <script type="text/javascript" src="/static/js/rgraph/RGraph.hbar.js"></script>

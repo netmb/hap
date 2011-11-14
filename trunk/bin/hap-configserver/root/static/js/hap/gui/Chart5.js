@@ -67,7 +67,7 @@ HAP.Chart5 = function(config, viewPortCall){
               'chart.gutter.bottom':          25,
               'chart.tickdirection':          -1,
               'chart.yaxispoints':            5,
-              'chart.fillstyle':              null,
+              'chart.fillstyle':              '',  //HAP
               'chart.xaxispos':               'bottom',
               'chart.yaxispos':               'left',
               'chart.xticks':                 null,
@@ -75,8 +75,8 @@ HAP.Chart5 = function(config, viewPortCall){
               'chart.text.angle':             0,
               'chart.text.color':             'black',
               'chart.text.font':              'Verdana',
-              'chart.ymin':                   null,
-              'chart.ymax':                   null,
+              'chart.ymin':                   0,  //HAP
+              'chart.ymax':                   100, //HAP
               'chart.title':                  '',
               'chart.title.background':       null,
               'chart.title.hpos':             null,
@@ -98,7 +98,7 @@ HAP.Chart5 = function(config, viewPortCall){
               'chart.shadow.offsety':         2,
               'chart.shadow.blur':            3,
               'chart.shadow.color':           'rgba(0,0,0,0.5)',
-              'chart.tooltips':               null,
+              'chart.tooltips':               [], //HAP
               'chart.tooltips.hotspot.xonly': false,
               'chart.tooltips.effect':        'fade',
               'chart.tooltips.css.class':     'RGraph_tooltip',
@@ -653,8 +653,8 @@ HAP.Chart5 = function(config, viewPortCall){
               'chart.text.size':              10,
               'chart.text.color':             'black',
               'chart.text.font':              'Verdana',
-              'chart.green.max':              end * 0.75,
-              'chart.red.min':                end * 0.9,
+              'chart.green.max':              30,
+              'chart.red.min':                50,
               'chart.green.color':            'green',
               'chart.yellow.color':           'yellow',
               'chart.red.color':              'red',
