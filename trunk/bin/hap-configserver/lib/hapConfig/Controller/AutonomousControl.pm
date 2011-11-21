@@ -177,7 +177,7 @@ sub submit : Local {
 				$objs{$key}->{prop1} = $tmp[0];
 				$objs{$key}->{prop1} |=
 				  ( $display->{'Interval (1/10s)'} & 0x300 ) >> 2;
-				$objs{$key}->{prop2} = $tmp[1];
+				$objs{$key}->{prop2} = $tmp[1] || 0;
 				$objs{$key}->{prop3} = $display->{'Interval (1/10s)'} & 0xFF;
 			}
 			elsif ( $confObj->{type} == 33 ) {
@@ -378,7 +378,7 @@ sub simulate : Local {
 				my @tmp = split( /\./, $display->{'Start Value (s)'} );
 				$v0 = $tmp[0];
 				$v0 |= ( $display->{'Interval (1/10s)'} & 0x300 ) >> 2;
-				$v1 = $tmp[1];
+				$v1 = $tmp[1] || 0;
 				$v2 = $display->{'Interval (1/10s)'} & 0xFF;
 				( $simValue, $calcVar ) =
 				  $acs->calc( $confObj->{type}, $simValue, $calcVar, $v0, $v1,
