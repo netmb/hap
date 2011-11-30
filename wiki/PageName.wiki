@@ -1,6 +1,4 @@
-#summary One-sentence summary of this page.
 
 = HAP-Wiki =
 
 http://wiki.netmb.net
-
