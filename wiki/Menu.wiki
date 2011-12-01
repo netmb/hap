@@ -1,4 +1,31 @@
 * Grundlagen *
 
-[Menu1 Menu1]
-  [SubMenu1 SubMenu1]
+  [TecDoc Technische Dokumentation]
+
+  [Schema Schematische Darstellung]
+
+* Hardware *
+
+  [Jalousieaktor Jalousieaktor]
+
+  [ControlUnit Control Unit]
+
+  [RelaisStufe Relaisstufe]
+
+  [DimmerStufe Dimmerstufe]
+
+  [LCD LCD]
+
+  [PCInterface PC-Interface]
+
+  [ZCD Zero-Cross-Detection]
+
+* Software *
+
+  [ConfigGUI Config-GUI]
+
+  [WebGUI Web-GUI]
+
+  [Backend Backend]
+
+  [Console Console]
