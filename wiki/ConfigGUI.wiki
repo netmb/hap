@@ -10,4 +10,3 @@ Die Applikation besteht aus einer Frontend und Backend-Komponente. Die Frontend-
 
 http://hap.googlecode.com/svn/wiki/images/gui-module.png
 http://hap.googlecode.com/svn/wiki/images/gui-as.png
-http://hap.googlecode.com/svn/wiki/images/gui-iphone.png
