@@ -1,0 +1,11 @@
+= Config-GUI =
+
+Über die Config-GUI wird das gesamte HAP-System konfiguriert. Hier werden also Control-Units, Geräte (Switche, Dimmer), Analoge Eingänge, Digitale Eingänge usw. angelegt und parametriert. Zudem wird hier die Web-GUI mit simplem drag&drop konfiguriert. Die Oberfläche ist Multi-User und Multi-Config fähig und läuft vollständig im Browser. 
+
+Die nachfolgenden Bilder und Videos geben einen groben Überblick über den Funktionsumfang. 
+
+Etwas zur Technik:
+
+Die Applikation besteht aus einer Frontend und Backend-Komponente. Die Frontend-Komponente (also das, was man im Browser sieht) ist vollständig in Javascript geschrieben und verwendet das ExtJS-Framework. Die Backend-Komponente basiert auf dem Perl-MVC-Framework Catalyst. Die Kommunikation zwischen Frontend und Backend erfolgt über AJAX. Als Datenformat wird JSON verwendet. 
+
+Der nachfolgende Screenshot zeigt die Konfiguration einer Control-Unit.
