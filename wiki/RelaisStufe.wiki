@@ -4,4 +4,3 @@ In einem 6TE-Hutschienengehäuse befinden sich 6 Relaisstufen. Die Relais-Ausgä
 
 http://hap.googlecode.com/svn/wiki/images/relais.jpg
 http://hap.googlecode.com/svn/wiki/images/relais-brd.png
-http://hap.googlecode.com/svn/wiki/images/relais-sch.png
