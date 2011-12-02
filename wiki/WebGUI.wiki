@@ -1,4 +1,3 @@
-
 = Web-GUI =
 
 Mit der Web-GUI lässt sich der Status der HAP-Installation darstellen und parametrieren. Die Oberfläche mit der Config-GUI völlig frei konfigurierbar. Selbstverständlich sind auch mehrere Oberflächen möglich; ein Wechsel zwischen den Oberflächen ist jederzeit möglich.  
@@ -9,3 +8,6 @@ Die Oberflächen aktualisieren ihren Zustand ohne Browser-Refresh. Jedes Objekt 
 So macht es wenig Sinn, alle 10sec die Temperatur abzufragen; der Status einer Lampe sollte jedoch möglichst aktuell sein. 
 
 Zum besseren Verständnis sollten unbendingt folgende Screenshots/Videos angeschaut werden.
+
+http://hap.googlecode.com/svn/wiki/images/gui-iphone2.jpg
+http://hap.googlecode.com/svn/wiki/images/gui-flur.jpg
