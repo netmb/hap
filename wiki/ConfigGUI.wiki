@@ -8,8 +8,6 @@ Etwas zur Technik:
 
 Die Applikation besteht aus einer Frontend und Backend-Komponente. Die Frontend-Komponente (also das, was man im Browser sieht) ist vollständig in Javascript geschrieben und verwendet das ExtJS-Framework. Die Backend-Komponente basiert auf dem Perl-MVC-Framework Catalyst. Die Kommunikation zwischen Frontend und Backend erfolgt über AJAX. Als Datenformat wird JSON verwendet. 
 
-Der nachfolgende Screenshot zeigt die Konfiguration einer Control-Unit.
-
 http://hap.googlecode.com/svn/wiki/images/gui-module.png
 http://hap.googlecode.com/svn/wiki/images/gui-as.png
 http://hap.googlecode.com/svn/wiki/images/gui-iphone.png
