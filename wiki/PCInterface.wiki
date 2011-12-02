@@ -1,4 +1,3 @@
-
 = PC-Interface =
 
 Die Anbindung der Control-Unit an den PC...
@@ -6,3 +5,5 @@ Die Anbindung des Gesamtsystems an einen PC erfolgt ebenfalls über die Control-
 
 Wie gesagt: Auch hier kommt wieder die Control-Unit zum Einsatz. Der USB-Adapter wird direkt über einen Pfostenstecker mit der Control-Unit verbunden.
 Zur Hardware gibt es wenig zu sagen, da der verwendete FT232RL-Chip sehr wenige externe Bauteile benötigt. 
+
+http://hap.googlecode.com/svn/wiki/images/usb-brd.png
