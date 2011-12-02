@@ -1,4 +1,3 @@
-
 = Control Unit=
 
 Die Control-Unit 3.0 (CU) stellt den integralen Bestandteil des HAP-Projektes dar. Auf der  CU sind folgende Kernkomponenten vorhanden:
@@ -13,7 +12,6 @@ Die Maße wurde so gewählt (44mmx45mm), dass die CU problemlos in eine Standard
 
 http://hap.googlecode.com/svn/wiki/images/cu3render.jpg
 http://hap.googlecode.com/svn/wiki/images/cu-brd.png
-http://hap.googlecode.com/svn/wiki/images/cu-sch.png
 
 Weiterhin wurde alle Anschlüsse auf Stiftleisten herausgeführt, so dass die CU auch in anderen Projekten einfach verwendet werden kann, indem sie auf eine Buchsenleiste aufgesteckt wird. 
 
