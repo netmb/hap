@@ -1,4 +1,4 @@
-= Introduction =
+= LCD =
 
 Die LCD Einheit verfügt über ein 2x16 Zeichen grosses hintergrundbeleuchtetes LCD. Die Eingabe erfolgt über einen Drehgeber. Welche Menüs und Geräte auf der LCD Einheit zu sehen sind, wird über die Config-GUI eingestellt. 
 
