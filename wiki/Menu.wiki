@@ -29,3 +29,19 @@
   [Backend Backend]
 
   [Console Console]
+
+* Wiki *
+
+  [Installation]
+
+  [Grundlagen]
+
+  [Konfiguration]
+
+  [GUI]
+
+  [Hardware]
+
+  [Scripting]
+
+  [Autonome Steuerung]
