@@ -44,4 +44,4 @@
 
   [Scripting]
 
-  [Autonome Steuerung]
+  [AutonomeSteuerung Autonome Steuerung]
