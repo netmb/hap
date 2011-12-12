@@ -57,6 +57,9 @@ HAP.MacroPanel = function(attrib){
             name: 'macronr',
             minValue: 0,
             maxValue: 65535
+        }), new Ext.form.Label({
+            fieldLabel: 'Scriptname',
+            text: attrib.scriptName
         })]
     }, {
         xtype: 'fieldset',
