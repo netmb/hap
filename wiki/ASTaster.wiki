@@ -1,14 +1,18 @@
-= Ist =
+= Taster schaltet Ausgang =
+
+
+
+== Ist ==
 
 Ein normaler Wand-Einbautaster sowie eine Hochvolt-Halogen-Lampe an einer HAP-Dimmerstufe
 
 
-= Soll =
+== Soll ==
 
 Beim kurzen Drücken des Tasters soll die Lampe an bzw. aus gehen. Wird der Taster gedrückt gehalten, so soll der Dimmvorgang beginnen. Wird der Taster losgelassen und erneut lange gedrückt, so soll der Dimmvorgang in umgekehrter Richtung starten. 
 
 
-= Lösung  =
+== Lösung  ==
 
  http://hap.googlecode.com/svn/wiki/images/ASTaster.png
 
