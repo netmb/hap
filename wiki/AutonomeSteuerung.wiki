@@ -9,3 +9,5 @@
  [ASReedkontakt Reedkontakt schaltet Ausgang]
 
  [ASBewegungsmelder Bewegungsmelder schaltet Ausgang mit Zeitverzögerung]
+
+ [ASDunstabzugshaube Sicherheitsschaltung Dunstabzugshaube]
