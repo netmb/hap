@@ -2060,9 +2060,9 @@ HAP.ComboSchedulerCommands = function(url){
     this.id = url + '/comboSchedulerCommands';
     this.store = storeSchedulerCommands;
     this.fieldLabel = 'Scheduler Commands';
-    this.valueField = 'name';
+    this.valueField = 'id';
     this.displayField = 'name';
-    this.hiddenName = 'name';
+    this.hiddenName = 'id';
     this.typeAhead = true;
     this.mode = 'local';
     this.triggerAction = 'all';
@@ -3120,7 +3120,16 @@ HAP.ManageSchedulerWindow = function(item){
         header: 'Command',
         dataIndex: 'cmd',
         sortable: true,
-        editor: new HAP.ComboSchedulerCommands({})
+        editor: new HAP.ComboSchedulerCommands({}),
+        renderer: function(data){
+          record = storeSchedulerCommands.getById(data);
+          if (record) {
+            return record.data.name;
+          }
+          else {
+            return data;
+          }
+        }
     }, {
         id: 'manageSchedulerArgs',
         header: 'Arguments',
@@ -3223,7 +3232,7 @@ HAP.ManageSchedulerWindow = function(item){
             cron: '',
             cmd: '',
             args: '',
-			description: '',
+            description: '',
             id: 0
         });
         storeSchedules.insert(0, c);
