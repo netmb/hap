@@ -3,3 +3,5 @@
 * Beispiele *
 
  [ASTaster Taster schaltet Ausgang]
+
+ [AufAbRollo Auf-/Ab-Taster steuert Rollladen]
