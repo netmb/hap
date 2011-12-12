@@ -11,3 +11,5 @@
  [ASBewegungsmelder Bewegungsmelder schaltet Ausgang mit Zeitverzögerung]
 
  [ASDunstabzugshaube Sicherheitsschaltung Dunstabzugshaube]
+
+ [ASHeizstrahler Heizstrahler mit Einschaltbegrenzung]
