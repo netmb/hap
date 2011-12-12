@@ -215,7 +215,10 @@ sub getStartModes : Local {
 
 sub getSchedulerCommands : Local {
   my ( $self, $c ) = @_;
-  $c->stash->{scheduler} = [ map { { 'id' => $_->id, 'name' => $_->name } } $c->model('hapModel::StaticSchedulercommands')->all ];
+  my @schedulerCmds =  map { { 'id' => $_->id, 'name' => $_->name } } $c->model('hapModel::StaticSchedulercommands')->all ;
+  my @macros =  map { { 'id' => $_->id, 'name' => $_->name } } $c->model('hapModel::Makro')->all ;
+  push (@schedulerCmds, @macros);
+  $c->stash->{scheduler} = [@schedulerCmds];
   $c->forward('View::JSON');
 }
 

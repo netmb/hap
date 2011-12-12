@@ -53,14 +53,20 @@ sub setSchedules : Local {
 	if ($validCron) {
 		foreach (@$jsonData) {
 			my $row  = $_;
+			my $rs = $c->model('hapModel::StaticSchedulercommands')->search( {id => $row->{cmd}, name => {like => 'hap_%'}} )->first;
+			my $isMacro = 0;
+			if (!defined($rs)) { # not a native scheduler command -> must be a macro
+			  $isMacro = 1;
+			}  
 			my $data = {
 				cron        => $row->{cron},
 				cmd         => $row->{cmd},
 				args        => $row->{args},
 				description => $row->{description},
+				makro       => $isMacro,
 				config      => $c->session->{config}
 			};
-			my $rs;
+			#my $rs;
 			if ( $row->{id} == 0 ) {
 				$rs = $c->model('hapModel::Scheduler')->create($data);
 			}

@@ -19,8 +19,8 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("code_unique", ["name"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.04005 @ 2009-01-28 18:17:31
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:6DCwc6y6UFJhIZfBZz1rhQ
+# Created by DBIx::Class::Schema::Loader v0.04006 @ 2011-12-11 17:15:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VggSHCzR/3UJVF+BVG0ydw
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
