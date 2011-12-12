@@ -32,7 +32,16 @@ HAP.ManageSchedulerWindow = function(item){
         header: 'Command',
         dataIndex: 'cmd',
         sortable: true,
-        editor: new HAP.ComboSchedulerCommands({})
+        editor: new HAP.ComboSchedulerCommands({}),
+        renderer: function(data){
+          record = storeSchedulerCommands.getById(data);
+          if (record) {
+            return record.data.name;
+          }
+          else {
+            return data;
+          }
+        }
     }, {
         id: 'manageSchedulerArgs',
         header: 'Arguments',
@@ -135,7 +144,7 @@ HAP.ManageSchedulerWindow = function(item){
             cron: '',
             cmd: '',
             args: '',
-			description: '',
+            description: '',
             id: 0
         });
         storeSchedules.insert(0, c);

@@ -457,6 +457,7 @@ CREATE TABLE IF NOT EXISTS `scheduler` (
   `Args` varchar(128) default NULL,
   `Status` smallint(6) default '0',
   `Description` varchar(255) default '',
+  `Makro` smallint(1) DEFAULT '0',
   `Config` int(11) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1274 DEFAULT CHARSET=utf8;
@@ -651,7 +652,7 @@ REPLACE INTO `static_ircodes` VALUES (1,'Button 0',0,'button-0'),(2,'Button 1',1
 REPLACE INTO `static_logicalinputtemplates` VALUES (1,'Rotary Encoder Push Button',158),(2,'Rotary Encoder A/B',151),(3,'Reed Contact',183),(4,'Push-Button',186);
 REPLACE INTO `static_outputvaluetemplates` VALUES (1,'Invert',128),(2,'Plus',129),(3,'Minus',130),(4,'All on',131),(5,'All off',132),(6,'Dim up',133),(7,'Dim down',134),(8,'Dim stop',135),(9,'Dim start',136),(10,'Rotary Encoder left',137),(11,'Rotary Encoder right',138),(12,'Rotary Encoder short push',139),(13,'Rotary Encoder medium long push',140),(14,'Rotary Encoder long push',141),(15,'GUI Refresh',142),(16,'No Operation',255);
 REPLACE INTO `static_portpin` VALUES (1,0,5),(2,0,1),(3,0,2),(4,0,3),(5,0,4),(6,0,0),(7,0,7),(8,0,6),(9,1,0),(10,1,1),(11,1,2),(12,1,3),(13,2,2),(14,2,3),(15,2,4),(16,2,5),(17,2,6),(18,2,7),(19,3,4),(20,3,5),(21,3,6),(22,3,7),(23,3,3),(24,3,0),(25,3,1),(29,1,4),(30,1,5),(31,1,6),(32,1,7);
-REPLACE INTO `static_schedulercommands` VALUES (2,'hap-sendcmd'),(3,'hap-configbuilder'),(4,'hap-firmwarebuilder'),(5,'hap-lcdguibuilder'),(6,'hap-dbcleanup');
+REPLACE INTO `static_schedulercommands` VALUES (2,'hap-sendcmd.pl'),(3,'hap-configbuilder.pl'),(4,'hap-firmwarebuilder.pl'),(5,'hap-lcdguibuilder.pl'),(6,'hap-dbcleanup.pl');
 REPLACE INTO `static_startmodes` VALUES (1,'Standard',217,'normal'),(2,'Default-Config',179,'default-config'),(3,'Full-Default-Config',0,'full-default-config');
 REPLACE INTO `static_timebase` VALUES (1,'1/10s',0),(2,'Seconds',1),(3,'Minutes',2),(4,'Hours',3),(5,'Days',4),(6,'Weeks',5);
 REPLACE INTO `static_weekdays` VALUES (1,'Monday',0),(2,'Tuesday',1),(3,'Wednesday',2),(4,'Thursday',3),(5,'Friday',4),(6,'Saturday',5),(7,'Sunday',6);

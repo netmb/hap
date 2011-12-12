@@ -91,12 +91,19 @@ sub tcpClientDisconnect {
 sub tcpClientInput {
 	my ( $kernel, $session, $heap, $data ) = @_[ KERNEL, SESSION, HEAP, ARG0 ];
 	my $schedule = {};
-	if ( $data =~ /add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+($regex)\s+(.*)/ ) {
+	if ( $data =~ /add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)/ ) {
 		$schedule = {
-			cron      => "$1 $2 $3 $4 $5",
-			command   => $6,
-			arguments => $7,
+			cron       => "$1 $2 $3 $4 $5",
+			scriptId   => $6,
+			arguments  => $8,
+			makro      => $9
 		};
+		if ($9 == 1) {
+		  $schedule->{makroScriptName} = $7;
+		}
+		else {
+		  $schedule->{schedulerScriptName} = $7
+		}
 		$kernel->post( 'main' => 'dbAddSchedule' => { client => $session->ID, schedule => $schedule } );
 	}
 	elsif ( $data =~ /delete\s+(.*)/ ) {
@@ -143,7 +150,7 @@ sub dbGetSchedules {
 	$kernel->post(
 		'database',
 		'arrayhash' => {
-			sql   => "SELECT ID, Cron, Cmd, Args, Description, Status, Config FROM scheduler",
+			sql   => "SELECT scheduler.ID, Cron, Cmd, makro.name as MakroScriptName, static_schedulercommands.name as SchedulerScriptName, Args, Description,STATUS , Makro, scheduler.Config FROM scheduler LEFT JOIN makro ON makro.ID = scheduler.cmd left join static_schedulercommands on static_schedulercommands.id = scheduler.cmd",
 			stash => $stash,
 			event => $event,
 		},
@@ -155,8 +162,8 @@ sub dbAddSchedule {
 	$kernel->post(
 		'database',
 		insert => {
-			sql            => 'INSERT INTO scheduler (Cron, Cmd, Args, Config) VALUES (?,?,?,?)',
-			placeholders   => [ $stash->{schedule}->{cron}, $stash->{schedule}->{command}, $stash->{schedule}->{arguments}, $stash->{schedule}->{config} ],
+			sql            => 'INSERT INTO scheduler (Cron, Cmd, Args, Config, Makro) VALUES (?,?,?,?,?)',
+			placeholders   => [ $stash->{schedule}->{cron}, $stash->{schedule}->{scriptId}, $stash->{schedule}->{arguments}, $stash->{schedule}->{config}, $stash->{schedule}->{makro} ],
 			stash          => $stash,
 			last_insert_id => 'SELECT LAST_INSERT_ID()',
 			event          => 'addSchedule',
@@ -252,8 +259,11 @@ sub addAllSchedules {
 		my $stash = {%$tmp};
 		$stash->{schedule} = {
 			cron      => $_->{Cron},
-			command   => $_->{Cmd},
-			arguments => $_->{Args}
+			scriptId   => $_->{Cmd},
+			schedulerScriptName => $_->{SchedulerScriptName},
+			makroScriptName => $_->{MakroScriptName},
+			arguments => $_->{Args},
+			makro     => $_->{Makro}
 		};
 		$stash->{dbId} = $_->{ID};
 		if ( $stash->{schedule}->{cron} eq "* * * * *" ) {
@@ -265,8 +275,7 @@ sub addAllSchedules {
 			eval { $job = new Schedule::Cron::Events( $stash->{schedule}->{cron}, Seconds => time() ) };
 			if ($job) {
 				$mapping{ $stash->{dbId} }->{cronjob} = $kernel->alarm_set( 'runCmd', timelocal( $job->nextEvent ), $stash );
-				print "Loaded Schedule: $stash->{dbId}, $stash->{schedule}->{cron}, $stash->{schedule}->{command}, $stash->{schedule}->{arguments} ["
-				  . ( $_->{Description} || '' ) . "]\n";
+				print "Loaded Schedule: $stash->{dbId}, $stash->{schedule}->{cron}, ". ($stash->{schedule}->{schedulerScriptName}||$stash->{schedule}->{makroScriptName}). ", $stash->{schedule}->{arguments} [". ( $_->{Description} || '' ) . "]\n";
 			}
 		}    
 	}
@@ -321,11 +330,16 @@ sub deleteSchedule {
 
 sub runCmd {
 	my ( $kernel, $session, $heap, $stash ) = @_[ KERNEL, SESSION, HEAP, ARG0 ];
-	if ( $action{ $stash->{schedule}->{command} } ) {    # check for valid command
-		print "Starting Schedule: $stash->{dbId}, $stash->{schedule}->{cron}, $action{$stash->{schedule}->{command}} $stash->{schedule}->{arguments}\n";
 		my @arguments = split( / /, $stash->{schedule}->{arguments} );
+		my $prg;
+		if ( $stash->{schedule}->{makro} == 1 ) {
+		  $prg = $c->{MacroPath} . '/' . $stash->{schedule}->{scriptId}.".".$stash->{schedule}->{makroScriptName};
+		}
+		else {
+		  $prg = $c->{BasePath} . "/bin/helper/" . $stash->{schedule}->{schedulerScriptName};
+		}
 		$mapping{ $stash->{dbId} }->{wheel} = POE::Wheel::Run->new(
-			Program     => $action{ $stash->{schedule}->{command} },
+			Program     => $prg,
 			ProgramArgs => \@arguments,
 			StdoutEvent => 'wheelOut',
 			CloseEvent  => 'wheelClose'
@@ -334,10 +348,10 @@ sub runCmd {
 
 		$kernel->alarm_remove( $mapping{ $stash->{dbId} }->{cronjob} );
 		if ( !( $stash->{schedule}->{cron} eq "* * * * *" ) ) {
+			print "Starting Schedule: $stash->{dbId}, $stash->{schedule}->{cron}, $prg $stash->{schedule}->{arguments}\n";
 			my $job = new Schedule::Cron::Events( $stash->{schedule}->{cron}, Seconds => time() );
 			$mapping{ $stash->{dbId} }->{cronjob} = $kernel->alarm_set( 'runCmd', timelocal( $job->nextEvent ), $stash );
 		}
-	}
 }
 
 sub wheelOut {
@@ -360,7 +374,7 @@ sub wheelClose {
 }
 
 sub getHelp {
-	return "Add a job:    add * * * * * $regex arguments
+	return "Add a job:    add * * * * * DBId Scriptname Arguments Makro  where (DBId = Database-ID, Makro = 0 or 1) 
 Delete a job: delete x
 List:         list
 Reload:       reload
