@@ -13,3 +13,5 @@
  [ASDunstabzugshaube Sicherheitsschaltung Dunstabzugshaube]
 
  [ASHeizstrahler Heizstrahler mit Einschaltbegrenzung]
+
+ [ASZirkulationspumpe Zeit- und temperaturgesteuerte Warmwasser-Zirkulationspumpe]
