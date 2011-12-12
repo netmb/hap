@@ -7,3 +7,5 @@
  [AufAbRollo Auf-/Ab-Taster steuert Rollladen]
 
  [ASReedkontakt Reedkontakt schaltet Ausgang]
+
+ [ASBewegungsmelder Bewegungsmelder schaltet Ausgang mit Zeitverzögerung]
