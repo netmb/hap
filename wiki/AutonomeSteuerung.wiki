@@ -5,3 +5,5 @@
  [ASTaster Taster schaltet Ausgang]
 
  [AufAbRollo Auf-/Ab-Taster steuert Rollladen]
+
+ [ASReedkontakt Reedkontakt schaltet Ausgang]
