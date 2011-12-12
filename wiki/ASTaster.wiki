@@ -10,17 +10,17 @@ Beim kurzen Drücken des Tasters soll die Lampe an bzw. aus gehen. Wird der Tast
 
 = Lösung  =
 
- http://code.google.com/p/hap/source/browse/wiki/images/ASTaster.png
+ http://hap.googlecode.com/svn/wiki/images/ASTaster.png
 
-Der "Taster Flur" ist als Logischer-Eingang mit folgenden Eigenschaften konfiguriert: 
+==== Der "Taster Flur" ist als Logischer-Eingang mit folgenden Eigenschaften konfiguriert: ====
 
-*Falling Edge 
-*Short Activation 
-*Activate Pullup 
-*Force Debounce
+ * Falling Edge 
+ * Short Activation 
+ * Activate Pullup 
+ * Force Debounce
 
-Die "Logical-Input-Defaults" auf diesem Modul sind wie folgt konfiguriert: 
+==== Die "Logical-Input-Defaults" auf diesem Modul sind wie folgt konfiguriert: ====
 
-*Debounced: 10 (1/100s) 
-*Short-Activation: 50 (1/100s) 
-*Long-Activation: 150 (1/100s)
+ * Debounced: 10 (1/100s) 
+ * Short-Activation: 50 (1/100s) 
+ * Long-Activation: 150 (1/100s)
