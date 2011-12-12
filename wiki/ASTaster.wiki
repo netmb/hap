@@ -10,7 +10,7 @@ Beim kurzen Drücken des Tasters soll die Lampe an bzw. aus gehen. Wird der Tast
 
 = Lösung  =
 
- http://hap.googlecode.com/svn/wiki/images/ASTaster.jpg
+ http://code.google.com/p/hap/source/browse/wiki/images/ASTaster.png
 
 Der "Taster Flur" ist als Logischer-Eingang mit folgenden Eigenschaften konfiguriert: 
 
