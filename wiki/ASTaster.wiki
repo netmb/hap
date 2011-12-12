@@ -10,7 +10,7 @@ Beim kurzen Drücken des Tasters soll die Lampe an bzw. aus gehen. Wird der Tast
 
 = Lösung  =
 
-[[Image:ASTaster.png]] 
+
 
 Der "Taster Flur" ist als Logischer-Eingang mit folgenden Eigenschaften konfiguriert: 
 
