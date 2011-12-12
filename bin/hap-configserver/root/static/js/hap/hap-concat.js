@@ -3089,6 +3089,7 @@ HAP.ManageFirmwareWindow = function(id){
 HAP.ManageSchedulerWindow = function(item){
 
     storeSchedules.load();
+    storeSchedulerCommands.reload();
     
     var sm = new Ext.grid.CheckboxSelectionModel({
         singleSelect: false
@@ -4705,7 +4706,8 @@ Ext.extend(HAP.TreeMacro, Ext.tree.TreePanel, {
             }
             this.getNodeById(url).expand();
             this.getNodeById(url).appendChild(new Ext.tree.TreeNode({
-                text: newName,
+                text: newName + ' [' + newId + ']',
+                scriptName : newId + "." + newName, 
                 id: type + '/' + newId
             }));
             this.getNodeById(type + '/' + newId).select();
@@ -4714,7 +4716,9 @@ Ext.extend(HAP.TreeMacro, Ext.tree.TreePanel, {
     updateHapNode: function(url, newName){
         if (this.getNodeById(url)) {
             if (this.getNodeById(url)) {// maybe a bug?: If tree-node isnt expanded, it doesnt exist in dom !
-                this.getNodeById(url).setText(newName);
+                var node = this.getNodeById(url);
+                node.setText(newName + ' [' + node.id.split('/')[1] + ']');
+                node.attributes.scriptName = node.id.split('/')[1] + "." + newName; 
             }
             else {
                 this.root.reload();
@@ -7911,6 +7915,9 @@ HAP.MacroPanel = function(attrib){
             name: 'macronr',
             minValue: 0,
             maxValue: 65535
+        }), new Ext.form.Label({
+            fieldLabel: 'Scriptname',
+            text: attrib.scriptName
         })]
     }, {
         xtype: 'fieldset',

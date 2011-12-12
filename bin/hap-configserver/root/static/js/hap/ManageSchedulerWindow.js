@@ -1,6 +1,7 @@
 HAP.ManageSchedulerWindow = function(item){
 
     storeSchedules.load();
+    storeSchedulerCommands.reload();
     
     var sm = new Ext.grid.CheckboxSelectionModel({
         singleSelect: false

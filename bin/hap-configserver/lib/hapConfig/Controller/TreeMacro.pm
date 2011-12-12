@@ -31,7 +31,7 @@ sub getTreeNodes : Local {
   my $config = $c->session->{config};
   my @macros;
   @macros =
-    map { { id => "macro/" . $_->id, text => $_->name, leaf => 'true' } } $c->model('hapModel::Makro')->search( { config => $config }, { order_by => 'Name ASC' } );
+    map { { id => "macro/" . $_->id, text => $_->name . " [" . $_->id . "]", leaf => 'true', scriptName => $_->id . "." . $_->name } } $c->model('hapModel::Makro')->search( { config => $config }, { order_by => 'Name ASC' } );
   $c->response->body( JSON::XS->new->utf8(0)->encode( \@macros ) );
 }
 
