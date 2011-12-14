@@ -51,4 +51,4 @@ Makro: 48.ROLLOS_OG_DG_NACHT
 /opt/hap/bin/helper/hap-sendcmd2.pl "destination 210 set device 152 value 100" #AZ
 }}}
 
-<destination> ist die jeweilige Nummer der CU, <device> die Adresse des Rollladen-Device und <value> legt die Position des Rollos fest. 
+<*destination*> ist die jeweilige Nummer der CU, <*device*> die Adresse des Rollladen-Device und <*value*> legt die Position des Rollos fest. 
