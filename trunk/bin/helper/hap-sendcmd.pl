@@ -18,6 +18,7 @@ use HAP::Init;
 use HAP::ConfigBuilder;
 
 my $command;
+my $retransmits = 5;
 GetOptions( "command|c=s" => \$command ) or die;
 die "Missing Command-Parameter [--command|-c]\n" unless $command;
 
@@ -39,6 +40,12 @@ if ($@) {
 else {
 	print $sock $command . "\n";
 	my $res = <$sock>;
+	my $i = 0;
+	while ($res =~ /.*\[ERR\].*/ && $i < $retransmits ) {
+	  print $sock $command . "\n";
+	  my $res = <$sock>;
+	  $i++;
+	}
 	print "[100%] $res";
 	$sock->close();
 }
