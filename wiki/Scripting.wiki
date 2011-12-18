@@ -1,3 +1,5 @@
  [ScriptRollosNacht Rollos nach Sonnenuntergang in Stellung Nacht fahren]
 
  [ScriptBewegungsmelderNacht Bewegungsmelder für Beleuchtung nach Sonnenuntergang aktiv schalten]
+
+ [ScriptBrowserStart]
