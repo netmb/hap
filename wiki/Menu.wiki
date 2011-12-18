@@ -46,7 +46,7 @@
 
   [AutonomeSteuerung Autonome Steuerung]
 
-  [Erstellung eines Backup  (mySQL-Datenbank / Bilder)]
+  [ Backup Erstellung eines Backup]
 
   [Subversion verwenden]
 
