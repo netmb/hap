@@ -46,7 +46,7 @@
 
   [AutonomeSteuerung Autonome Steuerung]
 
-  [ Backup Erstellung eines Backup]
+  [Backup]
 
   [Subversion]
 
