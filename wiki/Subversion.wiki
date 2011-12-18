@@ -1,0 +1,85 @@
+= Subversion =
+
+Vorbereitungen: 
+<pre>apt-get install subversion
+wget http://packages.netmb.net/PublicKey
+apt-key add PublicKey
+echo "deb http://packages.netmb.net/ubuntu ./" &gt;&gt; /etc/apt/sources.list
+apt-get update
+</pre> 
+Notwendige Pakete installieren: 
+<pre>apt-get install perl mysql-server avr-libc gcc-avr binutils-avr make libcatalyst-perl libcatalyst-view-tt-perl libjson-xs-perl libpoe-perl libcatalyst-modules-extra-perl libcatalyst-modules-perl \
+libimage-size-perl libarchive-zip-perl libset-crontab-perl libschedule-cron-perl libdevice-serialport-perl libparams-util-perl libcatalyst-plugin-authentication-store-dbic-perl libpoe-component-easydbi-perl libschedule-cron-events-perl
+</pre> 
+SVN checkout: 
+<pre>cd /opt
+svn checkout http://hap.googlecode.com/svn/trunk/ hap-read-only
+</pre> 
+Datenbank anlegen: 
+<pre>mysql &lt; /opt/hap/etc/hap.sql -u root -p
+</pre> 
+<br>
+== Detailanleitung für ein Upgrade eines bestehenden HAP unter Ubuntu 9.10 bzw. 10.04 ==
+Zunächst müssen alle HAP-Prozesse gestoppt werden (mp, configserver, scheduler)
+<pre>cd /etc/init.d
+sudo ./hap-mp stop
+sudo ./hap-configserver stop
+sudo ./hap-scheduler stop
+</pre> 
+Um die neue Version nutzen zu können muss Catalyst upgedated werden.
+<pre>sudo apt-get install build-essential
+sudo PERL_MM_USE_DEFAULT=1 cpan Catalyst::Runtime Catalyst::Devel
+</pre>
+Danach erfolgt die Installation von Subversion und der notwendigen Perl-Bibliotheken.
+<pre>sudo apt-get install subversion
+sudo apt-get update
+sudo apt-get install perl mysql-server avr-libc gcc-avr binutils-avr make libcatalyst-perl libcatalyst-view-tt-perl libjson-xs-perl libpoe-perl libcatalyst-modules-extra-perl libcatalyst-modules-perl libimage-size-perl libarchive-zip-perl libset-crontab-perl libschedule-cron-perl libdevice-serialport-perl libparams-util-perl libcatalyst-plugin-authentication-store-dbic-perl libpoe-component-easydbi-perl libschedule-cron-events-perl
+</pre> 
+Das SVN checkout selber lädt das gesamte hap Verzeichniss runter, das anschließend über das bestehende /opt/hap geschrieben werden muss.
+<pre>
+cd /opt
+sudo svn checkout http://hap.googlecode.com/svn/trunk/ hap-read-only
+</pre>
+Die heruntergeladenen Dateien müssen jetzt im Orignalverzeichnis überschrieben werden. Dabei bleiben die spezifischen Benutzerdaten wie Bilder, genutzte Firmware usw. unverändert.
+Variante 1 (wenn graphische Benutzeroberfläche zur Verfügung steht - z.B. Ubuntu-Desktop):
+<pre>
+sudo nautilus  
+  ->hap-read-only nach /opt/hap überschrieben 
+</pre>
+Variante 2 (wenn keine graphische Benutzeroberfläche zur Verfügung steht - z.B. Ubuntu-Server):
+<pre>
+cd hap-read-only
+sudo cp -rf * ../hap
+</pre> 
+Danach müssen die Rechte noch angepasst werden
+<pre>
+sudo chown -R hap:hap /opt/hap
+</pre>
+und die Inhalte von /opt/hab/etc/init.d über die besteheneden Dateien in /etc/init.d geschrieben werden.
+
+Variante Ubuntu-Desktop:
+<pre>
+sudo nautilus 
+  -> (3 Dateien) /opt/hab/etc/init.d Inhalt nach /etc/init.d/
+</pre>
+Variante Ubuntu-Server:
+<pre>
+cd /opt/hap/etc/init.d
+sudo cp -rf * /etc/init.d
+</pre>
+Auch diese müssen noch die richtigen Rechte bekommen:
+<pre>
+sudo chown -R hap:hap /etc/init.d/hap-mp
+sudo chown -R hap:hap /etc/init.d/hap-scheduler
+sudo chown -R hap:hap /etc/init.d/hap-configserver
+</pre> 
+Danach erfolgt der Datenbankimport um die neuen Funktionen nutzen zu können. Dabei wird nicht die aktuelle Datenbank überschrieben. Lediglich das Password wird auf password zurückgesetzt und kann nach der Anmeldung wieder geändert werden.
+<pre>
+mysql < /opt/hap/etc/hap.sql -u root -p
+</pre> 
+Nach dem Update müssen noch die Parameter in der hap.yml [http://wiki.netmb.net/index.php/USB/Serial_über_Netzwerk_(Anbindung_Server-CU) Wiki Beschreibung Hap.yml] angepasst werden und HAP erneut gestartet werden.
+<pre>
+sudo ./hap-scheduler start
+sudo ./hap-configserver start
+sudo ./hap-mp start
+</pre>
