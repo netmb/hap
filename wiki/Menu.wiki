@@ -2,7 +2,7 @@
 
   [TecDoc Technische Dokumentation]
 
-  [TecDoc Quick start HowTo]
+  [Quick start HowTo]
 
   [Schema Schematische Darstellung]
 
