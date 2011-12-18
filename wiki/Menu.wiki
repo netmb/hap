@@ -50,6 +50,6 @@
 
   [Subversion]
 
-  [HAP-Scheduler]
+  [HAPScheduler]
 
   [Script zum automatischen Starten von Firefox /eines Script nach dem Start vom HAP-mp.pl]
