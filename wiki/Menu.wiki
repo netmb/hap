@@ -48,8 +48,8 @@
 
   [ Backup Erstellung eines Backup]
 
-  [Subversion verwenden]
+  [Subversion]
 
-  [Verwendung des HAP-Scheduler]
+  [HAP-Scheduler]
 
   [Script zum automatischen Starten von Firefox /eines Script nach dem Start vom HAP-mp.pl]
