@@ -45,3 +45,11 @@
   [Scripting]
 
   [AutonomeSteuerung Autonome Steuerung]
+
+  [Erstellung eines Backup  (mySQL-Datenbank / Bilder)]
+
+  [Subversion verwenden]
+
+  [Verwendung des HAP-Scheduler]
+
+  [Script zum automatischen Starten von Firefox /eines Script nach dem Start vom HAP-mp.pl]
