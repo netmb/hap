@@ -1,4 +1,3 @@
+= Quick start HowTo =
 
-= Technische Dokumentation =
-
-http://code.google.com/p/hap/downloads/detail?name=HAP-CU-TechDok.pdf
+http://hap.googlecode.com/files/Hap_QuickStart.pdf
