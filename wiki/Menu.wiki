@@ -2,6 +2,8 @@
 
   [TecDoc Technische Dokumentation]
 
+  [TecDoc Quick start HowTo]
+
   [Schema Schematische Darstellung]
 
 * Hardware *
