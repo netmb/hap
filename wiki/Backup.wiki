@@ -11,7 +11,6 @@ Sofern noch die hochgeladenen Bilder gesichert werden sollen, können diese so a
 
 </pre> 
 === 2. Re-Import eines Backup<br><br>  ===
-
 Die gesicherte Datei hap.sql kann so mit mysql wieder auf dem neuen System importiert werden.<br> 
 <pre> mysql < hap.sql -u root -p
  </pre> 
