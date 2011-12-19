@@ -4,7 +4,7 @@ Der HAP- Scheduler ermöglicht das Setzen oder Abfragen von einzelnen Datenwerte
 
 Hier ein Bespiele, bei dem jeweils alles 15Minuten die 3 Werte abfragt werden.
 
-[[Datei:Scheduler.png]]
+http://hap.googlecode.com/svn/wiki/images/Scheduler.png
 
 
 '''Cron'''        : Eingabe wie bei jedem Cron-Job [http://de.wikipedia.org/wiki/Cronjob Wiki CronJob]
