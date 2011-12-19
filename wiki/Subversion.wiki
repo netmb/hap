@@ -4,7 +4,7 @@ Vorbereitungen:
 <pre>apt-get install subversion
 wget http://packages.netmb.net/PublicKey
 apt-key add PublicKey
-echo "deb http://packages.netmb.net/ubuntu ./" &gt;&gt; /etc/apt/sources.list
+echo "deb http://packages.netmb.net/ubuntu ./" >> /etc/apt/sources.list
 apt-get update
 </pre> 
 Notwendige Pakete installieren: 
