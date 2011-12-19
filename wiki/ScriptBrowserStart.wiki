@@ -15,12 +15,13 @@ Bzgl. Firefox muss das Fullscreen Plugin installiert werden. Darin kann man unte
 
 Script:
 
-<PRE> 
+{{{ 
 #! /bin/bash
 while [ "$(pidof hap-mp.pl | tr -d '0123456789' | wc -c)" -lt "1" ]
 do
 sleep 5
 done
+
 
 # HAP-mp.pl running now"
 # Start here the update script after hap-mp.pl is loaded 
@@ -31,14 +32,12 @@ cd /opt/hap/var/scripts
 sleep 2
 firefox
 exit 0
-</PRE>
+}}}
 
 Beispiel für "update.pl"
 
-<PRE> 
+{{{ 
 #!/usr/bin/perl -w
 # Read from CU 100 the status of Address 80
 system( "/opt/hap/bin/helper/hap-sendcmd2.pl", "destination 100 query device 80");
-</PRE>
-
-
+}}}
