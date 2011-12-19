@@ -16,7 +16,7 @@ SVN checkout:
 svn checkout http://hap.googlecode.com/svn/trunk/ hap-read-only
 </pre> 
 Datenbank anlegen: 
-<pre>mysql &lt; /opt/hap/etc/hap.sql -u root -p
+<pre>mysql < /opt/hap/etc/hap.sql -u root -p
 </pre> 
 <br>
 == Detailanleitung für ein Upgrade eines bestehenden HAP unter Ubuntu 9.10 bzw. 10.04 ==
