@@ -1,6 +1,6 @@
 #summary One-sentence summary of this page.
 
-= ScriptBrowserStart =
+= Script zum automatischen Starten von Firefox /eines Script nach dem Start vom HAP-mp.pl =
 
 = Ist =
 
