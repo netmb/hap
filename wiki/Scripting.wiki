@@ -2,4 +2,4 @@
 
  [ScriptBewegungsmelderNacht Bewegungsmelder für Beleuchtung nach Sonnenuntergang aktiv schalten]
 
- [ScriptBrowserStart]
+ [ScriptBrowserStart Script zum automatischen Starten von Firefox]
