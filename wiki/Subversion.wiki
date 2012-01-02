@@ -86,7 +86,7 @@ Danach erfolgt der Datenbankimport um die neuen Funktionen nutzen zu können. Da
 {{{
 mysql < /opt/hap/etc/hap.sql -u root -p
 }}} 
-Nach dem Update müssen noch die Parameter in der hap.yml [http://wiki.netmb.net/index.php/USB/Serial_über_Netzwerk_(Anbindung_Server-CU) Wiki Beschreibung Hap.yml] angepasst werden und HAP erneut gestartet werden.
+Nach dem Update müssen noch die Parameter in der hap.yml [USB_Serial_Netzwerk Wiki Beschreibung Hap.yml] angepasst werden und HAP erneut gestartet werden.
 {{{
 sudo ./hap-scheduler start
 sudo ./hap-configserver start
