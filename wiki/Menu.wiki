@@ -34,7 +34,7 @@
 
   [Installation]
 
-  [Subversion Subversion verwenden]
+  [Subversion]
 
   [Grundlagen]
 
@@ -48,8 +48,6 @@
 
   [AutonomeSteuerung Autonome Steuerung]
 
-  [Backup]
-
-  [Subversion]
+  [Backup]  
 
   [HAPScheduler]
