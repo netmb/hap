@@ -1,34 +1,14 @@
-=Installation=
+== Installation ==
 
-HAP lässt sich auf Debian-Lenny und Ubuntu-Server 8.10/9.04 (32-Bit)    wie folgt installieren:
+Nach der Installation von Ubuntu-Server 11.10 (Debian sollte ebenfalls problemlos funktionieren), führt man folgende Kommandos auf der Konsole aus: 
 
-Zunächst muss das HAP-Paket-Repository als "vetrauenswürdige Quelle" bekannt gemacht werden:
 {{{
-wget http://packages.netmb.net/PublicKey
-apt-key add PublicKey
+wget http://hap.googlecode.com/files/setup.sh
+chmod 755 setup.sh
+./setup.sh
 }}}
 
-Anschliessend wird das HAP-Paket-Repository in die Sources.list von APT eingefügt und die Quellen aktualisiert:
-
-Für Debian:
-{{{
-echo "deb http://packages.netmb.net/debian ./" >> /etc/apt/sources.list
-}}}
-Für Ubuntu:
-{{{
-echo "deb http://packages.netmb.net/ubuntu ./" >> /etc/apt/sources.list
-}}}
-{{{
-apt-get update
-}}}
-
-Danach lässt sich HAP einfach über folgenden Befehl installieren (Je nach Debian/Ubuntu-Installation kommt hier eine beträchtliche Menge Pakete zusammen ... die meisten Pakete sind jedoch nur einfache Perl-Module ... daher nicht erschrecken).
-{{{
-apt-get install hap
-}}}
-
-Den Installationsanweisungen der einzelnen Pakete ist natürlich folge zu leisten.
-Bricht dieser Befehl unter Ubuntu wegen Abhängigkeitsfehlern ab, so sind wahrscheinlich die Universe-Quellen nicht aktiviert. Abhilfe findet man unter Universe-Quellen unter Ubuntu aktivieren.
+Das Setup-Script führt alle notwendigen Schritte für die Installation von HAP aus. Sollte aus irgendeinem Grund einer der im Setup-Script aufgeführten Schritte fehlschlagen, so kann das Script einfach erneut gestartet werden.
 
 Wenn alles problemlos installiert wurde, sollte man sich nach 5-10min über folgende Seite am HAP-Frontend anmelden können:
 
