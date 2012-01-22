@@ -90,19 +90,29 @@ sub tcpClientDisconnect {
 
 sub tcpClientInput {
 	my ( $kernel, $session, $heap, $data ) = @_[ KERNEL, SESSION, HEAP, ARG0 ];
+	print $data."\n";
 	my $schedule = {};
-	if ( $data =~ /add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)/ ) {
+				 #/add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+($regex)\s+(.*)/
+				 #		  C1     C2     C3     C4     C5     
+				 # add     *     *       *      *     *      hap-configbuilder -m $row->{id} -f
+	if ( $data =~ /add\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([[:graph:]]*)\s*(.*)/ ) {
+	print "$1, $2, $3, $4, $5, $6, $7 \n";
 		$schedule = {
 			cron       => "$1 $2 $3 $4 $5",
 			scriptId   => $6,
-			arguments  => $8,
-			makro      => $9
+			arguments  => $7
 		};
-		if ($9 == 1) {
-		  $schedule->{makroScriptName} = $7;
+		
+		# wenn $7 eines der fertigen helper-scripts ist
+		if ($6 =~ /($regex)/) {
+		  $schedule->{schedulerScriptName} = $schedule->{scriptId};
+		  $schedule->{makro} = 0;
+		  print "no makro \n";
 		}
 		else {
-		  $schedule->{schedulerScriptName} = $7
+		  $schedule->{makroScriptName} = $6;
+		  $schedule->{makro} = 1;
+		  print "is makro \n";
 		}
 		$kernel->post( 'main' => 'dbAddSchedule' => { client => $session->ID, schedule => $schedule } );
 	}
@@ -336,8 +346,12 @@ sub runCmd {
 		  $prg = $c->{MacroPath} . '/' . $stash->{schedule}->{scriptId}.".".$stash->{schedule}->{makroScriptName};
 		}
 		else {
-		  $prg = $c->{BasePath} . "/bin/helper/" . $stash->{schedule}->{schedulerScriptName};
+		  #$prg = $c->{BasePath} . "/bin/helper/" . $stash->{schedule}->{schedulerScriptName};
+		  # gets the path of the script to be executed out of the hash-array defined at the top of this module
+		  $prg = $action{$stash->{schedule}->{scriptId}};
 		}
+		
+		print $prg."\n";
 		$mapping{ $stash->{dbId} }->{wheel} = POE::Wheel::Run->new(
 			Program     => $prg,
 			ProgramArgs => \@arguments,
