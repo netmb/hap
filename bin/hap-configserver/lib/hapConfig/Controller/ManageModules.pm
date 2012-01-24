@@ -96,7 +96,6 @@ sub pushConfig : Local {
     else {
       foreach (@$jsonData) {
         my $row = $_;
-
         #$devOpt = 0;
         #$devOpt |= 1 if ( $row->{'devoption/1'} );
         #$devOpt |= 2 if ( $row->{'devoption/2'} );
