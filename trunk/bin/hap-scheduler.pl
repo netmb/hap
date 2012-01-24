@@ -23,11 +23,11 @@ my %wheelToDb;
 my $c      = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", SKIP_DB => 1 );
 my $regex  = "hap-sendcmd|hap-configbuilder|hap-firmwarebuilder|hap-lcdguibuilder|hap-dbcleanup";
 my %action = (
-	'hap-sendcmd'         => $c->{BasePath} . "/bin/helper/hap-sendcmd.pl",
-	'hap-configbuilder'   => $c->{BasePath} . "/bin/helper/hap-configbuilder.pl",
-	'hap-firmwarebuilder' => $c->{BasePath} . "/bin/helper/hap-firmwarebuilder.pl",
-	'hap-lcdguibuilder'   => $c->{BasePath} . "/bin/helper/hap-lcdguibuilder.pl",
-	'hap-dbcleanup'       => $c->{BasePath} . "/bin/helper/hap-dbcleanup.pl"
+	'hap-sendcmd'         => "hap-sendcmd.pl",
+	'hap-configbuilder'   => "hap-configbuilder.pl",
+	'hap-firmwarebuilder' => "hap-firmwarebuilder.pl",
+	'hap-lcdguibuilder'   => "hap-lcdguibuilder.pl",
+	'hap-dbcleanup'       => "hap-dbcleanup.pl"
 );
 
 POE::Session->create(
@@ -37,6 +37,8 @@ POE::Session->create(
 			$_[KERNEL]->yield('dbGetSchedules');
 			$_[KERNEL]->yield( 'dbAddLogEntry', $$, 'hap-scheduler', 'Info', 'Startup complete.' );
 		},
+		dbFetchScriptName      => \&dbFetchScriptName,
+		dbFetchScriptId        => \&dbFetchScriptId,
 		dbAddLogEntry          => \&dbAddLogEntry,
 		dbAddSchedule          => \&dbAddSchedule,
 		dbDelSchedule          => \&dbDelSchedule,
@@ -90,31 +92,42 @@ sub tcpClientDisconnect {
 
 sub tcpClientInput {
 	my ( $kernel, $session, $heap, $data ) = @_[ KERNEL, SESSION, HEAP, ARG0 ];
-	print $data."\n";
 	my $schedule = {};
-				 #/add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+($regex)\s+(.*)/
-				 #		  C1     C2     C3     C4     C5     
-				 # add     *     *       *      *     *      hap-configbuilder -m $row->{id} -f
-	if ( $data =~ /add\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([0-9\/\*]+)\s+([[:graph:]]*)\s*(.*)/ ) {
-	print "$1, $2, $3, $4, $5, $6, $7 \n";
+	# Wenn ID
+	#  fetchScriptName
+	# Wenn regex-predefind
+	#  fetchID
+	# build final Schedule 
+	# dbAddSchedule
+	if ( $data =~ /add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+($regex)\s+(.*)/ ) {
+		$schedule = {
+			cron       => "$1 $2 $3 $4 $5",
+			scriptName => $action{$6},
+			arguments  => $7,
+			makro      => 0
+		};
+		$kernel->post( 'main' => 'dbFetchScriptId' => { client => $session->ID, schedule => $schedule } );
+		#$kernel->post( 'main' => 'dbAddSchedule' => { client => $session->ID, schedule => $schedule } );
+	}
+	elsif ( $data =~ /add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(\d+)\s+(.*)/ ) {
 		$schedule = {
 			cron       => "$1 $2 $3 $4 $5",
 			scriptId   => $6,
-			arguments  => $7
+			arguments  => $7,
+			makro      => 1
 		};
-		
-		# wenn $7 eines der fertigen helper-scripts ist
-		if ($6 =~ /($regex)/) {
-		  $schedule->{schedulerScriptName} = $schedule->{scriptId};
-		  $schedule->{makro} = 0;
-		  print "no makro \n";
-		}
-		else {
-		  $schedule->{makroScriptName} = $6;
-		  $schedule->{makro} = 1;
-		  print "is makro \n";
-		}
-		$kernel->post( 'main' => 'dbAddSchedule' => { client => $session->ID, schedule => $schedule } );
+		$kernel->post( 'main' => 'dbFetchScriptName' => { client => $session->ID, schedule => $schedule } );
+		#$kernel->post( 'main' => 'dbAddSchedule' => { client => $session->ID, schedule => $schedule } );
+	}
+	elsif ( $data =~ /add\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+(.*)\s+($regex)\s+(.*)/ ) {
+		$schedule = {
+			cron       => "$1 $2 $3 $4 $5",
+			scriptName => $action{$6},
+			arguments  => $7,
+			makro      => 0
+		};
+		$kernel->post( 'main' => 'dbFetchScriptId' => { client => $session->ID, schedule => $schedule } );
+		#$kernel->post( 'main' => 'dbAddSchedule' => { client => $session->ID, schedule => $schedule } );
 	}
 	elsif ( $data =~ /delete\s+(.*)/ ) {
 		$kernel->post( 'main' => 'dbDelSchedule' => { client => $session->ID, dbId => $1 } );
@@ -151,6 +164,32 @@ sub tcpClientOutput {
 # Database
 ################################################################################
 
+sub dbFetchScriptName {
+	my ( $kernel, $heap, $session, $stash ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
+	$kernel->post(
+		'database',
+		'single' => {
+			sql   => "SELECT name FROM makro where id = ? ",
+			placeholders => [$stash->{schedule}->{scriptId}],
+			stash => $stash,
+			event => 'dbAddSchedule',
+		},
+	);
+}
+
+sub dbFetchScriptId {
+	my ( $kernel, $heap, $session, $stash ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
+	$kernel->post(
+		'database',
+		'single' => {
+			sql   => "SELECT id from static_schedulercommands where name = ? ",
+			placeholders => [$stash->{schedule}->{scriptName}],
+			stash => $stash,
+			event => 'dbAddSchedule',
+		},
+	);
+}
+
 sub dbGetSchedules {
 	my ( $kernel, $heap, $session, $stash ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
 	my $event = 'listSchedules';
@@ -160,7 +199,8 @@ sub dbGetSchedules {
 	$kernel->post(
 		'database',
 		'arrayhash' => {
-			sql   => "SELECT scheduler.ID, Cron, Cmd, makro.name as MakroScriptName, static_schedulercommands.name as SchedulerScriptName, Args, Description,STATUS , Makro, scheduler.Config FROM scheduler LEFT JOIN makro ON makro.ID = scheduler.cmd left join static_schedulercommands on static_schedulercommands.id = scheduler.cmd",
+			sql   => "SELECT scheduler.ID, Cron, Cmd, CASE Makro WHEN 1 THEN makro.Name ELSE static_schedulercommands.name END as scriptName, Args, Description, STATUS, Makro, scheduler.Config FROM scheduler LEFT JOIN makro ON makro.ID = scheduler.cmd left join static_schedulercommands on static_schedulercommands.id = scheduler.cmd",
+			#sql   => "SELECT scheduler.ID, Cron, Cmd, makro.name as MakroScriptName, static_schedulercommands.name as SchedulerScriptName, Args, Description,STATUS , Makro, scheduler.Config FROM scheduler LEFT JOIN makro ON makro.ID = scheduler.cmd left join static_schedulercommands on static_schedulercommands.id = scheduler.cmd",
 			stash => $stash,
 			event => $event,
 		},
@@ -168,7 +208,14 @@ sub dbGetSchedules {
 }
 
 sub dbAddSchedule {
-	my ( $kernel, $heap, $session, $stash ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
+	my ( $kernel, $heap, $session, $dbData ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
+	my $stash = $dbData->{stash};
+	if ($stash->{schedule}->{makro} == 0) {
+	  $stash->{schedule}->{scriptId} = $dbData->{result};
+	}
+	else {
+	  $stash->{schedule}->{scriptName} = $dbData->{result};
+	}
 	$kernel->post(
 		'database',
 		insert => {
@@ -270,8 +317,7 @@ sub addAllSchedules {
 		$stash->{schedule} = {
 			cron      => $_->{Cron},
 			scriptId   => $_->{Cmd},
-			schedulerScriptName => $_->{SchedulerScriptName},
-			makroScriptName => $_->{MakroScriptName},
+			scriptName => $_->{scriptName},
 			arguments => $_->{Args},
 			makro     => $_->{Makro}
 		};
@@ -285,7 +331,7 @@ sub addAllSchedules {
 			eval { $job = new Schedule::Cron::Events( $stash->{schedule}->{cron}, Seconds => time() ) };
 			if ($job) {
 				$mapping{ $stash->{dbId} }->{cronjob} = $kernel->alarm_set( 'runCmd', timelocal( $job->nextEvent ), $stash );
-				print "Loaded Schedule: $stash->{dbId}, $stash->{schedule}->{cron}, ". ($stash->{schedule}->{schedulerScriptName}||$stash->{schedule}->{makroScriptName}). ", $stash->{schedule}->{arguments} [". ( $_->{Description} || '' ) . "]\n";
+				print "Loaded Schedule: $stash->{dbId}, $stash->{schedule}->{cron}, $stash->{schedule}->{scriptName}, $stash->{schedule}->{arguments} [". ( $_->{Description} || '' ) . "]\n";
 			}
 		}    
 	}
@@ -343,15 +389,11 @@ sub runCmd {
 		my @arguments = split( / /, $stash->{schedule}->{arguments} );
 		my $prg;
 		if ( $stash->{schedule}->{makro} == 1 ) {
-		  $prg = $c->{MacroPath} . '/' . $stash->{schedule}->{scriptId}.".".$stash->{schedule}->{makroScriptName};
+		  $prg = $c->{MacroPath} . '/' . $stash->{schedule}->{scriptId}.".".$stash->{schedule}->{scriptName};
 		}
 		else {
-		  #$prg = $c->{BasePath} . "/bin/helper/" . $stash->{schedule}->{schedulerScriptName};
-		  # gets the path of the script to be executed out of the hash-array defined at the top of this module
-		  $prg = $action{$stash->{schedule}->{scriptId}};
+		  $prg = $c->{BasePath} . "/bin/helper/" . $stash->{schedule}->{scriptName};
 		}
-		
-		print $prg."\n";
 		$mapping{ $stash->{dbId} }->{wheel} = POE::Wheel::Run->new(
 			Program     => $prg,
 			ProgramArgs => \@arguments,
@@ -388,7 +430,7 @@ sub wheelClose {
 }
 
 sub getHelp {
-	return "Add a job:    add * * * * * DBId Scriptname Arguments Makro  where (DBId = Database-ID, Makro = 0 or 1) 
+return "Add a job: add * * * * * [DBID|$regex] Arguments where (DBID = Macro-Script Database-ID) 
 Delete a job: delete x
 List:         list
 Reload:       reload
