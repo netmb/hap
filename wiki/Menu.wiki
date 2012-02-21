@@ -52,4 +52,4 @@
 
   [HAPScheduler]
 
-  [USB Verbindungsüberwachung]
+  [USBVerbindungsueberwachnung]
