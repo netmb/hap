@@ -5,7 +5,7 @@
 Kurzer Bash Script zur Überwachung der USB Verbindung und bei Problemen Restart von HAP.
 
 = Details =
-
+{{{
 #! /bin/bash
 
 result=$(/opt/hap/bin/helper/hap-sendcmd2.pl "destination 105 query device 150"
@@ -23,3 +23,4 @@ echo "Running"
 *)
 echo "Unknown result: " $stringZ
 esac
+}}}
