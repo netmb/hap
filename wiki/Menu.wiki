@@ -51,3 +51,5 @@
   [AutonomeSteuerung Autonome Steuerung]
 
   [HAPScheduler]
+
+  [USB Verbindungsüberwachung]
