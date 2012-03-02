@@ -1,6 +1,6 @@
 == Installation ==
 
-Nach der Installation von Ubuntu-Server 11.10 (Debian sollte ebenfalls problemlos funktionieren), führt man folgende Kommandos auf der Konsole aus: 
+Nach der Installation von Ubuntu-Server 11.10 oder 12.04 (Debian sollte ebenfalls problemlos funktionieren), führt man folgende Kommandos auf der Konsole aus: 
 
 {{{
 wget http://hap.googlecode.com/files/setup.sh
