@@ -57,3 +57,9 @@ Nach dem speichern muss noch der der HAP-MessageProcessor neugestartet werden:
 {{{
 /etc/init.d/hap-mp restart 
 }}}
+
+
+Ubuntu 12.04: Sofern es Probleme mit den Rechten des Nutzers HAP gibt (USB funktionierte nicht), bitte HAP in folgende Nutzergruppe hinzufügen:
+{{{
+sudo adduser benutzername *dialout*
+}}}
