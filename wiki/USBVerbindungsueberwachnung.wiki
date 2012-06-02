@@ -8,7 +8,7 @@ Kurzer Bash Script zur Überwachung der USB Verbindung und bei Problemen Restart
 {{{
 #! /bin/bash
 
-result=$(/opt/hap/bin/helper/hap-sendcmd2.pl "destination 105 query device 150"
+result=$(/opt/hap/bin/helper/hap-sendcmd2.pl "destination 105 query device 150")
 echo "$result"
 stringZ="${result:1:3}"
 
