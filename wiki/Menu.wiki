@@ -32,7 +32,7 @@
 
 * Konfiguration *
 
-  [Grundlagen]
+  [ConfigBasic Grundlagen]
 
   [HAPScheduler Scheduler]
 
