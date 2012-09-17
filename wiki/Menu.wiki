@@ -30,6 +30,16 @@
 
   [Console Console]
 
+* Konfiguration *
+
+  [Grundlagen]
+
+  [HAPScheduler Scheduler]
+
+  [AutonomeSteuerung Autonome Steuerung]
+
+  [Scripting Makros]
+
 * Wiki *
 
   [Installation]
@@ -38,24 +48,8 @@
 
   [Backup]
 
-  [Grundlagen]
+  [SysScriptRepoSystem Scripts]
 
   [Konfiguration]
 
   [GUI]
-
-  [Hardware]
-
-  [Scripting]
-
-  [AutonomeSteuerung Autonome Steuerung]
-
-  [HAPScheduler]
-
-  [USBVerbindungsueberwachnung]
-
-  [DirektGUILogin]
-
-  [BrowserStartnachBooten]
-
-  [EmailbeiMulticast]
