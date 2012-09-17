@@ -10,3 +10,5 @@ Diese Sammlung enthält System-Scripts, die kleine Teilaufgaben übernehmen (z.B
   [USBVerbindungsueberwachnung USB Verbindungsüberwachung]
 
   [BrowserStartnachBooten Browser-Start nach HAP]
+
+  [EmailbeiMulticast E-Mail bei Multicast]
