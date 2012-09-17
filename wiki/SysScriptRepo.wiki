@@ -1,0 +1,12 @@
+#summary System-Scripts (PL,SH,...) die den HAP Alltag erleichtern.
+
+= Einleitung =
+
+Diese Sammlung enthält System-Scripts, die kleine Teilaufgaben übernehmen (z.B. Verbindungsüberachung), und ggf. Aktionen setzen. Die Sammlung soll wachsen - sprich wer ein sinnvolles kleines Helferlein programmiert hat, bitte hinzufügen!
+
+
+= Script Repository =
+
+  [USBVerbindungsueberwachnung USB Verbindungsüberwachung]
+
+  [BrowserStartnachBooten Browser-Start nach HAP]
