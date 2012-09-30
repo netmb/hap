@@ -129,3 +129,8 @@ mailname
 {{{
 email@gmx.de
 }}}
+
+Um das ganze zu laden:
+{{{
+sudo chmod 600 /etc/postfix/sasl_password 
+sudo postmap hash:/etc/postfix/sasl_password 
