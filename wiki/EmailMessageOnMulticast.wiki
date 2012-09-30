@@ -113,7 +113,6 @@ sender_canonical
 {{{
 hap email@gmx.de
 root email@gmx.de
-joern email@gmx.de
 }}}
 
 Im Ordner /etc
