@@ -14,17 +14,18 @@ erklärt. Die folgende Datei ist das Perl-Script zum ausführen des Bash-Scripts
 # Value:       $ARGV[3]
 #
 # Beispiel:
-
+{{{
 if ($ARGV[0] == 247) { 
 system("bash sendmail");
 }
-
+}}}
 Das folgende Bash Script wird in der Perldatei ausgeführt, um die email zu versenden
  
 #!/bin/bash
 # Sendmail
-
+{{{
 mailx -s "Email kommt an" aaa@bbb.de  < test.txt
+}}}
+Weitere Einstellungen, damit es keine Probleme mit Providern wie GMX gibt und leerem Absender:
 
-Weitere Einstellungen, damit es keine Probleme mit Provider wie GMX gibt:
 
