@@ -1,6 +1,6 @@
 Der User ist hap und es soll bei Eingang eines Multicast 247 eine Email versandt werden. Die Einrichtung von emailx ist sehr gut unter: 
 
-[ http://wiki.ubuntuusers.de/postfix  Howto Emailx - Postfix]
+http://wiki.ubuntuusers.de/postfix
 
 erklärt. Die folgende Datei ist das Perl-Script zum ausführen des Bash-Scripts, um die eigentliche Email zu versenden. 
  {{{
@@ -27,3 +27,18 @@ Das folgende Bash Script wird in der Perldatei ausgeführt, um die email zu vers
 mailx -s "Email kommt an" aaa@bbb.de  < test.txt
 }}}
 Weitere Einstellungen, damit es keine Probleme mit Providern wie GMX gibt und leerem Absender:
+
+
+/etc/postfix
+
+	•	Main.cf
+	•	sasl_password
+	•	sender_dependent
+	•	generic
+	•	sender_canonical
+
+
+/etc
+
+	•	aliases
+	•	mailname
