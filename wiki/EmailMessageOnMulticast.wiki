@@ -133,4 +133,10 @@ email@gmx.de
 Um das ganze zu laden:
 {{{
 sudo chmod 600 /etc/postfix/sasl_password 
+sudo postmap /etc/postfix/sender_canonical
+sudo postmap /etc/postfix/generic
+sudo postmap /etc/aliases
+sudo postmap /etc/mailname
+sudo postmap /etc/postfix/sender_dependent
 sudo postmap hash:/etc/postfix/sasl_password 
+sudo /etc/init.d/postfix restart 
