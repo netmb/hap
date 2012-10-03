@@ -48,10 +48,8 @@
 
   [Backup]
 
-  [SysScriptRepoSystem Scripts]
+  [SysScriptRepo System Scripts]
 
   [Konfiguration]
 
   [GUI]
-
- [EmailMessageOnMulticast Multicast & Emailversand]
