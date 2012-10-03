@@ -11,4 +11,4 @@ Diese Sammlung enthält System-Scripts, die kleine Teilaufgaben übernehmen (z.B
 
   [BrowserStartnachBooten Browser-Start nach HAP]
 
-  [EmailbeiMulticast E-Mail bei Multicast]
+  [EmailMessageOnMulticast E-Mail bei Multicast]
