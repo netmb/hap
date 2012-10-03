@@ -1,4 +1,11 @@
-Der User ist hap und es soll bei Eingang eines Multicast 247 eine Email versandt werden. Die Einrichtung von emailx ist sehr gut unter: 
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Es soll bei Eingang eines Multicast 247 eine E-Mail versandt werden.
+
+= Details =
+Der User ist hap und die Einrichtung von emailx ist sehr gut unter 
 
 http://wiki.ubuntuusers.de/postfix
 
