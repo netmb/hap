@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Projekt:              Home-Automation                                      //
 // Modul:                Switch                                               //
-// Version:              2.1 (1)                                              //
+// Version:              2.1 (2)                                              //
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          20.12.2005                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  03.03.2008                                           //
-// Zuletzt geändert von: Holger Heuser                                        //
+// Zuletzt geändert am:  12.12.2008                                           //
+// Zuletzt geändert von: Carsten Wolff                                        //
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -31,6 +31,12 @@
 
 #include <hasw.h>
 
+////////////////////////////////////////////////////////////////////////////////
+// Precompiler Konstanten                                                     //
+////////////////////////////////////////////////////////////////////////////////
+
+#define SWSRatePrescale 1
+#define SWSPwmTime 1200
 
 ////////////////////////////////////////////////////////////////////////////////
 // Typdefinitionen                                                            //
@@ -38,6 +44,7 @@
 
 typedef struct {
   tByte Value;
+  tWord Counter;
   tVPByte Port;
   tByte Pin;
   tByte Addr;
@@ -55,6 +62,7 @@ typedef struct {
 ////////////////////////////////////////////////////////////////////////////////
 
 tSWStatus SWS;
+tWord SWCounter;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,19 +81,52 @@ void SWInit(void) {
     SWS.E[i].Port = KMGetPortAddress(Index, 1);
     SWS.E[i].Pin = Index & 0x07;
     SWS.E[i].Value = 0;
+	SWS.E[i].Counter = 0;
     KMSetDDR(Index, 1);
   }
+  SWCounter = 0;
 }
 
 inline tByte SWGetValue(tByte pX) {
   return SWS.E[pX].Value;
 }
 
+inline void SWCounterInc(void) {
+  SWCounter++;
+}
+
+void SWPwm(void) {
+   
+   tByte i;
+   tByte Value;
+   int Ratio; 
+
+
+  if(SWCounter >= SWSRatePrescale) {
+    SWCounter = 0;
+    for(i = 0; i < SWS.N; i++) {
+      Value = SWS.E[i].Value;	
+	  if(Value > 0 && Value < 100) {
+	    Ratio = ( SWSPwmTime / 100 ) * Value;
+	    if(SWS.E[i].Counter <= Ratio) 
+		  *SWS.E[i].Port = *SWS.E[i].Port | 1 << SWS.E[i].Pin;
+		else 
+		  *SWS.E[i].Port = *SWS.E[i].Port & ~(1 << SWS.E[i].Pin);
+		SWS.E[i].Counter++;
+        if(SWS.E[i].Counter >= SWSPwmTime) SWS.E[i].Counter = 0;  
+	  }
+	}
+  }
+}
+
+
 void SWSetValue(tByte pX, tByte pValue) {
+  if(SWS.E[pX].Value == 0 || SWS.E[pX].Value == 100) 
+    SWS.E[pX].Counter = 0;
   SWS.E[pX].Value = pValue;
-  if(pValue > 0)
+  if(pValue >= 100)
     *SWS.E[pX].Port = *SWS.E[pX].Port | 1 << SWS.E[pX].Pin;  
-  else
+  else if(pValue == 0) 
     *SWS.E[pX].Port = *SWS.E[pX].Port & ~(1 << SWS.E[pX].Pin);
   SMSendStatus(SWS.E[pX].SModul, SWS.E[pX].Addr, pValue, 0);    
 }

@@ -63,6 +63,9 @@
 #include <haas.h>
 #endif
 
+#ifdef COHASW
+#include <hasw.h>
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Hauptprogramm                                                              //
@@ -98,6 +101,9 @@ int main(void) {
 #endif
 #ifdef COHADI
     DISample();
+#endif
+#ifdef COHASW
+    SWPwm();
 #endif
 #ifdef COHADM
     DMRegulate();

@@ -76,6 +76,9 @@
 #include <haas.h>
 #endif
 
+#ifdef COHASW
+#include <hasw.h>
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Typdefinitionen                                                            //
@@ -194,6 +197,9 @@ ISR (TIMER2_OVF_vect) {
     if(ZMTime.Hundredth == 100) {
       ZMTime.Hundredth = 0;
       ZMTime.Second++;
+#ifdef COHASW
+      SWCounterInc();
+#endif	  
 #ifdef COHADI
       DICounterInc();
 #endif

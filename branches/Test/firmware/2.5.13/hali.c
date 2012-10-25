@@ -5,8 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          24.12.2005                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  25.02.2008                                           //
-// Zuletzt geändert von: Holger Heuser                                        //
+// Zuletzt geändert am:  24.07.2012                                           //
+// Zuletzt geändert von: Carsten Wolff                                        //
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -146,7 +146,8 @@ void LIPoll(void) {
         }
         LIS.E[i].Poll = LIS.E[i].Poll ^ 0x01;
       }
-      if((LIS.E[i].Poll & 0x01) == (*LIS.E[i].Port >> LIS.E[i].Pin & 0x01) && (LIS.E[i].Poll & 0x80) > 0 && LIS.E[i].PC == 0) {
+//      if((LIS.E[i].Poll & 0x01) == (*LIS.E[i].Port >> LIS.E[i].Pin & 0x01) && (LIS.E[i].Poll & 0x80) > 0 && LIS.E[i].PC == 0) {
+        else if( (LIS.E[i].Poll & 0x80) > 0 && LIS.E[i].PC == 0) {
         LIS.E[i].Poll = LIS.E[i].Poll & 0x7F;
         LIInputDetect(i, LIS.E[i].Prop & 0x0C);
       }
