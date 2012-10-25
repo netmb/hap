@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Projekt:              Home-Automation                                      //
 // Modul:                Steuerung                                            //
-// Version:              2.5 (2)                                              //
+// Version:              2.5 (3)                                              //
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          29.12.2005                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  08.05.2008                                           //
-// Zuletzt geändert von: Holger Heuser                                        //
+// Zuletzt geändert am:  23.07.2012                                           //
+// Zuletzt geändert von: Carsten Wolff                                        //
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -795,7 +795,8 @@ void SMProcessMess(void) {
 
   if(SMRecBufFirst != 255) {
     MData = &SMRecBuf[SMRecBufFirst].Data.Code;
-    if(SMC.BridgeMode && MData->Dest != SMC.ModulAddress)
+//    if(SMC.BridgeMode && MData->Dest != SMC.ModulAddress)
+	if(SMC.BridgeMode && MData->Dest != SMC.ModulAddress &&  MData->Source != SMC.ModulAddress)
       SMSendMessage(SMRecBuf[SMRecBufFirst].Int | SMIntIDInvert, &SMRecBuf[SMRecBufFirst].Data);
     if(MData->Dest == SMC.ModulAddress || SMIsMCGMember(MData->Dest)) {
       if((MData->MType & 0x83) == 0) {

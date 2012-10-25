@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Projekt:              Home-Automation                                      //
 // Modul:                Dimmer                                               //
-// Version:              2.2 (8)                                              //
+// Version:              2.2 (9)                                              //
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          28.12.2005                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  28.09.2011                                           //
-// Zuletzt geändert von: Carsten Wolff                                        //
+// Zuletzt ge�ndert am:  05.05.2012                                           //
+// Zuletzt ge�ndert von: Carsten Wolff                                        //
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -200,7 +200,7 @@ void DMSetZZP(int pStart, int pStop, tByte pX) {
   DMSetZZPActiv = 1; // Sperre setzen wenn Funktion aktiv ist
   
   if(pStart > pStop) pStop = pStart;
-  // Start und Stopzeit bei Ãberlauf korrigieren
+  // Start und Stopzeit bei Überlauf korrigieren
   tmp = pStart - DMTicsSynchDiff;
   if(tmp > 0) pStart = DMTicsSynchDiff - DMTicsProHalbwelle + tmp;
   tmp = pStop - DMTicsSynchDiff;
@@ -212,7 +212,7 @@ void DMSetZZP(int pStart, int pStop, tByte pX) {
     DMSynchZZP = 1;
   }
   i = 0;
-  // Startzeitpunkt einfügen
+  // Startzeitpunkt einf�gen
   while(pX != DMZStart[i][!DMZA].X) i++;
   s = 0;
   while(pStart > DMZStart[s][!DMZA].Start) s++;
@@ -225,7 +225,7 @@ void DMSetZZP(int pStart, int pStop, tByte pX) {
   DMZStart[s][!DMZA].Start = pStart;
   DMZStart[s][!DMZA].X = pX;
   
-  // Stoppzeitpunkt einfügen
+  // Stoppzeitpunkt einf�gen
   i = 0;
   while(pX != DMZStop[i][!DMZA].X) i++;
   s = 0;
@@ -248,8 +248,9 @@ void DMSetValue(tByte pX, tByte pPHW, tWord pDelay) {
   tWord HDiff;
   tWord Delay;
   int ZZP;
-
-  if(pPHW == 0 && DMGetValue(pX) > 0) DMS.E[pX].ValueInvert = DMGetValue(pX); // Wert speichern
+   
+  if(pPHW > 0) DMS.E[pX].ValueInvert = pPHW; // Wert speichern 
+//  if(pPHW == 0 && DMGetValue(pX) > 0) DMS.E[pX].ValueInvert = DMS.E[pX].Value; // Wert speichern
   if((DMS.E[pX].Prop & KMIODMSD) == KMIODMSD && pDelay < DMSoftDelay)
     Delay = DMSoftDelay;
   else
@@ -313,7 +314,7 @@ tByte DMDecValue(tByte pX) {
 
 void DMControlInvert(tByte pX) {
   if(DMGetValue(pX) > 0) {
-    DMS.E[pX].ValueInvert = DMGetValue(pX);
+//    DMS.E[pX].ValueInvert = DMGetValue(pX);
     DMSetValue(pX, 0, 0);
   }
   else
@@ -330,6 +331,7 @@ void DMControlDown(tByte pX) {
 
 void DMControlStop(tByte pX) {
   DMS.E[pX].HWNew = DMS.E[pX].HW;
+  if(DMGetValue(pX) > 0) DMS.E[pX].ValueInvert = DMGetValue(pX); // Wert speichern 
   SMSendStatus(DMS.E[pX].SModul, DMS.E[pX].Addr, DMGetValue(pX), 0);
 }
 
@@ -423,13 +425,13 @@ ISR (TIMER1_OVF_vect) {
 }
 
 inline void DMSynch(void) {
-// Pro Halbwelle zählt DMZCDVerifyC um 234 hoch 
+// Pro Halbwelle z�hlt DMZCDVerifyC um 234 hoch 
   if(abs(DMZCDVerifyC) <= DMZCDVerifyTol || DMZCDVerifyC > 2344) {
     DMZCDVerifyC = -234;
     TCNT1 = DMTicsSynchDiff - DMTicsProHalbwelle;
     DMZCStart = 0;
     DMZCStop = 0;
-    if(DMSynchZZP == 1 && DMSetZZPActiv == 0) DMZA = !DMZA; //bei Ãnderung neue Timertabelle aktivieren
+    if(DMSynchZZP == 1 && DMSetZZPActiv == 0) DMZA = !DMZA; //bei Änderung neue Timertabelle aktivieren
     OCR1A = DMZStart[0][DMZA].Start;
     OCR1B = DMZStop[0][DMZA].Stop;
     DMSynchReg = 1;

@@ -27,6 +27,8 @@
 void SWInit(void);
 inline tByte SWGetValue(tByte pX);
 void SWSetValue(tByte pX, tByte pValue);
+inline void SWCounterInc(void);
+void SWPwm(void);
 inline void SWDestroy(void);
 
 
