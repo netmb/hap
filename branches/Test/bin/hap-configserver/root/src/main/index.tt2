@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>HAPConfig</title>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <link rel='stylesheet' type='text/css' href='/static/js/ext/resources/css/ext-all.css'/>
+        <link rel='stylesheet' type='text/css' href='/static/js/ext/ux/UploadDialog/css/Ext.ux.UploadDialog.css'/>
+        <link rel='stylesheet' type='text/css' href='/static/css/ImageChooser.css'/>
+        <link rel='stylesheet' type='text/css' href='/static/css/ColorField.css'/>
+        <link rel='stylesheet' type='text/css' href='/static/css/HAPConfig.css'/>
+    </head>
+    <body>
+        <!-- Loading mask and image -->
+        <div id='loading-mask' style='width:100%;height:100%;background:#FFFFFF;position:absolute;z-index:20000;left:0;top:0;'>
+        </div>
+        <div id='loading' style='position:absolute;left:35%;top:30%;padding:2px; width:450px;text-align:center;z-index:20001;'>
+            <div class='hap-loading-indicator'>
+                <img src='/static/images/loading.gif' style='width:16px;height:16px;' align='absmiddle'>&nbsp;Loading...
+                <br>
+                <img src='/static/images/hap.png' border='0'>
+            </div>
+        </div><!-- ExtJS -->
+        <script type='text/javascript' src='/static/js/ext/adapter/ext/ext-base.js'>
+        </script>
+        <script type='text/javascript' src='/static/js/ext/ext-all.js'>
+        </script>
+        <!-- Draw2D -->
+        <script type='text/javascript' src='/static/js/draw2d/mootools.js'>
+        </script>
+        <script type='text/javascript' src='/static/js/draw2d/moocanvas.js'>
+        </script>
+        <script type='text/javascript' src='/static/js/draw2d/wz_jsgraphics.js'>
+        </script>
+        <script type='text/javascript' src='/static/js/draw2d/draw2d.js'>
+        </script>
+        <script type='text/javascript' src='/static/js/ext/ux/UploadDialog/Ext.ux.UploadDialog.js'>
+        </script>
+        <!-- rgraph -->
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.common.core.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.common.tooltips.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.line.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.bar.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.hbar.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.hprogress.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.vprogress.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.meter.js'></script>
+        <script type='text/javascript' src='/static/js/rgraph/RGraph.odo.js'></script>
+        <!-- HAP -->
+        <script type='text/javascript' src='/static/js/hap/hap-min.js'>
+        </script>
+        <script type='text/javascript' src='/static/js/hap/Layout.js'>
+        </script>
+        <div id='north'>
+        </div>
+        <div id='props-panel'>
+        </div>
+        <div id='south'>
+        </div>
+    </body>
+</html>
