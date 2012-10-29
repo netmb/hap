@@ -2,34 +2,29 @@ Diese Anleitung soll die ersten Schritten vereinfachen.
 
 = Vorraussetzungen zur Nutzung: = 
 
-* Windows PC mit AVR-Studio & WinAVR
-* Ubuntu 9.04
-* 1-2 aufgebaute Controller-Units (CU)
-* Hterm (Terminalsoftware) für Linux/Windows
-* USB oder RS232 Interface
+ * Windows PC mit AVR-Studio & WinAVR
+ * Ubuntu 9.04
+ * 1-2 aufgebaute Controller-Units (CU)
+ * Hterm (Terminalsoftware) für Linux/Windows
+ * USB oder RS232 Interface
 
 = Details =
 
 
-1.  Installation von Ubuntu 9.04
+1.  Installation von Ubuntu 12.04
 
-
-Installation von Ubuntu Version 9.04
 In der Konsole mit sudo:
-
-wget http://packages.netmb.net/PublicKey
-apt-key add PublicKey
-echo "deb http://packages.netmb.net/ubuntu ./" >> /etc/apt/sources.list
-apt-get update
-apt-get install hap
+{{{
+sudo ./setup.sh
+}}}
 
 Nach der erfolgreichen Installation der HAPConfig sollte man vor dem Start noch definieren, wie die Kommunikation zwischen HAP-Server und den CU's erfolgen soll. Dazu muss die folgende Datei editiert werden:
-
+{{{
 cd /opt/hap/etc/
 sudo gedit hap.yml
-
+}}}
 Sofern noch keine CU's vorhanden sind einfach die eigene Rechner IP verwenden, damit der Server ohne Fehler starten kann.
-
+{{{
 ServerCUConnection:
 Type: 'Network'
 	Host: 192.xxx.xxx.xxx 
@@ -37,9 +32,9 @@ Port: 4567
 #ServerCUConnection:
 #  Type: 'Serial'
 #  Ports: [ '/dev/ttyUSB1' ]
-
+}}}
 Sofern CU's schon vorhanden sind kann man die Schnittstelle eintragen
-
+{{{
 #ServerCUConnection:
 	#  Type: 'Network'
 #  Host: 192.xxx.xxx.xxx 
@@ -47,18 +42,12 @@ Sofern CU's schon vorhanden sind kann man die Schnittstelle eintragen
 ServerCUConnection:
 Type: 'Serial'
 Ports: [ '/dev/ttyUSB1' ]    # hier die benutzte Schnittstelle eintragen!
-
+}}
 Danach sollte der Start möglich sein (HAP neustarten vorher):
-
+{{{
 HAPConfig :   http://192.xxx.xxx.xxx :8090
 HAP-GUI    :  http://192.xxx.xxx.xxx :8090/GUI
-
-
-
-
-
-
-
+}}}
 
 2. Erstellung der Firmware (CU)
 
@@ -75,7 +64,7 @@ Das direkte Importieren des Projekts klappte bei mir leider nicht, daher:
 3. Anpassung der mv.h
 
 Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen für alle Controller-Units:
-
+{{{
 #define COHAES                    // EEPROM-Support                  (Bit  0 -  0)
 // #define COHAER                // Externer Reset                      (Bit  1 -  1)
 #define COHABZ                   // Buzzer                                 (Bit  2 -  2)
@@ -92,7 +81,7 @@ Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen fü
 // #define COHADG 2            // siehe oben                             (Bit 14 - 15)
 // #define COHAGUI             // Bedienoberfl‰che                  (Bit 16 - 16)
  #define COHAAS                 // Autonome Steuerung               (Bit 17 - 17)
- 
+ }}}
 	CAN muss deaktiviert werden, wenn ihr nur 1 x CU habt! (COHACB)!
 
 4. Kompilierung der Firmware in AVR-Studio  
@@ -103,9 +92,9 @@ Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen fü
 8. Danach Programmierung der kompilierten Firmware ohne Chip-Erase
 9. Öffnen von Hterm mit 19200baud & Zeichen Dezimal
 10. Nach dem Anschalten sollte das Modul einen Zeitrequest senden
-
+{{{
 	Hterm: 	0 0 255 123 0 0 0 0     ( 0 = 000 in HTerm)
-
+}}}
 
 
 3. Moduleinrichtung im Terminal
@@ -114,34 +103,34 @@ Jede CU-Platine hat eine Moduladresse bzw. eine UID. Die UID selber wird beim ex
 Die UID selber muss man dann neben der Programmierung durch den Bootloader auch noch einmal für jedes Modul (CU-Platine) in die HAPConfig per Hand eintragen werden. Ebenso muss man die selbst zugewiesene Moduladresse eintragen. 
 
 Um HTERM unter Ubuntu zu nutzen bitte HAP in der Konsole erst stoppen damit die Schnittstelle frei ist:
-
+{{{
 cd /etc/init.d/
 sudo ./hap-mp stop
 sudo ./hap-configserver stop
-
+}}}
 Starten kann man HAP im Anschluss nach der Nutzung von Hterm wieder mit:
-
+{{{
 cd /etc/init.d/
 sudo ./hap-mp start
 sudo ./hap-configserver start
-
+}}}
 Hier ein Bespiel für eine Basiseinrichtung einer CU nach dem flashen der kompilierten Firmware (neue Platine, Moduladresse =0):
 
 Dieses kann man direkt in Hterm mit Type (DEC) eingeben und die CU sollte jeweils ein Feedback geben.
 
 Das Protokoll ist : 
-
+{{{
 	VLAN  SOURCE  DESTINATION  MTYPE  DEVICE  V0  V1   V2
-
+}}}
 	xxx = neue Werte	 
-
+{{{
 Moduladresse setzen (ab hier Modul)      0 0     0    76   5   xxx  0   0
 CCU-Adresse einrichten			0 0 Modul 76   6   xxx  0   0
 Bridge-Mode (1=on , 0=off)			0 0 Modul 76  10  xxx   0   0
 Startmodus      			                 0 0 Modul 76   4   217  0   0			
 EE_Konfig speichern				0 0 Modul 76   8    0     0   0
 Reset	(full) 						0 0 Modul 76   2    0     0   0
-
+}}}
 Der Startmodus, um die neue Konfiguration zu laden muss 217 sein. Brigdemode müssen die Platinen haben, die Daten durchleiten sollen (z.B. CU-EG) Die CCU-Moduladresse ist für alle CU in meinem Fall 99 siehe Kapitel 4. 
 
 Parallel ist es ebenfalls möglich mit Hilfe der UID & des MagicPaket die Moduladresse zu setzen, sofern man mehr als eine neue CU angeschlossen hat.
