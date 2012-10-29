@@ -164,3 +164,13 @@ OG        :     CU-1.Obergeschoss    :  UID = 0F 2C 07  , Moduladresse=101
 Wie bereits beschrieben ist die UID=00 00 00 für die CCU. Die CCU ist virtuell und damit nur die Verbindung GUI<-> CU. Die Schnittstelle von PC zu den restlichen Units bildet eine CU (CU-EG). Alle weiteren CU's im CAN haben kein Häkchen bei CCU oder CU unter Server-Settings.
 
 HAPConfig benötigt zum programmieren ebenfalls noch die unveränderte Firmware von der Homepage als zip. Diese muss man zuvor noch mit Tools – File Upload einbinden.
+
+=CCU Beispiel=
+http://hap.googlecode.com/svn/wiki/images/Beispiel-CCU.png
+
+=CU-EG Beispiel=
+http://hap.googlecode.com/svn/wiki/images/Beispiel-CU-EG.png
+
+
+=CU-OG Beispiel=
+http://hap.googlecode.com/svn/wiki/images/Beispiel-OG.png
