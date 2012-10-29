@@ -1,6 +1,6 @@
 Diese Anleitung soll die ersten Schritten vereinfachen.
 
-= Vorraussetzungen zur Nutzung: = 
+*Vorraussetzungen zur Nutzung:*
 
  * Windows PC mit AVR-Studio & WinAVR
  * Ubuntu 9.04
@@ -8,10 +8,7 @@ Diese Anleitung soll die ersten Schritten vereinfachen.
  * Hterm (Terminalsoftware) für Linux/Windows
  * USB oder RS232 Interface
 
-= Details =
-
-
-1.  Installation von Ubuntu 12.04
+==1.  Installation von Ubuntu 12.04==
 
 In der Konsole mit sudo:
 {{{
@@ -55,10 +52,10 @@ HAPConfig :   http://192.xxx.xxx.xxx :8090
 HAP-GUI    :  http://192.xxx.xxx.xxx :8090/GUI
 }}}
 
-User: hap
-Password: password
+ * User: hap
+ * Password: password
 
-2. Erstellung der Firmware (CU)
+==2. Erstellung der Firmware (CU)==
 
 Vorab sollte man im HAPConfig über Tools->DownloadBootlader den Bootloader exportieren, um diesen auf die CU zu flashen. Die muss für jede CU einzeln gemacht werd. Dadurch wird automatisch eine UID im Bootloader eingesetzt und macht später die CU indentifizierbar. 
 
@@ -106,7 +103,7 @@ Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen fü
 }}}
 
 
-3. Moduleinrichtung im Terminal
+==3. Moduleinrichtung im Terminal==
 
 Jede CU-Platine hat eine Moduladresse bzw. eine UID. Die UID selber wird beim exportieren des Bootloaders aus der HAPConfig erstellt und muss für jede Platine einzeln generiert werden. Die Moduladresse ist jedoch frei wählbar von 0-239 und jede CU sollte eine eigene pro VLAN haben.
 Die UID selber muss man dann neben der Programmierung durch den Bootloader auch noch einmal für jedes Modul (CU-Platine) in die HAPConfig per Hand eintragen werden. Ebenso muss man die selbst zugewiesene Moduladresse eintragen. 
@@ -160,7 +157,7 @@ SW_Version:
 	VLAN SOURCE DESTINATION 76 28 0 0 0
 
 
-4. Moduleinrichtung im HAPConfig
+==4. Moduleinrichtung im HAPConfig==
 
 Im folgenden soll nur das Prinzip gezeigt werden. VLAN ist dabei immer 0.
 
