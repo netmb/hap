@@ -43,11 +43,20 @@ ServerCUConnection:
 Type: 'Serial'
 Ports: [ '/dev/ttyUSB1' ]    # hier die benutzte Schnittstelle eintragen!
 }}}
-Danach sollte der Start möglich sein (HAP neustarten vorher):
+Danach sollte der Start möglich sein. Dazu HAP neustarten via:
+{{{
+cd /etc/init.d
+sudo ./hap-mp restart
+sudo ./hap-configserver restart
+}}}
+Danach klappt der LOGIN via
 {{{
 HAPConfig :   http://192.xxx.xxx.xxx :8090
 HAP-GUI    :  http://192.xxx.xxx.xxx :8090/GUI
 }}}
+
+User: hap
+Password: password
 
 2. Erstellung der Firmware (CU)
 
