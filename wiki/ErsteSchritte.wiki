@@ -42,7 +42,7 @@ Sofern CU's schon vorhanden sind kann man die Schnittstelle eintragen
 ServerCUConnection:
 Type: 'Serial'
 Ports: [ '/dev/ttyUSB1' ]    # hier die benutzte Schnittstelle eintragen!
-}}
+}}}
 Danach sollte der Start möglich sein (HAP neustarten vorher):
 {{{
 HAPConfig :   http://192.xxx.xxx.xxx :8090
