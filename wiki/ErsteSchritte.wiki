@@ -2,11 +2,11 @@ Diese Anleitung soll die ersten Schritten vereinfachen.
 
 = Vorraussetzungen zur Nutzung: = 
 
-Windows PC mit AVR-Studio & WinAVR
-Ubuntu 9.04
-1-2 aufgebaute Controller-Units (CU)
-Hterm (Terminalsoftware) für Linux/Windows
-USB oder RS232 Interface
+* Windows PC mit AVR-Studio & WinAVR
+* Ubuntu 9.04
+* 1-2 aufgebaute Controller-Units (CU)
+* Hterm (Terminalsoftware) für Linux/Windows
+* USB oder RS232 Interface
 
 = Details =
 
