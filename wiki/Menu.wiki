@@ -4,6 +4,8 @@
 
   [Schema Schematische Darstellung]
 
+  [Erste Schritte]
+
 * Hardware *
 
   [Jalousieaktor Jalousieaktor]
