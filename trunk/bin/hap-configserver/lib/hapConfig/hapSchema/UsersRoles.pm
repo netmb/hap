@@ -21,5 +21,20 @@ __PACKAGE__->set_primary_key("user", "role");
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration
+# belongs_to():
+#   args:
+#     1) Name of relationship, DBIC will create accessor with this name
+#     2) Name of the model class referenced by this relationship
+#     3) Column name in *this* table
+__PACKAGE__->belongs_to(user => 'hapConfig::hapSchema::Users', 'user');
+
+# belongs_to():
+#   args:
+#     1) Name of relationship, DBIC will create accessor with this name
+#     2) Name of the model class referenced by this relationship
+#     3) Column name in *this* table
+__PACKAGE__->belongs_to(user => 'hapConfig::hapSchema::Roles', 'role');
+
+
 #__PACKAGE__->has_one('rolename' => 'hapConfig::hapSchema::Roles',{'foreign.id' => 'self.role'});
 1;

@@ -48,8 +48,7 @@ sub check : Local {
   my $user = $c->request->params->{user};
   my $pass = $c->request->params->{pass};
   if ( $user && $pass ) {
-    if ( $c->login( $user, $pass ) ) {
-    #if ( $c->authenticate( {username => $user, password => $pass} ) ) {
+    if ( $c->authenticate( {username => $user, password => $pass} ) ) {
       $c->stash->{success} = \1;
       my @roles = $c->user->roles();
       my %roleObj;
@@ -71,8 +70,8 @@ sub checkGui : Local {
   my $user = $c->request->params->{user};
   my $pass = $c->request->params->{pass};
   if ( $user && $pass ) {
-    if ( $c->login( $user, $pass ) ) {
-    #if ( $c->authenticate( {username => $user, password => $pass} ) ) {
+    #if ( $c->login( $user, $pass ) ) {
+    if ( $c->authenticate( {username => $user, password => $pass} ) ) {
       $c->stash->{success} = \1;
       my @roles = $c->user->roles();
       my %roleObj;
