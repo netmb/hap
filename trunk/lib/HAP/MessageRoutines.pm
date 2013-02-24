@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 HAP::MessageRoutines -  The Home Automation Project Message-Routines-Module
@@ -58,6 +59,7 @@ sub compare {
   my $matchedSource = 0;
   foreach (@$predictions) {
     my $predicted = $_;
+
     if ( $predicted->{source} == $dgram2->{source} ) {
       $matchedSource = 1;
     }

@@ -36,21 +36,21 @@
 // 2 - STEC
 
 #define COHAES                // EEPROM-Support                    (Bit  0 -  0)
-#define COHAER                // Externer Reset                    (Bit  1 -  1)
+//#define COHAER                // Externer Reset                    (Bit  1 -  1)
 #define COHABZ                // Buzzer                            (Bit  2 -  2)
 #define COHAFM                // Funkmodul                         (Bit  3 -  3)
-#define COHACB                // CAN-Bus                           (Bit  4 -  4)
-#define COHAIR                // Infrarotschnittstelle             (Bit  5 -  5)
-#define COHALCD 2             // siehe oben                        (Bit  6 -  7)
-#define COHALI                // Logischer Eingang                 (Bit  8 -  8)
-#define COHAAI                // Analoger Eingang                  (Bit  9 -  9)
-#define COHADIDS1820          // Dallas Digitales Thermometer      (Bit 10 - 10)
+//#define COHACB                // CAN-Bus                           (Bit  4 -  4)
+//#define COHAIR                // Infrarotschnittstelle             (Bit  5 -  5)
+//#define COHALCD 2             // siehe oben                        (Bit  6 -  7)
+//#define COHALI                // Logischer Eingang                 (Bit  8 -  8)
+//#define COHAAI                // Analoger Eingang                  (Bit  9 -  9)
+//#define COHADIDS1820          // Dallas Digitales Thermometer      (Bit 10 - 10)
 #define COHASW                // Geschalteter Ausgang              (Bit 11 - 11)
-#define COHADM                // Gedimmter Ausgang                 (Bit 12 - 12)
-#define COHARS                // Rollladensteuerung                (Bit 13 - 13)
-#define COHADG 2              // siehe oben                        (Bit 14 - 15)
-#define COHAGUI               // Bedienoberfläche                  (Bit 16 - 16)
-#define COHAAS                // Autonome Steuerung                (Bit 17 - 17)
+//#define COHADM                // Gedimmter Ausgang                 (Bit 12 - 12)
+//#define COHARS                // Rollladensteuerung                (Bit 13 - 13)
+//#define COHADG 2              // siehe oben                        (Bit 14 - 15)
+//#define COHAGUI               // Bedienoberfläche                  (Bit 16 - 16)
+//#define COHAAS                // Autonome Steuerung                (Bit 17 - 17)
 
 
 ////////////////////////////////////////////////////////////////////////////////

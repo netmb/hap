@@ -5,6 +5,7 @@
 	<meta name = "viewport" content = "width = device-width">
         <meta name = "viewport" content = "height = device-height">
 	<title>Scene</title>
+        <link rel="apple-touch-icon" href="/static/images/hap-white.png"/>
         <link rel="stylesheet" type="text/css" href="/static/js/yui/build/container/assets/skins/sam/container.css">
         <!-- YUI -->
         <script type="text/javascript" src="/static/js/yui/build/yahoo-dom-event/yahoo-dom-event.js">

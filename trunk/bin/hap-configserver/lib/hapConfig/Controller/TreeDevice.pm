@@ -46,6 +46,10 @@ sub getTreeNodes : Local {
   @childs = $c->model('hapModel::Abstractdevice')->search( { config => $config, type => 192 }, { order_by => 'Name ASC' } );
   my @childrenSH = map { { id => "shutter/" . $_->id, text => $_->name, leaf => 'true' } } @childs;
   push @tree, { id => "shutter/0", text => "Shutter", children => \@childrenSH };
+  
+  @childs = $c->model('hapModel::Homematic')->search( { config => $config }, { order_by => 'Name ASC' } );
+  my @childrenHM = map { { id => "homematic/" . $_->id, text => $_->name, leaf => 'true' } } @childs;
+  push @tree, { id => "homematic/0", text => "Homematic", children => \@childrenHM };
 
   @childs = $c->model('hapModel::Abstractdevice')->search( { config => $config, type => 96, subtype => 240 }, { order_by => 'Name ASC' } );
   my @childrenLCD = map { { id => "lcdgui/" . $_->id, text => $_->name, leaf => 'true' } } @childs;

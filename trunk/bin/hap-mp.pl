@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 =head1 NAME
 
 hap-mp.pl - The Home Automation Project Message Processing Daemon
@@ -17,20 +18,27 @@ use POE::Component::EasyDBI;
 use HAP::POE::Filter::Datagram;
 use HAP::Init;
 use HAP::Parser;
+use HAP::HomematicParser;
 use HAP::MessageRoutines;
 use JSON::XS;
 use Device::SerialPort;
 use POE::Component::Client::TCP;
 use Symbol qw(gensym);
+use Time::HiRes qw(gettimeofday);
 
 my $json = new JSON::XS;
 $json = $json->allow_unknown(1);
 my $mroutine = new HAP::MessageRoutines();
 
-my $c = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", SKIP_DB => 1 );
-my $parser = new HAP::Parser($c);
+my $c        = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", SKIP_DB => 1 );
+my $parser   = new HAP::Parser($c);
+my $hmParser = new HAP::HomematicParser($c);
 
 my %mapping;
+my %homematicDevices;
+my %homematicDevicesByHmId;
+my $homematicState;
+my %homematicMIdToHap;
 foreach ( 224 .. 239 ) {    # Source-Addresses
   $mapping{$_} = undef;
 }
@@ -55,12 +63,18 @@ POE::Session->create(
         $_[KERNEL]->yield('serialSetup');
         $_[KERNEL]->yield('serialCheck');
       }
-      $_[KERNEL]
-        ->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Startup complete.' );
+      $_[KERNEL]->yield('dbGetHomematicDevices');  #fill homematic hashes
+      $_[KERNEL]->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Startup complete.' );
+
     },
     serialSetup             => \&serialSetup,
     serverCuIn              => \&serverCuIn,
     serverCuOut             => \&serverCuOut,
+    hmLanIn                 => \&hmLanIn,
+    hmLanOut                => \&hmLanOut,
+    clearMIdfromHash        => \&clearMIdfromHash,
+    initHmLan               => \&initHmLan,
+    keepalive               => \&keepalive,
     serialCheck             => \&serialCheck,
     dbAddLogEntry           => \&dbAddLogEntry,
     dbGetModuleId           => \&dbGetModuleId,
@@ -68,11 +82,13 @@ POE::Session->create(
     dbUpdateStatus          => \&dbUpdateStatus,
     dbGetMakro              => \&dbGetMakro,
     dbGetFirmwareId         => \&dbGetFirmwareId,
+    dbGetHomematicDevices   => \&dbGetHomematicDevices,
     dbGetFirmwareOptions    => \&dbGetFirmwareOptions,
     dbUpdateFirmwareVersion => \&dbUpdateFirmwareVersion,
     dbUpdateFirmwareOptions => \&dbUpdateFirmwareOptions,
     executeMakroScript      => \&executeMakroScript,
-	MulticastAlert          => \&MulticastAlert
+    multicastAlert          => \&multicastAlert,
+    fillHomematicHash       => \&fillHomematicHash
   },
 );
 
@@ -94,8 +110,7 @@ if ( $c->{ServerCUConnection}->{Type} eq 'Network' ) {
     ConnectError  => \&tcpServerReconnect,
     Disconnected  => \&tcpServerReconnect,
     Connected     => sub {
-      print
-"Success. Connected to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port}\n";
+      print "Success. Connected to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port}\n";
     },
     ServerInput  => \&serverCuIn,
     InlineStates => {
@@ -107,6 +122,39 @@ if ( $c->{ServerCUConnection}->{Type} eq 'Network' ) {
     Filter => HAP::POE::Filter::Datagram->new(),
   );
 }
+
+if ( $c->{Homematic}->{HmLanId} && length( $c->{Homematic}->{HmLanId} ) == 6 ) {
+  POE::Component::Client::TCP->new(
+    Alias         => 'hmLanClient',
+    RemoteAddress => $c->{Homematic}->{HmLanIp},
+    RemotePort    => $c->{Homematic}->{HmLanPort},
+    ConnectError  => \&hmLanTcpServerReconnect,
+    Disconnected  => \&hmLanTcpServerReconnect,
+    Connected     => sub {
+      print "Success. Connected to HMLAN $c->{Homematic}->{HmLanIp}:$c->{Homematic}->{HmLanPort}. Sending Initialization sequence\n";
+      $homematicState->{dPend}    = 0;
+      $homematicState->{lastSend} = 0;
+      my $s2000 = sprintf( "%02X", secSince2000() );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "A$c->{Homematic}->{HmLanId}" );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "C" );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "Y01,01,$c->{Homematic}->{AESKey}" );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "Y02,00," );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "Y03,00," );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "Y03,00," );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "T$s2000,04,00,00000000" );
+      $_[KERNEL]->post( 'main' => hmLanOut  => "A$c->{Homematic}->{HmLanId}" );
+      $_[KERNEL]->post( 'main' => keepalive => "" );
+    },
+    ServerInput  => \&hmLanIn,
+    InlineStates => {
+      ServerOutput => sub {
+        my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+        $heap->{server}->put($data);
+        }
+    }
+  );
+}
+
 $poe_kernel->run();
 
 ################################################################################
@@ -120,9 +168,7 @@ sub serialSetup {
   my $i      = 0;
   while ( !$port || !$port->rts_active("YES") ) {
     print "Trying to open $c->{ServerCUConnection}->{Ports}[$i]\n";
-    $port =
-      tie( *$handle, "Device::SerialPort",
-      $c->{ServerCUConnection}->{Ports}[$i] );
+    $port = tie( *$handle, "Device::SerialPort", $c->{ServerCUConnection}->{Ports}[$i] );
     $i++;
     $i = 0 if ( $i >= scalar( @{ $c->{ServerCUConnection}->{Ports} } ) );
     select( undef, undef, undef, 0.5 );
@@ -149,34 +195,105 @@ sub serialSetup {
   );
 }
 
+sub hmLanIn {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+  print "HMLAN in: $data\n";
+  my @mParts = split( ',', $data );
+  my $leadingChar = substr( $mParts[0], 0, 1 );
+  if ( $leadingChar =~ m/^[ER]/ ) {
+    my $mId    = substr( $mParts[0], 1, 8 );
+    my $source = substr( $mParts[5], 6, 6 );
+
+    my $hapMsg = $hmParser->decrypt( $data, \%homematicDevicesByHmId, \%homematicMIdToHap );
+    if ( ref($hapMsg)) {
+      print &composeAnswer( "HMLAN in:", $hapMsg ) . "\n";
+    }
+    else {
+      print "Unable to parse Homematic-datagram: $data\n";
+    } 
+    if ( ref($hapMsg) && $homematicMIdToHap{$mId} ) {    # looks like an received command initiated by a session
+      $kernel->post( $mapping{ $homematicMIdToHap{$mId} }->{session} => ClientOutput => $hapMsg );
+      $kernel->delay('clearMIdfromHash');                #remove auto-clean delay
+      delete( $homematicMIdToHap{$mId} );
+    }
+    if ( ref($hapMsg) && $homematicDevicesByHmId{$source}->{notify} ) {    # valid message but no session, could be an event
+      my $notifyHapMsg = {
+        vlan        => $hapMsg->{vlan},
+        source      => $hapMsg->{source},
+        destination => $homematicDevicesByHmId{$source}->{notify},
+        device      => $hapMsg->{device},
+        mtype       => 16,
+        v0          => $hapMsg->{v0},
+        v1          => $hapMsg->{v1},
+        v2          => $hapMsg->{v2}
+      };
+      $kernel->post( main => serverCuIn => $notifyHapMsg );
+    }
+    
+  }
+  else {
+    print "Raw Homematic-command: $data\n";
+  }
+}
+
+sub hmLanOut {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+
+  my $tn = gettimeofday();
+
+  # calculate maximum data speed for HMLAN.
+  #  Theorie 2,5kByte/s
+  #  tested allowes no more then 2 byte/ms incl overhead
+  #  It is even slower if HMLAN waits for acks, acks are missing,...
+  my $bytPend = $homematicState->{dPend} - int( ( $tn - $homematicState->{lastSend} ) * 4000 );
+  $bytPend = 0 if ( $bytPend < 0 );
+  $homematicState->{dPend}    = $bytPend + length($data);
+  $homematicState->{lastSend} = $tn;
+  my $wait = $bytPend / 4000;    # HMLAN
+                                 #  => wait time to protect HMLAN overload
+                                 #  my $wait = $bytPend>>11; # fast divide by 2048
+
+  # It is not possible to answer befor 100ms
+  my $id = ( length($data) > 51 ) ? substr( $data, 46, 6 ) : "";
+  my $DevDelay = 0;
+  if ( $id && $homematicState->{nextSend}{$id} ) {
+    $DevDelay = $homematicState->{nextSend}{$id} - $tn;                       # calculate time passed
+    $DevDelay = ( $DevDelay > 0.01 ) ? ( $DevDelay -= int($DevDelay) ) : 0;
+  }
+  $wait = ( $DevDelay > $wait ) ? $DevDelay : $wait;                          # select the longer waittime
+  select( undef, undef, undef, $wait ) if ( $wait > 0.01 );
+  print "HMLAN out: $data\n";
+  $kernel->post( 'hmLanClient' => ServerOutput => $data );
+}
+
 sub serverCuIn {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
   if ( !$c->{Crypto} ) {
-    $data =
-      $mroutine->decrypt( $data, $c->{CryptKey}, $c->{CryptOption} )
-      ;    #$kernel->delay('serverCuOut'); # clear retransmit
+    $data = $mroutine->decrypt( $data, $c->{CryptKey}, $c->{CryptOption} );    #$kernel->delay('serverCuOut'); # clear retransmit
   }
   print &composeAnswer( "Serial in:", $data ) . "\n";
-  if ($data->{mtype} == 77 && ($data->{device} == 128 || $data->{device} == 130)) {
-    $kernel->post( 'main' => dbGetModuleId => $data );  
+  if ( $data->{mtype} == 77
+    && ( $data->{device} == 128 || $data->{device} == 130 ) )
+  {
+    $kernel->post( 'main' => dbGetModuleId => $data );
   }
   if ( $data->{mtype} == 9 || $data->{mtype} == 16 ) {
     $kernel->post( 'main' => dbGetModuleId => $data );
   }
-  elsif ( $data->{mtype} == 123 ) {    # Timesync
+  elsif ( $data->{mtype} == 123 ) {                                            # Timesync
     $kernel->post( main => serverCuOut => $mroutine->getTime($data) );
     return;
   }
-  elsif ( $data->{mtype} == 24 ) {     # Makro
+  elsif ( $data->{mtype} == 24 ) {                                             # Makro
     $kernel->post( 'main' => dbGetMakro => $data );
   }
-  elsif ( $data->{mtype} == 77 && $data->{device} == 28 ) {   # Firmware-Version
+  elsif ( $data->{mtype} == 77 && $data->{device} == 28 ) {                    # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareId => $data );
   }
-  elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {   # Firmware-Version
+  elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {                    # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareOptions => $data );
   }
-  
+
   # Special handling for loopback communication (Server himself is destination)
   if ( $data->{destination} == $c->{CCUAddress} ) {
     my $sData = {
@@ -188,19 +305,20 @@ sub serverCuIn {
       v1          => $data->{v1},
       v2          => $data->{v2}
     };
-    $kernel->post(
-      $mapping{ $data->{source} }->{session} => ClientOutput => $sData );
+    $kernel->post( $mapping{ $data->{source} }->{session} => ClientOutput => $sData );
   }
   else {
-    $kernel->post(
-      $mapping{ $data->{destination} }->{session} => ClientOutput => $data );
+    $kernel->post( $mapping{ $data->{destination} }->{session} => ClientOutput => $data );
   }
-  
+
   # Start Script on Multicast
-  if ( $data->{destination} >= 240 && $data->{destination} <= 253 && $data->{mtype} == 16 ) {
-    $kernel->post( 'main' => MulticastAlert => $data );
+  if ( $data->{destination} >= 240
+    && $data->{destination} <= 253
+    && $data->{mtype} == 16 )
+  {
+    $kernel->post( 'main' => multicastAlert => $data );
   }
-  
+
   return;
 }
 
@@ -224,8 +342,7 @@ sub serialCheck {
   my ( $kernel, $heap ) = @_[ KERNEL, HEAP ];
   if ( !$heap->{port}->rts_active("YES") ) {
     print "Detected Serial-Connection is lost.\n";
-    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
-      'Detected Serial-Connection lost.' );
+    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Detected Serial-Connection lost.' );
     $kernel->yield('serialSetup');
   }
   $kernel->delay_add( 'serialCheck', 60 );
@@ -236,13 +353,11 @@ sub serialCheck {
 ################################################################################
 
 sub dbGetModuleId {
-  my ( $kernel, $heap, $session, $data ) =
-    @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
+  my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
   $kernel->post(
     'database',
     'single' => {
-      sql =>
-"SELECT ID from module WHERE Config=$c->{DefaultConfig} AND Address=$data->{source}",
+      sql     => "SELECT ID from module WHERE Config=$c->{DefaultConfig} AND Address=$data->{source}",
       hapData => $data,
       event   => 'dbGetDeviceData',
     },
@@ -251,8 +366,7 @@ sub dbGetModuleId {
 }
 
 sub dbGetDeviceData {
-  my ( $kernel, $heap, $session, $data ) =
-    @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
+  my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0, ARG1 ];
   if ( $data->{result} ) {
     my $module = $data->{result};
     my $device = $data->{hapData}->{device};
@@ -260,10 +374,11 @@ sub dbGetDeviceData {
       $data->{hapData}->{mtype} == 77
       && ( $data->{hapData}->{device} == 128
         || $data->{hapData}->{device} == 130 )
-      ) {
-        $device = $data->{hapData}->{v0};
-      }
-    
+      )
+    {
+      $device = $data->{hapData}->{v0};
+    }
+
     $kernel->post(
       'database',
       'arrayhash' => {
@@ -272,7 +387,9 @@ SELECT device.Name, device.Formula, Type FROM device WHERE device.Config=$c->{De
 SELECT logicalinput.Name, logicalinput.Formula, 128 AS \"Type\" FROM logicalinput WHERE logicalinput.Config=$c->{DefaultConfig} AND logicalinput.Module=$module AND logicalinput.Address=$device UNION
 SELECT digitalinput.Name,digitalinput.Formula, 40 AS \"Type\" FROM digitalinput WHERE digitalinput.Config=$c->{DefaultConfig} AND digitalinput.Module=$module AND digitalinput.Address=$device UNION 
 SELECT analoginput.Name, analoginput.Formula, 32 AS \"Type\" FROM analoginput WHERE analoginput.Config=$c->{DefaultConfig} AND analoginput.Module=$module AND analoginput.Address=$device UNION
-SELECT abstractdevice.Name, NULL, 192 AS \"Type\" FROM abstractdevice WHERE abstractdevice.Config=$c->{DefaultConfig} AND abstractdevice.Module=$module AND abstractdevice.Address=$device"
+SELECT abstractdevice.Name, NULL, 192 AS \"Type\" FROM abstractdevice WHERE abstractdevice.Config=$c->{DefaultConfig} AND abstractdevice.Module=$module AND abstractdevice.Address=$device UNION
+SELECT homematic.Name, homematic.Formula, 0 FROM homematic WHERE homematic.Config=$c->{DefaultConfig} AND homematic.Module=$module and homematic.Address=$device
+"
         ,
         dbModuleId => $module,
         hapData    => $data->{hapData},
@@ -301,20 +418,16 @@ sub dbUpdateStatus {
       $kernel->post(
         'database',
         insert => {
-          sql =>
-'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
-          placeholders => [
-            time(),              76,
-            $data->{dbModuleId}, $data->{hapData}->{v0},
-            $status,             $c->{DefaultConfig}
-          ],
-          event => '',
+          sql          => 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
+          placeholders => [ time(), 76, $data->{dbModuleId}, $data->{hapData}->{v0}, $status, $c->{DefaultConfig} ],
+          event        => '',
         }
       );
 
     }
+
     # Update Status only if message is not a Digital- or Analog-Input trigger-Status-Message
-    elsif (!(($_->{'Type'} == 32 || $_->{'Type'} == 40) && $data->{hapData}->{mtype} == 16)) {
+    elsif ( !( ( $_->{'Type'} == 32 || $_->{'Type'} == 40 ) && $data->{hapData}->{mtype} == 16 ) ) {
       my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
       if ( $_->{'Formula'} ) {
         my $formula = $_->{'Formula'};
@@ -324,14 +437,9 @@ sub dbUpdateStatus {
       $kernel->post(
         'database',
         insert => {
-        sql =>
-'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
-        placeholders => [
-          time(),              $_->{'Type'},
-          $data->{dbModuleId}, $data->{hapData}->{device},
-          $status,             $c->{DefaultConfig}
-        ],
-        event => '',
+          sql          => 'INSERT INTO status (TS, Type, Module, Address, Status, Config) VALUES (?,?,?,?,?,?)',
+          placeholders => [ time(), $_->{'Type'}, $data->{dbModuleId}, $data->{hapData}->{device}, $status, $c->{DefaultConfig} ],
+          event        => '',
         }
       );
       $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "$_->{Name} Status $status" );
@@ -339,13 +447,27 @@ sub dbUpdateStatus {
   }
 }
 
+sub dbGetHomematicDevices {
+  my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
+  $kernel->post(
+    'database',
+    'arrayhash' => {
+      sql => "SELECT module2.Address as Module, homematic.Address, homematic.HomematicAddress, static_homematicdevicetypes.Name as HomematicDeviceType, module.Address as Notify, homematic.Channel FROM homematic 
+left join static_homematicdevicetypes on HomematicDeviceType = static_homematicdevicetypes.ID 
+left join module on Notify = module.ID
+left join module as module2 on Module = module2.ID
+WHERE homematic.Config = $c->{DefaultConfig}",
+      event => 'fillHomematicHash',
+    },
+  );
+}
+
 sub dbGetFirmwareId {
   my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
   $kernel->post(
     'database',
     'arrayhash' => {
-      sql =>
-"SELECT ID FROM firmware WHERE VMajor = $data->{v0} AND VMinor = $data->{v1} AND VPhase = $data->{v2}",
+      sql      => "SELECT ID FROM firmware WHERE VMajor = $data->{v0} AND VMinor = $data->{v1} AND VPhase = $data->{v2}",
       datagram => $data,
       event    => 'dbUpdateFirmwareVersion',
     },
@@ -358,14 +480,9 @@ sub dbUpdateFirmwareVersion {
     $kernel->post(
       'database',
       do => {
-        sql =>
-'UPDATE module SET FirmwareVersion = ?, CurrentFirmwareID = ? WHERE Address = ? AND Config = ?',
-        placeholders => [
-"$data->{datagram}->{v0}.$data->{datagram}->{v1}.$data->{datagram}->{v1}",
-          $_->{ID}, $data->{datagram}->{source},
-          $c->{DefaultConfig}
-        ],
-        event => '',
+        sql          => 'UPDATE module SET FirmwareVersion = ?, CurrentFirmwareID = ? WHERE Address = ? AND Config = ?',
+        placeholders => [ "$data->{datagram}->{v0}.$data->{datagram}->{v1}.$data->{datagram}->{v1}", $_->{ID}, $data->{datagram}->{source}, $c->{DefaultConfig} ],
+        event        => '',
       }
     );
   }
@@ -376,8 +493,7 @@ sub dbGetFirmwareOptions {
   $kernel->post(
     'database',
     'arrayhash' => {
-      sql =>
-"SELECT CurrentFirmwareOptions FROM module WHERE Address = $data->{source}  AND Config = $c->{DefaultConfig}",
+      sql      => "SELECT CurrentFirmwareOptions FROM module WHERE Address = $data->{source}  AND Config = $c->{DefaultConfig}",
       datagram => $data,
       event    => 'dbUpdateFirmwareOptions',
     },
@@ -390,15 +506,9 @@ sub dbUpdateFirmwareOptions {
     $kernel->post(
       'database',
       do => {
-        sql =>
-'UPDATE module SET CurrentFirmwareOptions = ? WHERE Address = ? AND Config = ?',
-        placeholders => [
-          $_->{CurrentFirmwareOptions} |
-            ( $data->{datagram}->{v1} << ( 8 * $data->{datagram}->{v0} ) ),
-          $data->{datagram}->{source},
-          $c->{DefaultConfig}
-        ],
-        event => '',
+        sql          => 'UPDATE module SET CurrentFirmwareOptions = ? WHERE Address = ? AND Config = ?',
+        placeholders => [ $_->{CurrentFirmwareOptions} | ( $data->{datagram}->{v1} << ( 8 * $data->{datagram}->{v0} ) ), $data->{datagram}->{source}, $c->{DefaultConfig} ],
+        event        => '',
       }
     );
   }
@@ -410,27 +520,20 @@ sub dbGetMakro {
   $kernel->post(
     'database',
     'arrayhash' => {
-      sql =>
-"SELECT Name, ID FROM makro WHERE MakroNr = $makroNr AND Config = $c->{DefaultConfig}",
+      sql   => "SELECT Name, ID FROM makro WHERE MakroNr = $makroNr AND Config = $c->{DefaultConfig}",
       event => 'executeMakroScript',
     },
   );
 }
 
 sub dbAddLogEntry {
-  my ( $kernel, $heap, $session, $pid, $source, $type, $message ) =
-    @_[ KERNEL, HEAP, SESSION, ARG0, ARG1, ARG2, ARG3 ];
+  my ( $kernel, $heap, $session, $pid, $source, $type, $message ) = @_[ KERNEL, HEAP, SESSION, ARG0, ARG1, ARG2, ARG3 ];
   my ( $sec, $min, $hour, $mday, $mon, $year ) = localtime(time);
-  my $time = sprintf(
-    "%4d-%02d-%02d %02d:%02d:%02d ",
-    $year + 1900,
-    $mon + 1, $mday, $hour, $min, $sec
-  );
+  my $time = sprintf( "%4d-%02d-%02d %02d:%02d:%02d ", $year + 1900, $mon + 1, $mday, $hour, $min, $sec );
   $kernel->post(
     'database',
     insert => {
-      sql =>
-        'INSERT INTO log (Time, PID, Source, Type, Message) VALUES (?,?,?,?,?)',
+      sql          => 'INSERT INTO log (Time, PID, Source, Type, Message) VALUES (?,?,?,?,?)',
       placeholders => [ $time, $pid, $source, $type, $message ],
       event        => '',
     }
@@ -523,8 +626,7 @@ sub tcpClientInput {
       }
       else {
         $heap->{MCastAddress} = $cObj->{MCastAddress};
-        $heap->{client}
-          ->put("[ACK] Set Multicast Addresses to $cObj->{MCastAddress}");
+        $heap->{client}->put("[ACK] Set Multicast Addresses to $cObj->{MCastAddress}");
       }
     }
     return;
@@ -535,28 +637,45 @@ sub tcpClientInput {
     return;
   }
 
-  my ( $error, $dgram ) =
-    $parser->parse( $data, $heap->{'SessionSource'} );    # command line parsing
+  my ( $error, $dgram ) = $parser->parse( $data, $heap->{'SessionSource'} );    # command line parsing
   if ($error) {
     $heap->{client}->put($error);
   }
   else {
-    $heap->{predictions} =
-      $mroutine->getPrediction( $dgram, $heap->{MCastGroup} );
-    if ( $dgram->{mtype} != 60 ) {                        # raw-data
-      $kernel->delay_add(
-        'ClientOutput',
-        $mroutine->getTimeout($dgram),
-        "[ERR] No Answer."
-      );
+
+    # handle Homematic
+    if ( $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} } ) {
+
+      my $hmDeviceData = $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} };
+      my ( $error, $hmDgram ) = $hmParser->parse( $dgram, $hmDeviceData );
+      if ($error) {
+        $heap->{client}->put($error);
+      }
+      else {
+        $heap->{predictions} = $mroutine->getPrediction( $dgram, $heap->{MCastGroup} );
+        my @mParts = split( ',', $hmDgram );
+        my $mId = substr( $mParts[0], 1, 8 );
+        $homematicMIdToHap{$mId} = $heap->{'SessionSource'};
+        $kernel->post( main => hmLanOut => $hmDgram );
+        $kernel->delay_add( 'ClientOutput', $mroutine->getTimeout($dgram), "[ERR] No Answer." );
+        $kernel->delay_add( 'clearMIdfromHash', 2, $mId );
+      }
     }
 
-    # Message for server
-    if ( $dgram->{destination} == $c->{CCUAddress} ) {
-      $kernel->post( main => serverCuIn => $dgram );
-    }
+    # handle HAP
     else {
-      $kernel->post( main => serverCuOut => $dgram );
+      $heap->{predictions} = $mroutine->getPrediction( $dgram, $heap->{MCastGroup} );
+      if ( $dgram->{mtype} != 60 ) {    # raw-data
+        $kernel->delay_add( 'ClientOutput', $mroutine->getTimeout($dgram), "[ERR] No Answer." );
+      }
+
+      # Message for server
+      if ( $dgram->{destination} == $c->{CCUAddress} ) {
+        $kernel->post( main => serverCuIn => $dgram );
+      }
+      else {
+        $kernel->post( main => serverCuOut => $dgram );
+      }
     }
   }
 }
@@ -564,8 +683,7 @@ sub tcpClientInput {
 sub tcpClientOutput {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
   if ( ref($data) ) {    # looks like an datagram-object
-    my $compareResult =
-      $mroutine->compare( $heap->{predictions}, $data, $heap->{MCastGroup} );
+    my $compareResult = $mroutine->compare( $heap->{predictions}, $data, $heap->{MCastGroup} );
     if ( $compareResult == 1 ) {    # we're fine
       $kernel->delay('ClientOutput');    # clear delay
       $heap->{client}->put( $parser->reverseParse($data) );
@@ -574,7 +692,7 @@ sub tcpClientOutput {
     }
     elsif ( $compareResult == 3 ) {
       $kernel->delay('ClientOutput');    # clear delay
-          #$heap->{client}->put( &composeAnswer( "[ACK]", $data ) );
+                                         #$heap->{client}->put( &composeAnswer( "[ACK]", $data ) );
       $data->{source} = $heap->{MCastAddress} || $data->{source};
 
       $heap->{client}->put( &composeAnswer( "[ACK]", $data ) );
@@ -592,7 +710,7 @@ sub tcpClientOutput {
     }
   }
   else {
-    if ( $heap->{client} ) { # if client closes to fast, this one gets undefined
+    if ( $heap->{client} ) {             # if client closes to fast, this one gets undefined
       $heap->{client}->put($data);
     }
     else {
@@ -608,10 +726,19 @@ sub tcpClientOutput {
 
 sub tcpServerReconnect {
   my ( $kernel, $heap ) = @_[ KERNEL, HEAP ];
-  print
-"Connection to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port} lost. Trying reconnect...\n";
-  $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info',
-    'Detected ServerCU-Connection lost.' );
+  print "Connection to $c->{ServerCUConnection}->{Host}:$c->{ServerCUConnection}->{Port} lost. Trying reconnect...\n";
+  $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Detected ServerCU-Connection lost.' );
+  $kernel->delay( reconnect => 2 );
+}
+
+################################################################################
+# TCP-Client (Communication with Homematic HMLan-Interface)
+################################################################################
+
+sub hmLanTcpServerReconnect {
+  my ( $kernel, $heap ) = @_[ KERNEL, HEAP ];
+  print "Connection to HMLAN $c->{Homematic}->{HmLanIp}:$c->{Homematic}->{HmLanPort} lost. Trying reconnect...\n";
+  $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Detected HMLAN-Connection lost.' );
   $kernel->delay( reconnect => 2 );
 }
 
@@ -635,17 +762,44 @@ sub executeMakroScript {
 }
 
 ################################################################################
+# Fill Homematic Hash
+################################################################################
+
+sub fillHomematicHash {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+  %homematicDevices = ();
+  %homematicDevicesByHmId = ();
+  foreach ( @{ $data->{result} } ) {
+    $homematicDevices{ ( $_->{Module} << 8 ) ^ $_->{Address} } = {
+      homematicAddress    => $_->{HomematicAddress},
+      homematicDeviceType => $_->{HomematicDeviceType},
+      notify              => $_->{Notify},
+      channel             => $_->{Channel}
+    };
+    $homematicDevicesByHmId{ $_->{HomematicAddress} } = {
+      homematicAddress    => $_->{HomematicAddress},
+      homematicDeviceType => $_->{HomematicDeviceType},
+      notify              => $_->{Notify},
+      module              => $_->{Module},
+      address             => $_->{Address},
+      channel             => $_->{Channel}
+    };
+     $kernel->delay('dbGetHomematicDevices', 60);
+  }
+}
+
+################################################################################
 # MulticastAlert
 ################################################################################
 
-sub MulticastAlert {
+sub multicastAlert {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-  my $val = $data->{v1} *256 + $data->{v0}; 
+  my $val = $data->{v1} * 256 + $data->{v0};
   my @parameters = ( $data->{destination}, $data->{source}, $data->{device}, $val );
   print "MulicastAlert $data->{destination}\n";
   my $wheel = POE::Wheel::Run->new(
-    Program     => "/opt/hap/var/scripts/MulticastAlert.pl",
-    ProgramArgs =>  \@parameters,
+    Program     => "$c->{ScriptsPath}/MulticastAlert.pl",
+    ProgramArgs => \@parameters,
     StdinEvent  => '',
     StdoutEvent => '',
     StderrEvent => '',
@@ -655,12 +809,46 @@ sub MulticastAlert {
 }
 
 ################################################################################
+# Clear Mapping between Homematic-Message-Id an Hap-Session-Source if no data
+# received
+################################################################################
+
+sub clearMIdfromHash {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+  print "CLEANUP\n";
+  delete( $homematicMIdToHap{$data} );
+}
+
+################################################################################
+# Keepalive for Homematic HMLAN
+################################################################################
+
+sub keepalive {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+  $kernel->post( 'hmLanClient' => ServerOutput => "K" );
+  $kernel->delay( 'keepalive' => 29 );
+}
+
+################################################################################
 # Helper
 ################################################################################
 
 sub composeAnswer {
   my ( $status, $data ) = @_;
-  return $status
-    . " vlan:$data->{vlan}, source:$data->{source}, destination:$data->{destination}, mtype:$data->{mtype}, device:$data->{device}, v0:$data->{v0}, v1:$data->{v1}, v2:$data->{v2}";
+  return $status . " vlan:$data->{vlan}, source:$data->{source}, destination:$data->{destination}, mtype:$data->{mtype}, device:$data->{device}, v0:$data->{v0}, v1:$data->{v1}, v2:$data->{v2}";
+}
+
+sub secSince2000 {
+
+  # Calculate the local time in seconds from 2000.
+  my $t = time();
+  my @l = localtime($t);
+  my @g = gmtime($t);
+  $t += 60 * ( ( $l[2] - $g[2] + ( ( ( $l[5] << 9 ) | $l[7] ) <=> ( ( $g[5] << 9 ) | $g[7] ) ) * 24 + $l[8] ) * 60 + $l[1] - $g[1] )
+
+    # timezone and daylight saving...
+    - 946684800    # seconds between 01.01.2000, 00:00 and THE EPOCH (1970)
+    - 7200;        # HM Special
+  return $t;
 }
 
