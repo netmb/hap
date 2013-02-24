@@ -2,7 +2,7 @@
 
 = Einbindung von Homematic-Komponenten =
 
-Ab der SVN-Version 274 ist es möglich, Homematic-Komponenten in das HAP-System einzubinden (ich habe mich hier am Code vom fhem-Projekt bedient :-)).
+Ab der SVN-Version (>= 276) ist es möglich, Homematic-Komponenten in das HAP-System einzubinden (ich habe mich hier am Code vom fhem-Projekt bedient :-)).
 Hierzu wird ein HMLAN-Interface benötigt, welches im Netzwerk eingebunden wird. Der HAP-Message-Processor (hap-mp.pl) kommunziert dann mit den Homematic-Komponenten über das HMLAN-Interface.
 
 = Konfiguration =
@@ -20,7 +20,7 @@ Die Parameter sind dann den eigenen Gegebenheiten anzupassen. Die entsprechenden
 
 Wichtig ist: Die AES-Encryption auf LAN-Seite muss in der Windows-Software deaktiviert werden, sonst kann der Message-Processor die Datagramme des HMLAN nicht interpretieren. 
 
-In der aktuellen Version (274) werden leider nur der Reed-Kontakt HM-Sec-SC sowie der Zwischenstecker HM-LC-Sw1-Pl-2 als Homematic-Komponenten in der HAP-Umgebung unterstützt. Die Einbindung weitere Homematic-Komponenten sollte aber problemlos machbar sein, da hierfür nur der Homematic-Parser angepasst werden muss.
+In der aktuellen Version (>= 276) werden leider nur der Reed-Kontakt HM-Sec-SC sowie der Zwischenstecker HM-LC-Sw1-Pl-2 als Homematic-Komponenten in der HAP-Umgebung unterstützt. Die Einbindung weitere Homematic-Komponenten sollte aber problemlos machbar sein, da hierfür nur der Homematic-Parser angepasst werden muss.
 
 = Einbindung der Homematic-Komponenten =
 
