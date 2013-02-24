@@ -42,6 +42,8 @@
 
   [Scripting Makros]
 
+  [Homematic Einbindung]
+
 * Wiki *
 
   [Installation]
