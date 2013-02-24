@@ -42,7 +42,7 @@
 
   [Scripting Makros]
 
-  [Homematic Einbindung]
+  [Homematic Homematic-Einbindung]
 
 * Wiki *
 
