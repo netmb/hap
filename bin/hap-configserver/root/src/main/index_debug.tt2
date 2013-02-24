@@ -103,6 +103,8 @@
         </script>
         <script type='text/javascript' src='./static/js/hap/DevicePanel.js'>
         </script>
+        <script type='text/javascript' src='./static/js/hap/HomematicPanel.js'>
+        </script>
         <script type='text/javascript' src='./static/js/hap/ShutterPanel.js'>
         </script>
         <script type='text/javascript' src='./static/js/hap/RotaryEncoderPanel.js'>

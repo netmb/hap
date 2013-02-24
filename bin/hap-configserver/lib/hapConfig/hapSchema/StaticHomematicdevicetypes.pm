@@ -1,4 +1,4 @@
-package hapConfig::hapSchema::Config;
+package hapConfig::hapSchema::StaticHomematicdevicetypes;
 
 use strict;
 use warnings;
@@ -6,21 +6,30 @@ use warnings;
 use base 'DBIx::Class';
 
 __PACKAGE__->load_components("Core");
-__PACKAGE__->table("config");
+__PACKAGE__->table("static_homematicdevicetypes");
 __PACKAGE__->add_columns(
   "id",
   { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
   "name",
-  { data_type => "VARCHAR", default_value => "", is_nullable => 0, size => 64 },
-  "isdefault",
-  { data_type => "SMALLINT", default_value => 0, is_nullable => 0, size => 1 },
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 0,
+    size => 63,
+  },
+  "description",
+  {
+    data_type => "VARCHAR",
+    default_value => undef,
+    is_nullable => 1,
+    size => 255,
+  },
 );
 __PACKAGE__->set_primary_key("id");
-__PACKAGE__->add_unique_constraint("code_unique", ["name"]);
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006 @ 2013-02-23 16:15:25
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BgLc13ToQ1VsTWhyogCnKA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:lprd6A9z4GVns2lhn9SeEQ
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

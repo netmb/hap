@@ -1113,6 +1113,17 @@ var storeDeviceTypes = new Ext.data.Store({
     }])
 });
 
+var storeHomematicDeviceTypes = new Ext.data.Store({
+    url: '/json/getHomematicDeviceTypes',
+    reader: new Ext.data.JsonReader({
+        root: 'homematicdevicetypes'
+    }, [{
+        name: 'id'
+    }, {
+        name: 'name'
+    }])
+});
+
 var storeTimeBase = new Ext.data.Store({
     autoLoad: true,
     url: '/json/getTimeBase',
@@ -1436,6 +1447,7 @@ var loadStores = function(){
     storeAddresses.load();
     storePortPins.load();
     storeDeviceTypes.load();
+    storeHomematicDeviceTypes.load();
     storeUpstreamInterfaces.load();
     storeRooms.load();
     storeFirmware.load();
@@ -1459,6 +1471,36 @@ HAP.TextName = function(url){
 }
 
 Ext.extend(HAP.TextName, Ext.form.TextField, {});
+
+HAP.TextHomematicChannel = function(url){
+    this.id = url + '/textHomematicChannel';
+    this.fieldLabel = 'Channel';
+    this.name = 'channel';
+    this.width = 230;
+    this.allowBlank = false;
+    this.maskRe = /[\d]+/;
+    this.regex = /^([\d]){1}$/;
+    this.regexText = 'Only digits from 1-9 are allowed as channel-number.\n';
+    this.invalidText = this.regexText;
+    HAP.TextHomematicChannel.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.TextHomematicChannel, Ext.form.TextField, {});
+
+HAP.TextHomematicAddress = function(url){
+    this.id = url + '/textHomematicAddress';
+    this.fieldLabel = 'HM-Address';
+    this.name = 'homematicaddress';
+    this.width = 230;
+    this.allowBlank = false;
+    this.maskRe = /[ABCDEF\d]+/;
+    this.regex = /^([ABCDEF\d]){6}$/;
+    this.regexText = 'Only digits from 0-9 and characters from A-F allowed.\n A valid Homematic-address looks like: 00AF4C';
+    this.invalidText = this.regexText;
+    HAP.TextHomematicAddress.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.TextHomematicAddress, Ext.form.TextField, {});
 
 HAP.TextModuleUID = function(url){
     this.id = url + '/uid';
@@ -1678,6 +1720,26 @@ HAP.ComboDeviceType = function(url){
 }
 
 Ext.extend(HAP.ComboDeviceType, Ext.form.ComboBox, {});
+
+HAP.ComboHomematicDeviceType = function(url){
+    this.id = url + '/comboHomematicDeviceType';
+    this.store = storeHomematicDeviceTypes;
+    this.fieldLabel = 'Type';
+    this.valueField = 'id';
+    this.displayField = 'name';
+    this.hiddenName = 'homematicdevicetype';
+    this.typeAhead = true;
+    this.mode = 'local';
+    this.triggerAction = 'all';
+    this.emptyText = 'Select a type...';
+    this.selectOnFocus = true;
+    this.width = 230;
+    this.editable = false;
+    this.allowBlank = false;
+    HAP.ComboHomematicDeviceType.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.ComboHomematicDeviceType, Ext.form.ComboBox, {});
 
 HAP.ComboDigitalInputType = function(url){
     this.id = url + '/comboDigitalInputType';
@@ -4757,6 +4819,9 @@ var viewPanel = function(node, event){
             case 'device':
                 p = new HAP.DevicePanel(node.attributes);
                 break;
+            case 'homematic':
+                p = new HAP.HomematicPanel(node.attributes);
+                break;
             case 'logicalinput':
                 p = new HAP.LogicalInputPanel(node.attributes);
                 break;
@@ -6244,6 +6309,99 @@ HAP.DevicePanel = function(attrib){
 }
 
 Ext.extend(HAP.DevicePanel, Ext.FormPanel, {});
+HAP.HomematicPanel = function(attrib){
+    this.target = attrib.id;
+    this.id = attrib.id;
+    this.buttonAlign = 'center';
+    this.closable = true;
+    this.labelWidth = 75;
+    this.method = 'POST';
+    this.frame = true;
+    this.title = 'Homematic-Device';
+    this.bodyStyle = 'padding:5px 5px 0';
+    this.autoScroll = true;
+    this.keys = [{
+        key: Ext.EventObject.ENTER,
+        fn: function(el, key, normEvtCode){
+            saveButtonClicked(this.target, this);
+        },
+        scope: this
+    }, {
+        key: 'x',
+        fn: function(el, key, normEvtCode){
+            if (key.ctrlKey) {
+              deleteButtonClicked(this.target, this);
+            }
+        },
+        scope: this
+    }, {
+        key: 's',
+        fn: function(el, key, normEvtCode){
+            if (key.ctrlKey) {
+              saveButtonClicked(this.target, this);
+            }
+        },
+        scope: this
+    }];
+    this.items = [{
+        layout: 'absolute',
+        width: 800,
+        height: 600,
+        items: [{
+            xtype: 'fieldset',
+            title: 'Base Settings',
+            height: 240,
+            width: 370,
+            x: 5,
+            y: 5,
+            labelWidth: 90,
+            items: [new HAP.TextName(attrib.id), new HAP.ComboRoom(attrib.id), new HAP.ComboModule(attrib.id), new HAP.ComboAddress(attrib.id), new HAP.ComboNotify(attrib.id), new HAP.TextFormulaDescription(attrib.id), new HAP.TextFormula(attrib.id)]
+        }, {
+            xtype: 'fieldset',
+            title: 'Homematic Device Specification',
+            height: 120,
+            width: 370,
+            x: 5,
+            y: 255,
+            labelWidth: 90,
+            items: [new HAP.TextHomematicAddress(attrib.id), new HAP.ComboHomematicDeviceType(attrib.id), new HAP.TextHomematicChannel(attrib.id)]
+        }]
+    }];
+    var tmp = this;
+    this.buttons = [{
+        text: 'Save',
+        iconCls: 'ok',
+        handler: function(){
+            saveButtonClicked(tmp.target, tmp)
+        }
+    }, {
+        text: 'Delete',
+        iconCls: 'delete',
+        handler: function(){
+            deleteButtonClicked(tmp.target, tmp);
+        }
+    }];
+    
+    HAP.DevicePanel.superclass.constructor.call(this);
+    
+    this.load({
+        url: '/' + this.target.split('/')[0] + '/get/' + this.target.split('/')[1],
+        params: 'module=' + attrib.module + '&room=' + attrib.room,
+        method: 'GET',
+        success: function(form, action){
+            Ext.getCmp(attrib.id).setTitle(action.result.data.name)
+            Ext.getCmp(attrib.id + '/textName').focus();
+            loadAddressAndPortPin(action.result.data.module, action.result.data.address, '');
+        }
+    });
+    
+    this.on('activate', function(){     
+        Ext.getCmp(attrib.id + '/textName').focus();
+        loadAddressAndPortPin(Ext.getCmp(attrib.id + '/comboModule').getValue(), Ext.getCmp(attrib.id + '/comboAddress').getValue(), '');
+    });
+}
+
+Ext.extend(HAP.HomematicPanel, Ext.FormPanel, {});
 HAP.ShutterPanel = function(attrib){
     this.target = attrib.id;
     this.id = attrib.id;

@@ -20,6 +20,7 @@ AVRPath: '/usr/local/avr'
 AVRBinPath: '/usr/local/avr/bin'
 MacroPath: '/opt/hap/var/macro'
 LogFile: '/var/log/hap.log'
+ScriptsPath: '/opt/hap/var/scripts'
 CCUAddress: 1
 ServerCU: 124
 ServerCUConnection: 
@@ -38,3 +39,9 @@ Scheduler:
   Port: 7892  
 HAPCmdLang: en
 HAPCmdPrompt: 'HAP# '
+Homematic:
+  HmLanId : '1C65B8'
+  HmLanIp: 192.168.165.49
+  HmLanPort: 1000
+  AESKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+

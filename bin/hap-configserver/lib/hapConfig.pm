@@ -52,10 +52,20 @@ __PACKAGE__->config(
   hap                    => $hap,
   default_view           => 'index'
 );
-__PACKAGE__->config->{'Plugin::Static::Simple'}->{include_path} = [
-  __PACKAGE__->config->{root}, __PACKAGE__->config->{root} . '/static',
-  $hap->{'WebStaticPath'}
-];
+
+__PACKAGE__->config(
+        static => {
+            include_path => [
+              __PACKAGE__->config->{root}, __PACKAGE__->config->{root} . '/static',
+              $hap->{'WebStaticPath'}
+            ],
+        },
+);
+
+#__PACKAGE__->config->{'Plugin::Static::Simple'}->{include_path} = [
+#  __PACKAGE__->config->{root}, __PACKAGE__->config->{root} . '/static',
+#  $hap->{'WebStaticPath'}
+#];
 
 __PACKAGE__->config('Plugin::Authentication' => {
         default_realm => 'members',

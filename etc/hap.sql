@@ -131,6 +131,25 @@ CREATE TABLE IF NOT EXISTS `device` (
 SET character_set_client = @saved_cs_client;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
+CREATE TABLE IF NOT EXISTS `homematic` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(63) DEFAULT NULL,
+  `Module` int(11) NOT NULL DEFAULT '0',
+  `Address` int(11) NOT NULL DEFAULT '0',
+  `HomematicAddress` varchar(6) NOT NULL DEFAULT '0',
+  `HomematicDeviceType` int(11) NOT NULL DEFAULT '0',
+  `Notify` int(11) DEFAULT NULL,
+  `Room` int(11) DEFAULT NULL,
+  `Description` varchar(255) DEFAULT NULL,
+  `Formula` varchar(255) DEFAULT '',
+  `FormulaDescription` varchar(255) DEFAULT '',
+  `Config` int(11) NOT NULL,
+  `Channel` int(11) DEFAULT '1',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE IF NOT EXISTS `digitalinput` (
   `ID` int(11) NOT NULL auto_increment,
   `Name` varchar(64) default 'Digital Input',
@@ -593,6 +612,15 @@ CREATE TABLE IF NOT EXISTS `static_timebase` (
 SET character_set_client = @saved_cs_client;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
+CREATE TABLE `static_homematicdevicetypes` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(63) NOT NULL,
+  `Description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE IF NOT EXISTS `static_weekdays` (
   `ID` int(11) NOT NULL auto_increment,
   `Name` varchar(32) default NULL,
@@ -656,6 +684,7 @@ REPLACE INTO `static_schedulercommands` VALUES (2,'hap-sendcmd.pl'),(3,'hap-conf
 REPLACE INTO `static_startmodes` VALUES (1,'Standard',217,'normal'),(2,'Default-Config',179,'default-config'),(3,'Full-Default-Config',0,'full-default-config');
 REPLACE INTO `static_timebase` VALUES (1,'1/10s',0),(2,'Seconds',1),(3,'Minutes',2),(4,'Hours',3),(5,'Days',4),(6,'Weeks',5);
 REPLACE INTO `static_weekdays` VALUES (1,'Monday',0),(2,'Tuesday',1),(3,'Wednesday',2),(4,'Thursday',3),(5,'Friday',4),(6,'Saturday',5),(7,'Sunday',6);
+REPLACE INTO `static_homematicdevicetypes` VALUES(1,'HM-LC-Sw1-Pl-2','Wall Mount Switch'),(2,'HM-Sec-SC','Reed-Contact');
 REPLACE INTO `roles` VALUES (1,'Read'),(2,'Write'),(3,'Delete'),(33,'GUI_Set'),(32,'GUI_Read'),(31,'Delete_Users'),(30,'Manage_Users'),(29,'Learn_IR'),(28,'Delete_Schedules'),(27,'Add_Schedules'),(26,'Reset_Module'),(25,'Push_Config'),(24,'Flash_Firmware');
 
 REPLACE INTO users VALUES (5,"hap","5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8","","","");                                                                                                                   

@@ -440,6 +440,9 @@ var viewPanel = function(node, event){
             case 'device':
                 p = new HAP.DevicePanel(node.attributes);
                 break;
+            case 'homematic':
+                p = new HAP.HomematicPanel(node.attributes);
+                break;
             case 'logicalinput':
                 p = new HAP.LogicalInputPanel(node.attributes);
                 break;

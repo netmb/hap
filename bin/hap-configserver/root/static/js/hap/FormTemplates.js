@@ -10,6 +10,36 @@ HAP.TextName = function(url){
 
 Ext.extend(HAP.TextName, Ext.form.TextField, {});
 
+HAP.TextHomematicChannel = function(url){
+    this.id = url + '/textHomematicChannel';
+    this.fieldLabel = 'Channel';
+    this.name = 'channel';
+    this.width = 230;
+    this.allowBlank = false;
+    this.maskRe = /[\d]+/;
+    this.regex = /^([\d]){1}$/;
+    this.regexText = 'Only digits from 1-9 are allowed as channel-number.\n';
+    this.invalidText = this.regexText;
+    HAP.TextHomematicChannel.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.TextHomematicChannel, Ext.form.TextField, {});
+
+HAP.TextHomematicAddress = function(url){
+    this.id = url + '/textHomematicAddress';
+    this.fieldLabel = 'HM-Address';
+    this.name = 'homematicaddress';
+    this.width = 230;
+    this.allowBlank = false;
+    this.maskRe = /[ABCDEF\d]+/;
+    this.regex = /^([ABCDEF\d]){6}$/;
+    this.regexText = 'Only digits from 0-9 and characters from A-F allowed.\n A valid Homematic-address looks like: 00AF4C';
+    this.invalidText = this.regexText;
+    HAP.TextHomematicAddress.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.TextHomematicAddress, Ext.form.TextField, {});
+
 HAP.TextModuleUID = function(url){
     this.id = url + '/uid';
     this.fieldLabel = 'UID';
@@ -228,6 +258,26 @@ HAP.ComboDeviceType = function(url){
 }
 
 Ext.extend(HAP.ComboDeviceType, Ext.form.ComboBox, {});
+
+HAP.ComboHomematicDeviceType = function(url){
+    this.id = url + '/comboHomematicDeviceType';
+    this.store = storeHomematicDeviceTypes;
+    this.fieldLabel = 'Type';
+    this.valueField = 'id';
+    this.displayField = 'name';
+    this.hiddenName = 'homematicdevicetype';
+    this.typeAhead = true;
+    this.mode = 'local';
+    this.triggerAction = 'all';
+    this.emptyText = 'Select a type...';
+    this.selectOnFocus = true;
+    this.width = 230;
+    this.editable = false;
+    this.allowBlank = false;
+    HAP.ComboHomematicDeviceType.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.ComboHomematicDeviceType, Ext.form.ComboBox, {});
 
 HAP.ComboDigitalInputType = function(url){
     this.id = url + '/comboDigitalInputType';

@@ -111,6 +111,11 @@ sub checkAddress : Local {
   {
     $c->stash->{success} = \0;
   }
+  elsif (
+    $c->model('hapModel::Homematic')->search( { config => $c->session->{config}, module => $moduleID, address => $address, id => { '!=', $id } } )->first )
+  {
+    $c->stash->{success} = \0;
+  }
   $c->forward('View::JSON');
 }
 
@@ -186,6 +191,12 @@ sub getWeekdays : Local {
 sub getDeviceTypes : Local {
   my ( $self, $c ) = @_;
   $c->stash->{devicetypes} = [ map { { 'id' => $_->type, 'name' => $_->name } } $c->model('hapModel::StaticDevicetypes')->search({}, { order_by => 'Name ASC' }) ];
+  $c->forward('View::JSON');
+}
+
+sub getHomematicDeviceTypes : Local {
+  my ( $self, $c ) = @_;
+  $c->stash->{homematicdevicetypes} = [ map { { 'id' => $_->id, 'name' => $_->name } } $c->model('hapModel::StaticHomematicdevicetypes')->search({}, { order_by => 'Name ASC' }) ];
   $c->forward('View::JSON');
 }
 
@@ -269,6 +280,10 @@ sub getAllDevices : Local {
     map { { 'address' => $_->address, 'name' => $_->name } }
     $c->model('hapModel::Abstractdevice')->search( { config => $c->session->{config}, module => $mId }, { order_by => 'Name ASC' } )->all;
   push @devices, @tmp;
+  @tmp =
+    map { { 'address' => $_->address, 'name' => $_->name } }
+    $c->model('hapModel::Homematic')->search( { config => $c->session->{config}, module => $mId }, { order_by => 'Name ASC' } )->all;
+  push @devices, @tmp;
   $c->stash->{devices} = \@devices;
   $c->forward('View::JSON');
 }
@@ -345,7 +360,7 @@ sub getImages : Local {
 
 sub fillAddress() {
   my ( $self, $c, $cfg, $m, $address ) = @_;
-  my @a = $c->model('hapModel::AllAddresses')->search( {}, { bind => [ $cfg, $m, $cfg, $m, $cfg, $m, $cfg, $m, $cfg, $m ] } )->all;
+  my @a = $c->model('hapModel::AllAddresses')->search( {}, { bind => [ $cfg, $m, $cfg, $m, $cfg, $m, $cfg, $m, $cfg, $m, $cfg, $m ] } )->all;
   my @b = map { $_->address } @a;
   push @b, $address if ( $address && $address ne 'undefined' && $address ne '');
   @b = sort { $a <=> $b } (@b);

@@ -158,6 +158,17 @@ var storeDeviceTypes = new Ext.data.Store({
     }])
 });
 
+var storeHomematicDeviceTypes = new Ext.data.Store({
+    url: '/json/getHomematicDeviceTypes',
+    reader: new Ext.data.JsonReader({
+        root: 'homematicdevicetypes'
+    }, [{
+        name: 'id'
+    }, {
+        name: 'name'
+    }])
+});
+
 var storeTimeBase = new Ext.data.Store({
     autoLoad: true,
     url: '/json/getTimeBase',
@@ -481,6 +492,7 @@ var loadStores = function(){
     storeAddresses.load();
     storePortPins.load();
     storeDeviceTypes.load();
+    storeHomematicDeviceTypes.load();
     storeUpstreamInterfaces.load();
     storeRooms.load();
     storeFirmware.load();

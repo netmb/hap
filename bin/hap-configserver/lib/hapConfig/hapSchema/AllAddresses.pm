@@ -26,11 +26,15 @@ AND digitalinput.Module = ?
 LEFT JOIN abstractdevice ON abstractdevice.address = static_address.address
 AND abstractdevice.Config= ?
 AND abstractdevice.Module = ?
+LEFT JOIN homematic ON homematic.address = static_address.address
+AND homematic.Config= ?
+AND homematic.Module = ?
 WHERE device.address IS NULL
 AND logicalinput.address IS NULL
 AND analoginput.address IS NULL
 AND digitalinput.address IS NULL
 AND abstractdevice.address IS NULL
+AND homematic.address IS NULL
 ORDER BY static_address.address
 )
 SQL
