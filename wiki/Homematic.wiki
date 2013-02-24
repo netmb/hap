@@ -2,9 +2,8 @@
 
 = Einbindung von Homematic-Komponenten =
 
-Ab der SVN-Version 274 ist es möglich, Homematic-Komponenten in das HAP-System einzubinden.
+Ab der SVN-Version 274 ist es möglich, Homematic-Komponenten in das HAP-System einzubinden (ich habe mich hier am Code vom fhem-Projekt bedient :-)).
 Hierzu wird ein HMLAN-Interface benötigt, welches im Netzwerk eingebunden wird. Der HAP-Message-Processor (hap-mp.pl) kommunziert dann mit den Homematic-Komponenten über das HMLAN-Interface.
-
 
 = Konfiguration =
 
