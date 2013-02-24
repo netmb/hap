@@ -1,0 +1,37 @@
+#Homematic Einbindung
+
+= Einbindung von Homematic-Komponenten =
+
+Ab der SVN-Version 274 ist es möglich, Homematic-Komponenten in das HAP-System einzubinden.
+Hierzu wird ein HMLAN-Interface benötigt, welches im Netzwerk eingebunden wird. Der HAP-Message-Processor (hap-mp.pl) kommunziert dann mit den Homematic-Komponenten über das HMLAN-Interface.
+
+
+= Konfiguration =
+
+Zur Aktivierung des HMLAN-Interfaces in der HAP-Umgebung sind folgende Einträge in der hap.yml-Datei (opt/hap/etc/) zu ergänzen:
+
+{{{
+Homematic:
+  HmLanId : '1C65B8'
+  HmLanIp: 192.168.165.49
+  HmLanPort: 1000
+  AESKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+}}}
+Die Parameter sind dann den eigenen Gegebenheiten anzupassen. Die entsprechenden Werte lassen sich mit der Windows-Konfigurations-Software des HMLAN-Interface herausfinden bzw. setzen.
+
+Wichtig ist: Die AES-Encryption auf LAN-Seite muss in der Windows-Software deaktiviert werden, sonst kann der Message-Processor die Datagramme des HMLAN nicht interpretieren. 
+
+In der aktuellen Version (274) werden leider nur der Reed-Kontakt HM-Sec-SC sowie der Zwischenstecker HM-LC-Sw1-Pl-2 als Homematic-Komponenten in der HAP-Umgebung unterstützt. Die Einbindung weitere Homematic-Komponenten sollte aber problemlos machbar sein, da hierfür nur der Homematic-Parser angepasst werden muss.
+
+= Einbindung der Homematic-Komponenten =
+
+Zunächst muss die jeweilige Homematic-Komponete mit dem HMLAN-Interface "verheiratet" werden. Hierzu wird die Homematic-Komponente über die Windows-Software einmalig angelernt. 
+
+Nachdem die Komponente angelernt wurde, kann sie über die HAP-Weboberfläche unter dem Menüpunkt "Homematic" eingebunden werden. 
+
+Es empfiehlt sich für die Homematic-Komponenten ein Dummy-HAP-Modul anzulegen und unterhalb von diesem Modul dann die einzelnen Homematic-Komponenten anzulegen.  
+
+Danach ist eine Kommunikation auch über das HAP-System möglich.
+
+= Kommunikation =
+Aus HAP-Sicht verhält sich eine Homematic-Komponente wie ein HAP-Device. Es kann also ganz normal mit einem SET und QUERY-Befehl angesprochen werden. Wenn ein Notify-Modul für die Komponente definiert ist, dann erfolgt auch der Versand einer Status-Meldung (Message-Type 16).
