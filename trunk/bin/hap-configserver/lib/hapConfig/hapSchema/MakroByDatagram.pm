@@ -1,4 +1,4 @@
-package hapConfig::hapSchema::AcObjects;
+package hapConfig::hapSchema::MakroByDatagram;
 
 use strict;
 use warnings;
@@ -6,41 +6,43 @@ use warnings;
 use base 'DBIx::Class';
 
 __PACKAGE__->load_components("Core");
-__PACKAGE__->table("ac_objects");
+__PACKAGE__->table("makro_by_datagram");
 __PACKAGE__->add_columns(
   "id",
   { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
-  "sequence",
+  "source",
   { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
-  "module",
+  "destination",
   { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
-  "object",
+  "mtype",
   { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
-  "type",
+  "address",
   { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
-  "prop1",
+  "v0",
+  { data_type => "VARCHAR", default_value => undef, is_nullable => 1, size => 5 },
+  "v1",
+  { data_type => "VARCHAR", default_value => undef, is_nullable => 1, size => 5 },
+  "v2",
+  { data_type => "VARCHAR", default_value => undef, is_nullable => 1, size => 5 },
+  "makro",
   { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
-  "prop2",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
-  "prop3",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
-  "configobject",
+  "description",
   {
-    data_type => "TEXT",
+    data_type => "VARCHAR",
     default_value => undef,
     is_nullable => 1,
-    size => 65535,
+    size => 255,
   },
-  "x",
-  { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
   "config",
-  { data_type => "INT", default_value => undef, is_nullable => 1, size => 11 },
+  { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+  "active",
+  { data_type => "INT", default_value => undef, is_nullable => 1, size => 1 },
 );
 __PACKAGE__->set_primary_key("id");
 
 
 # Created by DBIx::Class::Schema::Loader v0.04006 @ 2013-02-24 16:28:03
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vDqirVjfU0XEKLbojQMLNA
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:KQo1sQ2HGmMBZj8zN1dT/A
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

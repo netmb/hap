@@ -149,7 +149,9 @@ if ( $c->{Homematic}->{HmLanId} && length( $c->{Homematic}->{HmLanId} ) == 6 ) {
     InlineStates => {
       ServerOutput => sub {
         my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-        $heap->{server}->put($data);
+        if ($heap->{connected}) {
+          $heap->{server}->put($data);
+        }
         }
     }
   );
@@ -227,9 +229,11 @@ sub hmLanIn {
         v1          => $hapMsg->{v1},
         v2          => $hapMsg->{v2}
       };
+      $kernel->post( main => serverCuOut => $notifyHapMsg );
       $kernel->post( main => serverCuIn => $notifyHapMsg );
     }
-    
+    #send ack
+    $kernel->post( 'main' => hmLanOut  => '+'.$source ); 
   }
   else {
     print "Raw Homematic-command: $data\n";
