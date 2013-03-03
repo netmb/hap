@@ -50,17 +50,16 @@ sub parse {
   my $hexNo = sprintf "%02x", $self->{c}->{hmCmdNr};
 
   my $hmId = $self->{c}->{Homematic}->{HmLanId};
-  if ( $dgram->{mtype} == 0 && $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' )
-  {                    # hap set command and wallmount-switch
+  if ( $dgram->{mtype} == 0 && $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' ) {    # hap set command and wallmount-switch
     if ( $dgram->{v0} == 0 ) {
-      $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020". $hmDeviceData->{'channel'}."000000" );
+      $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020" . $hmDeviceData->{'channel'} . "000000" );
     }
     elsif ( $dgram->{v0} > 0 ) {
-      $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020". $hmDeviceData->{'channel'}."C80000" );
+      $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020" . $hmDeviceData->{'channel'} . "C80000" );
     }
   }
-  elsif ( $dgram->{mtype} == 8 && $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' ) { # hap query command
-    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmDeviceData->{'homematicAddress'} . "0". $hmDeviceData->{'channel'}."0E" );
+  elsif ( $dgram->{mtype} == 8 && $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' ) {    # hap query command
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmDeviceData->{'homematicAddress'} . "0" . $hmDeviceData->{'channel'} . "0E" );
   }
   else {
     $error = "% Unrecognized Homematic command or destination-device does not support the command";
@@ -74,7 +73,7 @@ sub decrypt {
   my @mParts = split( ',', $dgram );
   my $leadingChar = substr( $mParts[0], 0, 1 );
   my $hmLanStatus = substr( $mParts[1], 0, 4 );
-  
+
   if ( $hmLanStatus eq '0008' ) {    # no ack received -> timeout
     return $dgram;
   }
@@ -133,14 +132,11 @@ sub decrypt {
         if ( $payload =~ m/^(..)(..)(..)(..)/ ) {
           my ( $subType, $chn, $level, $err ) = ( $1, $2, $3, hex($4) );
           my $value = hex($level) / 2;
-
           $hapDgram->{v0} = $value;
-          $hapDgram->{v1} = 0;
-          $hapDgram->{v2} = 0;
         }
       }
     }
-    elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-SC" ) {
+    elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-SC" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-RHS" ) {
       if ( $messageType eq "41" ) {
         if ( $payload =~ m/^(..)(..)(..)/ ) {
           my ( $chn, $cnt, $state ) = ( $1, $2, $3 );
@@ -154,9 +150,31 @@ sub decrypt {
           elsif ( $state eq "00" ) {    # closed
             $hapDgram->{v0} = 0;
           }
-          $hapDgram->{v1} = 0;
-          $hapDgram->{v2} = 0;
         }
+      }
+    }
+    elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-PB-2-WM55" ) {    # wall mount push button 2 channel surface mount
+      if ( $messageType =~ m/^4./ && $payload =~ m/^(..)(..)$/ ) {
+        my ( $channel, $pushCount ) = ( hex($1), hex($2) );
+        if ( $homematicDevicesByHmId->{$source}->{channel} == ( $channel & 0x3F ) ) {          # filter channel
+              #print "Current push-counter: $pushCount, previous:" . $homematicDevicesByHmId->{$source}->{pushCounter} . "\n";
+              #$homematicDevicesByHmId->{$source}->{pushCounter} = $pushCount;
+          if ( ( $channel & 0x40 ) == 0x40 ) {
+            $hapDgram->{v0} = 140;
+          }
+          else {
+            $hapDgram->{v0} = 132;
+          }    # simulate short button push on logical-input
+        }
+        else {
+          return $dgram;    # device not configured with this channel - ignore
+        }
+      }
+    }
+    elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-MDIR" ) {    # indoor motion detector
+      if ( $messageType eq "41" && $payload =~ m/^01(..)(..)(..)/ ) {
+        my ( $cnt, $brigthness, $nextTr ) = ( hex($1), hex($2), ( hex($3) >> 4 ) ); # useable?
+        $hapDgram->{v0} = 132;
       }
     }
     return $hapDgram;

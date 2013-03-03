@@ -484,6 +484,49 @@ var storeUserRoles = new Ext.data.Store({
     }])
 });
 
+var storeMakroByDatagram = new Ext.data.Store({
+    url: '/json/getMakroByDatagram',
+    pruneModifiedRecords: true,
+    reader: new Ext.data.JsonReader({
+        root: 'makrobydatagram',
+        id: 'id'
+    }, [{
+        name: 'id'
+    }, {
+        name: 'active',
+        type: 'int'
+    }, {
+        name: 'description'
+    }, {
+        name: 'source'
+    }, {
+        name: 'destination'
+    },{
+        name: 'address'
+    }, {
+        name: 'mtype'
+    }, {
+        name: 'v0'
+    }, {
+        name: 'v1'
+    }, {
+        name: 'v2'
+    },{
+        name: 'makro'
+    }])
+});
+
+var storeMessageTypes = new Ext.data.Store({
+    url: '/json/getMessageTypes',
+    reader: new Ext.data.JsonReader({
+        root: 'messagetypes',
+        id: 'id'
+    }, [{
+        name: 'id'
+    }, {
+        name: 'name'
+    }])
+});
 
 var loadStores = function(){
     storeModules.load();

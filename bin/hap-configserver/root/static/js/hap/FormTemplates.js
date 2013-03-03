@@ -279,6 +279,27 @@ HAP.ComboHomematicDeviceType = function(url){
 
 Ext.extend(HAP.ComboHomematicDeviceType, Ext.form.ComboBox, {});
 
+HAP.ComboMessageType = function(url){
+    this.id = url + '/comboMessageType';
+    this.store = storeMessageTypes;
+    this.fieldLabel = 'Type';
+    this.valueField = 'id';
+    this.displayField = 'name';
+    this.hiddenName = 'type';
+    this.typeAhead = true;
+    this.mode = 'local';
+    this.triggerAction = 'all';
+    this.emptyText = 'Select a type...';
+    this.selectOnFocus = true;
+    this.width = 230;
+    this.editable = false;
+    this.allowBlank = false;
+    HAP.ComboMessageType.superclass.constructor.call(this);
+}
+
+Ext.extend(HAP.ComboMessageType, Ext.form.ComboBox, {});
+
+
 HAP.ComboDigitalInputType = function(url){
     this.id = url + '/comboDigitalInputType';
     this.store = storeDigitalInputTypes;

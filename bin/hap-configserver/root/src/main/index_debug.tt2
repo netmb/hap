@@ -71,6 +71,8 @@
         </script>
         <script type='text/javascript' src='./static/js/hap/ManageMacrosWindow.js'>
         </script>
+        <script type='text/javascript' src='./static/js/hap/ManageMakroByDatagramWindow.js'>
+        </script>
         <script type='text/javascript' src='./static/js/hap/ManageFirmwareWindow.js'>
         </script>
         <script type='text/javascript' src='./static/js/hap/ManageSchedulerWindow.js'>

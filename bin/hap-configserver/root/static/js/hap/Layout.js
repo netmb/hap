@@ -42,6 +42,10 @@ HAP.Viewport = function(){
             iconCls: 'macro',
             handler: HAP.ManageMacrosWindow
         }, {
+            text: 'Manage Macros by datagram',
+            iconCls: 'macro',
+            handler: HAP.ManageMakroByDatagramWindow
+        }, {
             text: 'Manage Scheduler',
             iconCls: 'scheduler',
             handler: HAP.ManageSchedulerWindow
