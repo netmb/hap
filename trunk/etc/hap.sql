@@ -623,6 +623,7 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `makro_by_datagram` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `VLAN` int(11) DEFAULT NULL,
   `Source` int(11) DEFAULT NULL,
   `Destination` int(11) DEFAULT NULL,
   `MType` int(11) DEFAULT NULL,
