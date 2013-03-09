@@ -39,6 +39,8 @@ my %homematicDevices;
 my %homematicDevicesByHmId;
 my $homematicState;
 my %homematicMIdToHap;
+my %makroByDatagram;
+
 foreach ( 224 .. 239 ) {    # Source-Addresses
   $mapping{$_} = undef;
 }
@@ -63,32 +65,36 @@ POE::Session->create(
         $_[KERNEL]->yield('serialSetup');
         $_[KERNEL]->yield('serialCheck');
       }
-      $_[KERNEL]->yield('dbGetHomematicDevices');  #fill homematic hashes
+      $_[KERNEL]->yield('dbGetHomematicDevices');    #fill homematic hashes
+      $_[KERNEL]->yield('dbGetMakroByDatagram');
       $_[KERNEL]->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', 'Startup complete.' );
 
     },
-    serialSetup             => \&serialSetup,
-    serverCuIn              => \&serverCuIn,
-    serverCuOut             => \&serverCuOut,
-    hmLanIn                 => \&hmLanIn,
-    hmLanOut                => \&hmLanOut,
-    clearMIdfromHash        => \&clearMIdfromHash,
-    initHmLan               => \&initHmLan,
-    keepalive               => \&keepalive,
-    serialCheck             => \&serialCheck,
-    dbAddLogEntry           => \&dbAddLogEntry,
-    dbGetModuleId           => \&dbGetModuleId,
-    dbGetDeviceData         => \&dbGetDeviceData,
-    dbUpdateStatus          => \&dbUpdateStatus,
-    dbGetMakro              => \&dbGetMakro,
-    dbGetFirmwareId         => \&dbGetFirmwareId,
-    dbGetHomematicDevices   => \&dbGetHomematicDevices,
-    dbGetFirmwareOptions    => \&dbGetFirmwareOptions,
-    dbUpdateFirmwareVersion => \&dbUpdateFirmwareVersion,
-    dbUpdateFirmwareOptions => \&dbUpdateFirmwareOptions,
-    executeMakroScript      => \&executeMakroScript,
-    multicastAlert          => \&multicastAlert,
-    fillHomematicHash       => \&fillHomematicHash
+    serialSetup                  => \&serialSetup,
+    serverCuIn                   => \&serverCuIn,
+    serverCuOut                  => \&serverCuOut,
+    hmLanIn                      => \&hmLanIn,
+    hmLanOut                     => \&hmLanOut,
+    clearMIdfromHash             => \&clearMIdfromHash,
+    initHmLan                    => \&initHmLan,
+    keepalive                    => \&keepalive,
+    serialCheck                  => \&serialCheck,
+    dbAddLogEntry                => \&dbAddLogEntry,
+    dbGetModuleId                => \&dbGetModuleId,
+    dbGetDeviceData              => \&dbGetDeviceData,
+    dbUpdateStatus               => \&dbUpdateStatus,
+    dbGetMakro                   => \&dbGetMakro,
+    dbGetFirmwareId              => \&dbGetFirmwareId,
+    dbGetHomematicDevices        => \&dbGetHomematicDevices,
+    dbGetFirmwareOptions         => \&dbGetFirmwareOptions,
+    dbUpdateFirmwareVersion      => \&dbUpdateFirmwareVersion,
+    dbUpdateFirmwareOptions      => \&dbUpdateFirmwareOptions,
+    dbGetMakroByDatagram         => \&dbGetMakroByDatagram,
+    executeMakroScript           => \&executeMakroScript,
+    executeMakroScriptByDatagram => \&executeMakroScriptByDatagram,
+    multicastAlert               => \&multicastAlert,
+    fillHomematicHash            => \&fillHomematicHash,
+    fillMakroByDatagramHash      => \&fillMakroByDatagramHash
   },
 );
 
@@ -149,7 +155,7 @@ if ( $c->{Homematic}->{HmLanId} && length( $c->{Homematic}->{HmLanId} ) == 6 ) {
     InlineStates => {
       ServerOutput => sub {
         my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-        if ($heap->{connected}) {
+        if ( $heap->{connected} ) {
           $heap->{server}->put($data);
         }
         }
@@ -207,12 +213,25 @@ sub hmLanIn {
     my $source = substr( $mParts[5], 6, 6 );
 
     my $hapMsg = $hmParser->decrypt( $data, \%homematicDevicesByHmId, \%homematicMIdToHap );
-    if ( ref($hapMsg)) {
+    if ( ref($hapMsg) ) {
       print &composeAnswer( "HMLAN in:", $hapMsg ) . "\n";
+      # Makro by datagram stuff
+      my $mUid = buildHashFromMessagePart($hapMsg);
+      if ( defined( $makroByDatagram{$mUid} ) ) {
+        if ( checkValues( $makroByDatagram{$mUid}->{msg}, $hapMsg ) == 1 ) {
+          $kernel->post(
+            'main' => executeMakroScriptByDatagram => {
+              makro  => $makroByDatagram{$mUid}->{makro},
+              hapMsg => $hapMsg
+            }
+          );
+        }
+      }
+
     }
     else {
       print "Unable to parse Homematic-datagram: $data\n";
-    } 
+    }
     if ( ref($hapMsg) && $homematicMIdToHap{$mId} ) {    # looks like an received command initiated by a session
       $kernel->post( $mapping{ $homematicMIdToHap{$mId} }->{session} => ClientOutput => $hapMsg );
       $kernel->delay('clearMIdfromHash');                #remove auto-clean delay
@@ -230,10 +249,11 @@ sub hmLanIn {
         v2          => $hapMsg->{v2}
       };
       $kernel->post( main => serverCuOut => $notifyHapMsg );
-      $kernel->post( main => serverCuIn => $notifyHapMsg );
+      $kernel->post( main => serverCuIn  => $notifyHapMsg );
     }
+
     #send ack
-    $kernel->post( 'main' => hmLanOut  => '+'.$source ); 
+    $kernel->post( 'main' => hmLanOut => '+' . $source );
   }
   else {
     print "Raw Homematic-command: $data\n";
@@ -276,6 +296,20 @@ sub serverCuIn {
     $data = $mroutine->decrypt( $data, $c->{CryptKey}, $c->{CryptOption} );    #$kernel->delay('serverCuOut'); # clear retransmit
   }
   print &composeAnswer( "Serial in:", $data ) . "\n";
+
+  # Makro by datagram stuff
+  my $mUid = buildHashFromMessagePart($data);
+  if ( defined( $makroByDatagram{$mUid} ) ) {
+    if ( checkValues( $makroByDatagram{$mUid}->{msg}, $data ) == 1 ) {
+      $kernel->post(
+        'main' => executeMakroScriptByDatagram => {
+          makro  => $makroByDatagram{$mUid}->{makro},
+          hapMsg => $data
+        }
+      );
+    }
+  }
+
   if ( $data->{mtype} == 77
     && ( $data->{device} == 128 || $data->{device} == 130 ) )
   {
@@ -284,17 +318,17 @@ sub serverCuIn {
   if ( $data->{mtype} == 9 || $data->{mtype} == 16 ) {
     $kernel->post( 'main' => dbGetModuleId => $data );
   }
-  elsif ( $data->{mtype} == 123 ) {                                            # Timesync
+  elsif ( $data->{mtype} == 123 ) {    # Timesync
     $kernel->post( main => serverCuOut => $mroutine->getTime($data) );
     return;
   }
-  elsif ( $data->{mtype} == 24 ) {                                             # Makro
+  elsif ( $data->{mtype} == 24 ) {     # Makro
     $kernel->post( 'main' => dbGetMakro => $data );
   }
-  elsif ( $data->{mtype} == 77 && $data->{device} == 28 ) {                    # Firmware-Version
+  elsif ( $data->{mtype} == 77 && $data->{device} == 28 ) {    # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareId => $data );
   }
-  elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {                    # Firmware-Version
+  elsif ( $data->{mtype} == 77 && $data->{device} == 30 ) {    # Firmware-Version
     $kernel->post( 'main' => dbGetFirmwareOptions => $data );
   }
 
@@ -456,7 +490,8 @@ sub dbGetHomematicDevices {
   $kernel->post(
     'database',
     'arrayhash' => {
-      sql => "SELECT module2.Address as Module, homematic.Address, homematic.HomematicAddress, static_homematicdevicetypes.Name as HomematicDeviceType, module.Address as Notify, homematic.Channel FROM homematic 
+      sql =>
+"SELECT module2.Address as Module, homematic.Address, homematic.HomematicAddress, static_homematicdevicetypes.Name as HomematicDeviceType, module.Address as Notify, homematic.Channel FROM homematic 
 left join static_homematicdevicetypes on HomematicDeviceType = static_homematicdevicetypes.ID 
 left join module on Notify = module.ID
 left join module as module2 on Module = module2.ID
@@ -526,6 +561,22 @@ sub dbGetMakro {
     'arrayhash' => {
       sql   => "SELECT Name, ID FROM makro WHERE MakroNr = $makroNr AND Config = $c->{DefaultConfig}",
       event => 'executeMakroScript',
+    },
+  );
+}
+
+sub dbGetMakroByDatagram {
+  my ( $kernel, $heap, $session, $data ) = @_[ KERNEL, HEAP, SESSION, ARG0 ];
+  $kernel->post(
+    'database',
+    'arrayhash' => {
+      sql =>
+"SELECT makro_by_datagram.VLAN, module.Address as Source, module2.Address as Destination, MType, makro_by_datagram.Address as Device, v0, v1, v2, makro.ID, makro.Name FROM hap.makro_by_datagram 
+left join module on module.id = Source
+left join module as module2 on module2.id = Destination
+left join makro on makro.id = Makro
+where Active = 1 and makro_by_datagram.Config = $c->{DefaultConfig}",
+      event => 'fillMakroByDatagramHash',
     },
   );
 }
@@ -632,6 +683,12 @@ sub tcpClientInput {
         $heap->{MCastAddress} = $cObj->{MCastAddress};
         $heap->{client}->put("[ACK] Set Multicast Addresses to $cObj->{MCastAddress}");
       }
+    }
+    if ( defined( $cObj->{HomematicRefresh} ) ) {
+      $kernel->post( main => 'dbGetHomematicDevices' );
+    }
+    if ( defined( $cObj->{MakroByDatagramUpdate} ) ) {
+      $kernel->post( main => 'dbGetMakroByDatagram' );
     }
     return;
   }
@@ -750,10 +807,12 @@ sub hmLanTcpServerReconnect {
 # Makro
 ################################################################################
 
+#straight from database
 sub executeMakroScript {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
   foreach ( @{ $data->{result} } ) {
     print "Executing Makro-Script: $_->{ID}.$_->{Name}\n";
+    $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "Executing Makro-Script: $_->{ID}.$_->{Name}" );
     my $wheel = POE::Wheel::Run->new(
       Program     => $c->{MacroPath} . "/" . $_->{ID} . "." . $_->{Name},
       StdinEvent  => '',
@@ -765,13 +824,32 @@ sub executeMakroScript {
   }
 }
 
+sub executeMakroScriptByDatagram {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+  my @parameters = (
+    $data->{hapMsg}->{vlan},  $data->{hapMsg}->{source}, $data->{hapMsg}->{destination}, $data->{hapMsg}->{device},
+    $data->{hapMsg}->{mtype}, $data->{hapMsg}->{v0},     $data->{hapMsg}->{v1},          $data->{hapMsg}->{v2}
+  );
+  print "Executing Makro-Script: $data->{makro} with Params: " . join( " ", @parameters ) . "\n";
+  $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "Executing Makro-Script: $data->{makro} with Params: " . join( " ", @parameters ) );
+  my $wheel = POE::Wheel::Run->new(
+    Program     => $c->{MacroPath} . "/" . $data->{makro},
+    ProgramArgs => \@parameters,
+    StdinEvent  => '',
+    StdoutEvent => '',
+    StderrEvent => '',
+    ErrorEvent  => '',
+    CloseEvent  => '',
+  );
+}
+
 ################################################################################
 # Fill Homematic Hash
 ################################################################################
 
 sub fillHomematicHash {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-  %homematicDevices = ();
+  %homematicDevices       = ();
   %homematicDevicesByHmId = ();
   foreach ( @{ $data->{result} } ) {
     $homematicDevices{ ( $_->{Module} << 8 ) ^ $_->{Address} } = {
@@ -788,8 +866,77 @@ sub fillHomematicHash {
       address             => $_->{Address},
       channel             => $_->{Channel}
     };
-     $kernel->delay('dbGetHomematicDevices', 60);
   }
+}
+
+################################################################################
+# Makro By Datagram
+################################################################################
+
+sub fillMakroByDatagramHash {
+  my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
+  %makroByDatagram = ();
+  foreach ( @{ $data->{result} } ) {
+    my $hapMsgPart = {
+      vlan        => $_->{VLAN},
+      source      => $_->{Source},
+      destination => $_->{Destination},
+      mtype       => $_->{MType},
+      device      => $_->{Device},
+      v0          => $_->{v0},
+      v1          => $_->{v1},
+      v2          => $_->{v2},
+    };
+    my $mUid = buildHashFromMessagePart($hapMsgPart);
+    $makroByDatagram{$mUid} = {
+      makro => $_->{ID} . "." . $_->{Name},
+      msg   => $hapMsgPart
+    };
+  }
+}
+
+sub checkValues {
+  my ( $dbMsg, $hapMsg ) = @_;
+  my $ex1 = compareValues( $hapMsg->{v0}, $dbMsg->{v0} );
+  my $ex2 = compareValues( $hapMsg->{v1}, $dbMsg->{v1} );
+  my $ex3 = compareValues( $hapMsg->{v2}, $dbMsg->{v2} );
+
+  if ( $ex1 == 1 && $ex2 == 1 && $ex3 == 1 ) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+sub compareValues {
+  my ( $hapValue, $dbStr ) = @_;
+  $dbStr =~ /([<>=]{0,2})(\d{1,3})/;
+  my $op      = $1;
+  my $dbValue = $2;
+  my $execute = 0;
+  if ( !defined($op) && !defined($dbValue) ) {
+    $execute = 1;
+  }
+  elsif ( ( !defined($op) || $op eq "" ) && defined($dbValue) ) {
+    $execute = 1 if ( $hapValue == $dbValue );
+  }
+  elsif ( $op eq ">" ) {
+    $execute = 1 if ( $hapValue > $dbValue );
+  }
+  elsif ( $op eq "<" ) {
+    $execute = 1 if ( $hapValue < $dbValue );
+  }
+  elsif ( $op eq "=" ) {
+    $execute = 1 if ( $hapValue == $dbValue );
+  }
+  elsif ( $op eq ">=" ) {
+    $execute = 1 if ( $hapValue >= $dbValue );
+  }
+  elsif ( $op eq "<=" ) {
+    $execute = 1 if ( $hapValue <= $dbValue );
+  }
+  return $execute;
 }
 
 ################################################################################
@@ -800,7 +947,8 @@ sub multicastAlert {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
   my $val = $data->{v1} * 256 + $data->{v0};
   my @parameters = ( $data->{destination}, $data->{source}, $data->{device}, $val );
-  print "MulicastAlert $data->{destination}\n";
+  print "Execute Script for MulicastAlert-Address: $data->{destination}\n";
+  $kernel->yield( 'dbAddLogEntry', $$, 'hap-mp', 'Info', "Execute Script for MulicastAlert-Address: $data->{destination}\n" );
   my $wheel = POE::Wheel::Run->new(
     Program     => "$c->{ScriptsPath}/MulticastAlert.pl",
     ProgramArgs => \@parameters,
@@ -819,7 +967,6 @@ sub multicastAlert {
 
 sub clearMIdfromHash {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-  print "CLEANUP\n";
   delete( $homematicMIdToHap{$data} );
 }
 
@@ -854,5 +1001,12 @@ sub secSince2000 {
     - 946684800    # seconds between 01.01.2000, 00:00 and THE EPOCH (1970)
     - 7200;        # HM Special
   return $t;
+}
+
+sub buildHashFromMessagePart {
+  my ($data) = @_;
+  my $hashStr =
+    sprintf( "%03d", $data->{vlan} ) . sprintf( "%03d", $data->{source} ) . sprintf( "%03d", $data->{destination} ) . sprintf( "%03d", $data->{mtype} ) . sprintf( "%03d", $data->{device} );
+  return $hashStr;
 }
 

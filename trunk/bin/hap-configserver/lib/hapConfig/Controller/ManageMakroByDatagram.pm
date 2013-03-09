@@ -35,6 +35,7 @@ sub get : Local {
       id          => $rc->id,
       active      => $rc->active,
       description => $rc->description,
+      vlan        => $rc->vlan,
       source      => $rc->source,
       destination => $rc->destination,
       mtype       => $rc->mtype,
@@ -46,7 +47,6 @@ sub get : Local {
       config      => $c->session->{config}
     };
   }
-  
   if ( $id == 0 ) {
     $c->stash->{data}    = {};       # required for extjs
     $c->stash->{success} = 'true';
@@ -74,6 +74,29 @@ sub delete : Local {
     $c->stash->{success} = \0;
     $c->stash->{info}    = "Failed!: DB-ID : $id";
   }
+  my $data;
+  my $sock = new IO::Socket::INET( PeerAddr => $c->config->{MessageProcessor}->{Host}, PeerPort => $c->config->{MessageProcessor}->{Port}, Proto => 'tcp' );
+  if ( !$sock ) {
+    $c->stash->{success} = \0;
+    $c->stash->{info}    = "Can\'t connect to the Message-Processor!";
+  }
+  else {
+    eval {
+      local $SIG{ALRM} = sub { die 'Alarm'; };
+      alarm 1;
+      $data = <$sock>;              # Welcome ?
+      alarm 0;
+    };
+    if ($@) {
+      $c->stash->{success} = \0;
+      $c->stash->{info}    = "Can\'t connect to the Message-Processor!";
+    }
+    else {
+      print $sock '{"MakroByDatagramUpdate": 1}'."\n";
+      $c->stash->{success} = \1;
+    }
+  }
+  $sock->close();
   $c->forward('View::JSON');
 }
 
@@ -86,6 +109,7 @@ sub submit : Local {
     my $data = {
       active      => $row->{active},
       description => $row->{description},
+      vlan        => $row->{vlan},
       source      => $row->{source},
       destination => $row->{destination},
       mtype       => $row->{mtype},
@@ -105,6 +129,30 @@ sub submit : Local {
     }
   }
   $c->stash->{success} = \1;
+  my $data;
+  my $sock = new IO::Socket::INET( PeerAddr => $c->config->{MessageProcessor}->{Host}, PeerPort => $c->config->{MessageProcessor}->{Port}, Proto => 'tcp' );
+  if ( !$sock ) {
+    $c->stash->{success} = \0;
+    $c->stash->{info}    = "Can\'t connect to the Message-Processor!";
+  }
+  else {
+    eval {
+      local $SIG{ALRM} = sub { die 'Alarm'; };
+      alarm 1;
+      $data = <$sock>;              # Welcome ?
+      alarm 0;
+    };
+    if ($@) {
+      $c->stash->{success} = \0;
+      $c->stash->{info}    = "Can\'t connect to the Message-Processor!";
+    }
+    else {
+      print $sock '{"MakroByDatagramUpdate": 1}'."\n";
+      $c->stash->{success} = \1;
+    }
+  }
+  $sock->close();
+  
   $c->forward('View::JSON');
 }
 

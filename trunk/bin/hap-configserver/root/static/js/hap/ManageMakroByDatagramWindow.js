@@ -18,7 +18,9 @@ HAP.ManageMakroByDatagramWindow = function(item){
         name: 'active'
     },{
         name: 'description'
-    }, {
+    },{
+        name: 'vlan'
+    },{
         name: 'source'
     }, {
         name: 'destination'
@@ -45,7 +47,15 @@ HAP.ManageMakroByDatagramWindow = function(item){
         editor: new Ext.form.TextField({
             allowBlank: true
         })
-     }, {
+     },{
+        id: 'manageMakroByDatagramVlan',
+        header: 'VLAN',
+        dataIndex: 'vlan',
+        sortable: true,
+        editor: new Ext.form.TextField({
+            allowBlank: true
+        })
+     },{
         id: 'manageMakroByDatagramSource',
         header: 'Source',
         dataIndex: 'source',
@@ -214,6 +224,7 @@ HAP.ManageMakroByDatagramWindow = function(item){
         var c = new newMakroByDatagram({
             active: 1,
             description: '',
+            vlan: '',
             source: '',
             destination: '',
             mtype : '',

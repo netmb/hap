@@ -21,10 +21,10 @@ GetOptions( "config|c=i" => \$config ) or die ;
 if (!$config) {
  $config = $c->{DefaultConfig};
 }
-my $sth = $c->{dbh}->prepare("Select ID, Address from module WHERE Config=$config order by Address ASC");
+my $sth = $c->{dbh}->prepare("Select ID, Address, Name from module WHERE Config=$config order by Address ASC");
 $sth->execute();
 while (my $ref = $sth->fetchrow_hashref()) {
- print "Address: $ref->{Address}\t => ID: $ref->{ID}\n";
+ print "Address: $ref->{Address}\t => ID: $ref->{ID} [$ref->{Name}]\n";
 }
 
 exit 0;

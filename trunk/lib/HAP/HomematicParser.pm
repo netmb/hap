@@ -108,6 +108,7 @@ sub decrypt {
       vlan        => 0,
       source      => 0,
       destination => 0,
+      device      => 0,
       mtype       => 0,
       v0          => 0,
       v1          => 0,
