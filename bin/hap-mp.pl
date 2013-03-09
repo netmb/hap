@@ -209,12 +209,13 @@ sub hmLanIn {
   my @mParts = split( ',', $data );
   my $leadingChar = substr( $mParts[0], 0, 1 );
   if ( $leadingChar =~ m/^[ER]/ ) {
-    my $mId    = substr( $mParts[0], 1, 8 );
-    my $source = substr( $mParts[5], 6, 6 );
-
-    my $hapMsg = $hmParser->decrypt( $data, \%homematicDevicesByHmId, \%homematicMIdToHap );
+    #my $mId    = substr( $mParts[0], 1, 8 );
+    #my $source = substr( $mParts[5], 6, 6 );
+    my ($hapMsg, $hmMsg) = $hmParser->decrypt( $data, \%homematicDevicesByHmId, \%homematicMIdToHap );
     if ( ref($hapMsg) ) {
+      
       print &composeAnswer( "HMLAN in:", $hapMsg ) . "\n";
+
       # Makro by datagram stuff
       my $mUid = buildHashFromMessagePart($hapMsg);
       if ( defined( $makroByDatagram{$mUid} ) ) {
@@ -232,16 +233,16 @@ sub hmLanIn {
     else {
       print "Unable to parse Homematic-datagram: $data\n";
     }
-    if ( ref($hapMsg) && $homematicMIdToHap{$mId} ) {    # looks like an received command initiated by a session
-      $kernel->post( $mapping{ $homematicMIdToHap{$mId} }->{session} => ClientOutput => $hapMsg );
+    if ( ref($hapMsg) && $homematicMIdToHap{$hmMsg->{mId}} ) {    # looks like an received command initiated by a session
+      $kernel->post( $mapping{ $homematicMIdToHap{$hmMsg->{mId}} }->{session} => ClientOutput => $hapMsg );
       $kernel->delay('clearMIdfromHash');                #remove auto-clean delay
-      delete( $homematicMIdToHap{$mId} );
+      delete( $homematicMIdToHap{$hmMsg->{mId}} );
     }
-    if ( ref($hapMsg) && $homematicDevicesByHmId{$source}->{notify} ) {    # valid message but no session, could be an event
+    if ( ref($hapMsg) && $homematicDevicesByHmId{$hmMsg->{source}}->{channels}->{$hmMsg->{channel}}->{notify} ) {    # valid message but no session, could be an event
       my $notifyHapMsg = {
         vlan        => $hapMsg->{vlan},
         source      => $hapMsg->{source},
-        destination => $homematicDevicesByHmId{$source}->{notify},
+        destination => $homematicDevicesByHmId{$hmMsg->{source}}->{channels}->{$hmMsg->{channel}}->{notify},
         device      => $hapMsg->{device},
         mtype       => 16,
         v0          => $hapMsg->{v0},
@@ -253,7 +254,7 @@ sub hmLanIn {
     }
 
     #send ack
-    $kernel->post( 'main' => hmLanOut => '+' . $source );
+    $kernel->post( 'main' => hmLanOut => '+' . $hmMsg->{source} );
   }
   else {
     print "Raw Homematic-command: $data\n";
@@ -858,14 +859,17 @@ sub fillHomematicHash {
       notify              => $_->{Notify},
       channel             => $_->{Channel}
     };
-    $homematicDevicesByHmId{ $_->{HomematicAddress} } = {
-      homematicAddress    => $_->{HomematicAddress},
-      homematicDeviceType => $_->{HomematicDeviceType},
-      notify              => $_->{Notify},
-      module              => $_->{Module},
-      address             => $_->{Address},
-      channel             => $_->{Channel}
-    };
+    if ( defined( $homematicDevicesByHmId{ $_->{HomematicAddress} } ) ) {  # oops, device already present, must be an device with multiple channels
+      $homematicDevicesByHmId{ $_->{HomematicAddress} }->{channels}->{ $_->{Channel} } = {address => $_->{Address}, notify => $_->{Notify}  }; 
+    }
+    else {
+      $homematicDevicesByHmId{ $_->{HomematicAddress} } = {
+        homematicAddress    => $_->{HomematicAddress},
+        homematicDeviceType => $_->{HomematicDeviceType},
+        module              => $_->{Module},
+        channels => { $_->{Channel} => {address => $_->{Address}, notify => $_->{Notify} } }
+      };
+    }
   }
 }
 

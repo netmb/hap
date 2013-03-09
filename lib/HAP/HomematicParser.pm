@@ -69,7 +69,6 @@ sub parse {
 
 sub decrypt {
   my ( $self, $dgram, $homematicDevicesByHmId, $homematicMIdToHap ) = @_;
-
   my @mParts = split( ',', $dgram );
   my $leadingChar = substr( $mParts[0], 0, 1 );
   my $hmLanStatus = substr( $mParts[1], 0, 4 );
@@ -103,6 +102,14 @@ sub decrypt {
     # messageType 2 = AckStatus
     # messageType 10 = Info Level
     # messageType 41 = Event
+    
+    my $hmDgram = {
+      mId => $mId,
+      source => $source,
+      destination =>  $destination,
+      messageType => $messageType,
+      channel => 0
+    };
 
     my $hapDgram = {
       vlan        => 0,
@@ -124,14 +131,14 @@ sub decrypt {
     elsif ( $messageType eq "10" ) {    #Info Level
       $hapDgram->{mtype} = 9;
     }
-    $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{address};
 
     if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-Pl-2" ) {
       if ( ( $messageType eq "02" && $payload =~ m/^01/ )
         || ( $messageType eq "10" && $payload =~ m/^06/ ) )
       {
         if ( $payload =~ m/^(..)(..)(..)(..)/ ) {
-          my ( $subType, $chn, $level, $err ) = ( $1, $2, $3, hex($4) );
+          my ( $subType, $chn, $level, $err ) = ( $1, hex($2), $3, hex($4) );
+          $hmDgram->{channel} = $chn;
           my $value = hex($level) / 2;
           $hapDgram->{v0} = $value;
         }
@@ -140,8 +147,8 @@ sub decrypt {
     elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-SC" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-RHS" ) {
       if ( $messageType eq "41" ) {
         if ( $payload =~ m/^(..)(..)(..)/ ) {
-          my ( $chn, $cnt, $state ) = ( $1, $2, $3 );
-
+          my ( $chn, $cnt, $state ) = ( hex($1), $2, $3 );
+          $hmDgram->{channel} = $chn;
           if ( $state eq "C8" ) {    # open
             $hapDgram->{v0} = 200;
           }
@@ -157,7 +164,8 @@ sub decrypt {
     elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-PB-2-WM55" ) {    # wall mount push button 2 channel surface mount
       if ( $messageType =~ m/^4./ && $payload =~ m/^(..)(..)$/ ) {
         my ( $channel, $pushCount ) = ( hex($1), hex($2) );
-        if ( $homematicDevicesByHmId->{$source}->{channel} == ( $channel & 0x3F ) ) {          # filter channel
+        $hmDgram->{channel} = ( $channel & 0x3F );
+        if ( defined($homematicDevicesByHmId->{$source}->{channels}->{$hmDgram->{channel}}) ) {          # filter channel
               #print "Current push-counter: $pushCount, previous:" . $homematicDevicesByHmId->{$source}->{pushCounter} . "\n";
               #$homematicDevicesByHmId->{$source}->{pushCounter} = $pushCount;
           if ( ( $channel & 0x40 ) == 0x40 ) {
@@ -168,7 +176,7 @@ sub decrypt {
           }    # simulate short button push on logical-input
         }
         else {
-          return $dgram;    # device not configured with this channel - ignore
+          return ($dgram, $hmDgram);    # device not configured with this channel - ignore
         }
       }
     }
@@ -178,9 +186,10 @@ sub decrypt {
         $hapDgram->{v0} = 132;
       }
     }
-    return $hapDgram;
+    $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{$hmDgram->{channel}}->{address};
+    return ($hapDgram, $hmDgram);
   }
-  return $dgram;
+  return ($dgram, {});
 }
 
 1;
