@@ -321,7 +321,7 @@ sub getMacros : Local {
 sub getMakroByDatagram : Local {
   my ( $self, $c ) = @_;
   $c->stash->{makrobydatagram} =
-    [ map { { 'id' => $_->id, 'active' => $_->active, 'description' => $_->description, 'source' => $_->source, 'destination' => $_->destination, 'address' => $_->address, 'mtype' => $_->mtype, 'v0' => $_->v0, 'v1' => $_->v1, 'v2' => $_->v2, 'makro' => $_->makro } }
+    [ map { { 'id' => $_->id, 'active' => $_->active, 'description' => $_->description, 'vlan' => $_->vlan, 'source' => $_->source, 'destination' => $_->destination, 'address' => $_->address, 'mtype' => $_->mtype, 'v0' => $_->v0, 'v1' => $_->v1, 'v2' => $_->v2, 'makro' => $_->makro } }
       $c->model('hapModel::MakroByDatagram')->search( { config => $c->session->{config} }, { order_by => 'ID ASC' } )->all ];
   $c->forward('View::JSON');
 }

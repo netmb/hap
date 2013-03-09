@@ -498,6 +498,8 @@ var storeMakroByDatagram = new Ext.data.Store({
     }, {
         name: 'description'
     }, {
+        name: 'vlan'
+    }, {
         name: 'source'
     }, {
         name: 'destination'
