@@ -73,10 +73,6 @@ sub decrypt {
   my $leadingChar = substr( $mParts[0], 0, 1 );
   my $hmLanStatus = substr( $mParts[1], 0, 4 );
 
-  if ( $hmLanStatus eq '0008' ) {    # no ack received -> timeout
-    return $dgram;
-  }
-
   # 0001=ack:seems to announce the new message counter
   # 0002=message send done, no ack was requested
   # 0008=nack - HMLAN did not receive an ACK,
@@ -110,6 +106,10 @@ sub decrypt {
       messageType => $messageType,
       channel => 0
     };
+
+    if ( $hmLanStatus eq '0008' ) {    # no ack received -> timeout
+      return ($dgram, $hmDgram);
+    }
 
     my $hapDgram = {
       vlan        => 0,
@@ -184,6 +184,7 @@ sub decrypt {
       if ( $messageType eq "41" && $payload =~ m/^01(..)(..)(..)/ ) {
         my ( $cnt, $brigthness, $nextTr ) = ( hex($1), hex($2), ( hex($3) >> 4 ) ); # useable?
         $hapDgram->{v0} = 132;
+        $hmDgram->{channel} = 1;
       }
     }
     $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{$hmDgram->{channel}}->{address};
