@@ -21,7 +21,15 @@ Die Parameter sind dann den eigenen Gegebenheiten anzupassen. Die entsprechenden
 
 Wichtig ist: Die AES-Encryption auf LAN-Seite muss in der Windows-Software deaktiviert werden, sonst kann der Message-Processor die Datagramme des HMLAN nicht interpretieren. 
 
-In der aktuellen Version (>= 276) werden leider nur der Reed-Kontakt HM-Sec-SC sowie der Zwischenstecker HM-LC-Sw1-Pl-2 als Homematic-Komponenten in der HAP-Umgebung unterstützt. Die Einbindung weitere Homematic-Komponenten sollte aber problemlos machbar sein, da hierfür nur der Homematic-Parser angepasst werden muss.
+Aktuell werden folgende Homematic-Komponenten unterstützt:
+
+  * Bewegungsmelder innen
+  * Fenster-Drehgriffkontakt
+  * Reed-Kontakt innen
+  * Aufputz 2x Taster
+  * Zwischensteckdose (Schalter)
+
+Die Einbindung weitere Homematic-Komponenten sollte aber problemlos machbar sein, da hierfür nur der Homematic-Parser angepasst werden muss.
 
 = Einbindung der Homematic-Komponenten =
 
