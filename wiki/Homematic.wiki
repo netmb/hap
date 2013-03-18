@@ -15,6 +15,7 @@ Homematic:
   HmLanIp: 192.168.165.49
   HmLanPort: 1000
   AESKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+  HmVirtualId: 'ABCDEF'
 }}}
 Die Parameter sind dann den eigenen Gegebenheiten anzupassen. Die entsprechenden Werte lassen sich mit der Windows-Konfigurations-Software des HMLAN-Interface herausfinden bzw. setzen.
 
