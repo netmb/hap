@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 HAP::Parser -  The Home Automation Project Command-Parser
@@ -33,7 +34,7 @@ sub getSource {
 }
 
 sub getConfigName {
-  my ( $self, $conf ) = @_;    
+  my ( $self, $conf ) = @_;
   return $self->{c}->{DefaultConfigName};
 }
 
@@ -50,6 +51,7 @@ sub parse {
   my $prevState = 0;
   my $native    = 0;
   my @res       = ( -1, -1, -1, 0, 0, 0, 0, 0, 0 );
+  my @hmres     = ( 0, 0, 0, 0, 0 );
   my $err       = 0;
   do {
     $prevState = $state;
@@ -64,17 +66,19 @@ sub parse {
       elsif ( $t eq substr( "destination", 0, $l ) && $l > 0 ) { $state = 160; }
       elsif ( $t eq substr( "source",      0, $l ) && $l > 0 ) { $state = 140; }
       elsif ( $t eq substr( "vlan",        0, $l ) && $l > 0 ) { $state = 120; }
-      else { $state = 60300; }
+      elsif ( $t eq substr( "hmdevice",    0, $l ) && $l > 0 ) { $state = 10000; }
+      elsif ( $t eq substr( "hmpair",      0, $l ) && $l > 0 ) { $state = 10080; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 10 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t =~ /^\d+$/ ) { $state = 20; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 20 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t =~ /^\d+$/ ) { $state = 30; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 30 ) {
       if ( $t eq "^10" || $t eq "^13" ) {
@@ -82,7 +86,7 @@ sub parse {
         $state  = 60000;
       }
       elsif ( $t =~ /^\d+$/ ) { $state = 40; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 40 ) {
       if ( $t eq "^10" || $t eq "^13" ) {
@@ -90,7 +94,7 @@ sub parse {
         $state  = 60000;
       }
       elsif ( $t =~ /^\d+$/ ) { $state = 50; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 50 ) {
       if ( $t eq "^10" || $t eq "^13" ) {
@@ -98,7 +102,7 @@ sub parse {
         $state  = 60000;
       }
       elsif ( $t =~ /^\d+$/ ) { $state = 60; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 60 ) {
       if ( $t eq "^10" || $t eq "^13" ) {
@@ -106,7 +110,7 @@ sub parse {
         $state  = 60000;
       }
       elsif ( $t =~ /^\d+$/ ) { $state = 70; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 70 ) {
       if ( $t eq "^10" || $t eq "^13" ) {
@@ -114,7 +118,7 @@ sub parse {
         $state  = 60000;
       }
       elsif ( $t =~ /^\d+$/ ) { $state = 80; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 80 ) {
       if ( $t eq "^10" || $t eq "^13" ) {
@@ -122,7 +126,7 @@ sub parse {
         $state  = 60000;
       }
       elsif ( $t =~ /^\d+$/ ) { $state = 90; }
-      else { $state = 60300; }
+      else                    { $state = 60300; }
     }
     elsif ( $state == 90 ) {
       if ( $t eq "^10" || $t eq "^13" ) {
@@ -141,7 +145,7 @@ sub parse {
         else { $state = 60310; }
       }
       elsif ( $t =~ /^[a-zA-Z_]\w*$/ ) {
-        my $tmp = &getConfig($self, $t);
+        my $tmp = &getConfig( $self, $t );
         if ( $tmp >= 0 ) {
           $res[0] = $tmp;
           $state = 110;
@@ -155,7 +159,7 @@ sub parse {
       elsif ( $t eq substr( "destination", 0, $l ) && $l > 0 ) { $state = 160; }
       elsif ( $t eq substr( "source",      0, $l ) && $l > 0 ) { $state = 140; }
       elsif ( $t eq substr( "vlan",        0, $l ) && $l > 0 ) { $state = 120; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 120 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -172,7 +176,7 @@ sub parse {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "destination", 0, $l ) && $l > 0 ) { $state = 160; }
       elsif ( $t eq substr( "source",      0, $l ) && $l > 0 ) { $state = 140; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 140 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -188,7 +192,7 @@ sub parse {
     elsif ( $state == 150 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "destination", 0, $l ) && $l > 0 ) { $state = 160; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 160 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -445,7 +449,7 @@ sub parse {
     elsif ( $state == 180 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "device", 0, $l ) && $l > 0 ) { $state = 190; }
-      else { $state = 60300; }
+      else                                                { $state = 60300; }
     }
     elsif ( $state == 190 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -490,7 +494,7 @@ sub parse {
         $state = 320;
       }
       elsif ( $t eq substr( "value", 0, $l ) && $l > 0 ) { $state = 250; }
-      else { $state = 60300; }
+      else                                               { $state = 60300; }
     }
     elsif ( $state == 210 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -506,7 +510,7 @@ sub parse {
     elsif ( $state == 220 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "value", 0, $l ) && $l > 0 ) { $state = 230; }
-      else { $state = 60300; }
+      else                                               { $state = 60300; }
     }
     elsif ( $state == 230 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -521,8 +525,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 240 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 250 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -538,7 +542,7 @@ sub parse {
     elsif ( $state == 260 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "delay", 0, $l ) && $l > 0 ) { $state = 270; }
-      else { $state = 60300; }
+      else                                               { $state = 60300; }
     }
     elsif ( $state == 270 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -553,16 +557,16 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 280 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 290 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 300 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 310 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
@@ -570,25 +574,25 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 320 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 330 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 340 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 350 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 360 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "device", 0, $l ) && $l > 0 ) { $state = 370; }
-      else { $state = 60300; }
+      else                                                { $state = 60300; }
     }
     elsif ( $state == 370 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -604,7 +608,7 @@ sub parse {
     elsif ( $state == 380 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "trigger", 0, $l ) && $l > 0 ) { $state = 390; }
-      else { $state = 60300; }
+      else                                                 { $state = 60300; }
     }
     elsif ( $state == 390 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -618,8 +622,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 400 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 410 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -634,7 +638,7 @@ sub parse {
       }
       elsif ( $t eq substr( "trigger", 0, $l ) && $l > 0 ) { $state = 460; }
       elsif ( $t eq substr( "value",   0, $l ) && $l > 0 ) { $state = 480; }
-      else { $state = 60300; }
+      else                                                 { $state = 60300; }
     }
     elsif ( $state == 420 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -656,7 +660,7 @@ sub parse {
       elsif ( $t eq substr( "rising-edge", 0, $l ) && $l > 0 ) { $state = 440; }
       elsif ( $t eq substr( "trigger",     0, $l ) && $l > 0 ) { $state = 460; }
       elsif ( $t eq substr( "value",       0, $l ) && $l > 0 ) { $state = 480; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 440 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
@@ -676,8 +680,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 450 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 460 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -722,7 +726,7 @@ sub parse {
     elsif ( $state == 490 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "extension", 0, $l ) && $l > 0 ) { $state = 500; }
-      else { $state = 60300; }
+      else                                                   { $state = 60300; }
     }
     elsif ( $state == 500 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -746,11 +750,11 @@ sub parse {
         else { $state = 60310; }
       }
       elsif ( $t eq substr( "low-byte", 0, $l ) && $l > 0 ) { $state = 530; }
-      else { $state = 60300; }
+      else                                                  { $state = 60300; }
     }
     elsif ( $state == 520 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 530 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -766,7 +770,7 @@ sub parse {
     elsif ( $state == 540 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "high-byte", 0, $l ) && $l > 0 ) { $state = 550; }
-      else { $state = 60300; }
+      else                                                   { $state = 60300; }
     }
     elsif ( $state == 550 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -793,7 +797,7 @@ sub parse {
         $state = 570;
       }
       elsif ( $t eq substr( "port", 0, $l ) && $l > 0 ) { $state = 580; }
-      else { $state = 60300; }
+      else                                              { $state = 60300; }
     }
     elsif ( $state == 570 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -802,7 +806,7 @@ sub parse {
         $state = 610;
       }
       elsif ( $t eq substr( "type", 0, $l ) && $l > 0 ) { $state = 630; }
-      else { $state = 60300; }
+      else                                              { $state = 60300; }
     }
     elsif ( $state == 580 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -822,7 +826,7 @@ sub parse {
     elsif ( $state == 590 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "pin", 0, $l ) && $l > 0 ) { $state = 600; }
-      else { $state = 60300; }
+      else                                             { $state = 60300; }
     }
     elsif ( $state == 600 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -847,8 +851,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 620 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 630 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -933,7 +937,7 @@ sub parse {
     elsif ( $state == 640 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "device-address", 0, $l ) && $l > 0 ) { $state = 650; }
-      else { $state = 60300; }
+      else                                                        { $state = 60300; }
     }
     elsif ( $state == 650 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -961,7 +965,7 @@ sub parse {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "device-address", 0, $l ) && $l > 0 ) { $state = 650; }
       elsif ( $t eq substr( "offset",         0, $l ) && $l > 0 ) { $state = 680; }
-      else { $state = 60300; }
+      else                                                        { $state = 60300; }
     }
     elsif ( $state == 680 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -982,7 +986,7 @@ sub parse {
         $state = 640;
       }
       elsif ( $t eq substr( "low", 0, $l ) && $l > 0 ) { $state = 640; }
-      else { $state = 60300; }
+      else                                             { $state = 60300; }
     }
     elsif ( $state == 700 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1291,8 +1295,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 830 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 840 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1354,7 +1358,7 @@ sub parse {
     elsif ( $state == 890 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "address", 0, $l ) && $l > 0 ) { $state = 900; }
-      else { $state = 60300; }
+      else                                                 { $state = 60300; }
     }
     elsif ( $state == 900 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1399,7 +1403,7 @@ sub parse {
         $state = 830;
       }
       elsif ( $t eq substr( "none", 0, $l ) && $l > 0 ) { $state = 830; }
-      else { $state = 60300; }
+      else                                              { $state = 60300; }
     }
     elsif ( $state == 930 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1424,7 +1428,7 @@ sub parse {
         $state = 830;
       }
       elsif ( $t eq substr( "off", 0, $l ) && $l > 0 ) { $state = 830; }
-      else { $state = 60300; }
+      else                                             { $state = 60300; }
     }
     elsif ( $state == 950 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1440,7 +1444,7 @@ sub parse {
     elsif ( $state == 960 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "value", 0, $l ) && $l > 0 ) { $state = 970; }
-      else { $state = 60300; }
+      else                                               { $state = 60300; }
     }
     elsif ( $state == 970 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1629,7 +1633,7 @@ sub parse {
         $state = 1120;
       }
       elsif ( $t eq substr( "trigger", 0, $l ) && $l > 0 ) { $state = 1130; }
-      else { $state = 60300; }
+      else                                                 { $state = 60300; }
     }
     elsif ( $state == 1110 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1674,7 +1678,7 @@ sub parse {
         $state = 1160;
       }
       elsif ( $t eq substr( "value", 0, $l ) && $l > 0 ) { $state = 1150; }
-      else { $state = 60300; }
+      else                                               { $state = 60300; }
     }
     elsif ( $state == 1150 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1714,7 +1718,7 @@ sub parse {
         $state = 830;
       }
       elsif ( $t eq substr( "no-status-message", 0, $l ) && $l > 0 ) { $state = 830; }
-      else { $state = 60300; }
+      else                                                           { $state = 60300; }
     }
     elsif ( $state == 1180 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1757,7 +1761,7 @@ sub parse {
     elsif ( $state == 1210 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "status-modul-address", 0, $l ) && $l > 0 ) { $state = 1220; }
-      else { $state = 60300; }
+      else                                                              { $state = 60300; }
     }
     elsif ( $state == 1220 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1771,8 +1775,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 1230 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 1240 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1789,7 +1793,7 @@ sub parse {
         $state = 1290;
       }
       elsif ( $t eq substr( "up-modul", 0, $l ) && $l > 0 ) { $state = 1250; }
-      else { $state = 60300; }
+      else                                                  { $state = 60300; }
     }
     elsif ( $state == 1250 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1805,7 +1809,7 @@ sub parse {
     elsif ( $state == 1260 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "device", 0, $l ) && $l > 0 ) { $state = 1270; }
-      else { $state = 60300; }
+      else                                                { $state = 60300; }
     }
     elsif ( $state == 1270 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1867,7 +1871,7 @@ sub parse {
     elsif ( $state == 1320 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "status-modul-address", 0, $l ) && $l > 0 ) { $state = 1330; }
-      else { $state = 60300; }
+      else                                                              { $state = 60300; }
     }
     elsif ( $state == 1330 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -1960,7 +1964,7 @@ sub parse {
     elsif ( $state == 1400 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "status-modul-address", 0, $l ) && $l > 0 ) { $state = 1410; }
-      else { $state = 60300; }
+      else                                                              { $state = 60300; }
     }
     elsif ( $state == 1410 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -2333,8 +2337,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 1440 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 1450 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
@@ -2377,7 +2381,7 @@ sub parse {
     elsif ( $state == 1480 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "intervall-1", 0, $l ) && $l > 0 ) { $state = 1490; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 1490 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -2442,7 +2446,7 @@ sub parse {
     elsif ( $state == 1540 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "intervall-1", 0, $l ) && $l > 0 ) { $state = 1550; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 1550 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -2469,7 +2473,7 @@ sub parse {
     elsif ( $state == 1570 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "intervall-2", 0, $l ) && $l > 0 ) { $state = 1580; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 1580 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -2582,7 +2586,7 @@ sub parse {
     elsif ( $state == 1660 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "intervall-2", 0, $l ) && $l > 0 ) { $state = 1670; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 1670 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -2636,7 +2640,7 @@ sub parse {
     elsif ( $state == 1710 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "start-1-hour", 0, $l ) && $l > 0 ) { $state = 1720; }
-      else { $state = 60300; }
+      else                                                      { $state = 60300; }
     }
     elsif ( $state == 1720 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -2663,7 +2667,7 @@ sub parse {
     elsif ( $state == 1740 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "intervall-2", 0, $l ) && $l > 0 ) { $state = 1750; }
-      else { $state = 60300; }
+      else                                                     { $state = 60300; }
     }
     elsif ( $state == 1750 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4011,7 +4015,7 @@ sub parse {
     elsif ( $state == 2850 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "day", 0, $l ) && $l > 0 ) { $state = 2860; }
-      else { $state = 60300; }
+      else                                             { $state = 60300; }
     }
     elsif ( $state == 2860 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4027,7 +4031,7 @@ sub parse {
     elsif ( $state == 2870 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "hour", 0, $l ) && $l > 0 ) { $state = 2880; }
-      else { $state = 60300; }
+      else                                              { $state = 60300; }
     }
     elsif ( $state == 2880 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4043,7 +4047,7 @@ sub parse {
     elsif ( $state == 2890 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "minute", 0, $l ) && $l > 0 ) { $state = 2900; }
-      else { $state = 60300; }
+      else                                                { $state = 60300; }
     }
     elsif ( $state == 2900 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4059,7 +4063,7 @@ sub parse {
     elsif ( $state == 2910 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "second", 0, $l ) && $l > 0 ) { $state = 2920; }
-      else { $state = 60300; }
+      else                                                { $state = 60300; }
     }
     elsif ( $state == 2920 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4075,7 +4079,7 @@ sub parse {
     elsif ( $state == 2930 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
       elsif ( $t eq substr( "hundredth", 0, $l ) && $l > 0 ) { $state = 2940; }
-      else { $state = 60300; }
+      else                                                   { $state = 60300; }
     }
     elsif ( $state == 2940 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4089,17 +4093,17 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 2950 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 2960 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 2970 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "modul-address", 0, $l ) && $l > 0 ) { $state = 2980; }
-      else { $state = 60300; }
+      else                                                       { $state = 60300; }
     }
     elsif ( $state == 2980 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4115,7 +4119,7 @@ sub parse {
     elsif ( $state == 2990 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "hardware-address", 0, $l ) && $l > 0 ) { $state = 3000; }
-      else { $state = 60300; }
+      else                                                          { $state = 60300; }
     }
     elsif ( $state == 3000 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4151,8 +4155,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3030 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3040 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4168,7 +4172,7 @@ sub parse {
     elsif ( $state == 3050 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "modul-address", 0, $l ) && $l > 0 ) { $state = 3060; }
-      else { $state = 60300; }
+      else                                                       { $state = 60300; }
     }
     elsif ( $state == 3060 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4184,7 +4188,7 @@ sub parse {
     elsif ( $state == 3070 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "device-address", 0, $l ) && $l > 0 ) { $state = 3080; }
-      else { $state = 60300; }
+      else                                                        { $state = 60300; }
     }
     elsif ( $state == 3080 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4198,8 +4202,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3090 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3100 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4215,7 +4219,7 @@ sub parse {
     elsif ( $state == 3110 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "makro", 0, $l ) && $l > 0 ) { $state = 3120; }
-      else { $state = 60300; }
+      else                                               { $state = 60300; }
     }
     elsif ( $state == 3120 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4230,8 +4234,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3130 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3140 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4247,7 +4251,7 @@ sub parse {
     elsif ( $state == 3150 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "button", 0, $l ) && $l > 0 ) { $state = 3160; }
-      else { $state = 60300; }
+      else                                                { $state = 60300; }
     }
     elsif ( $state == 3160 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4263,7 +4267,7 @@ sub parse {
     elsif ( $state == 3170 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "command", 0, $l ) && $l > 0 ) { $state = 3180; }
-      else { $state = 60300; }
+      else                                                 { $state = 60300; }
     }
     elsif ( $state == 3180 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4345,8 +4349,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3190 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3200 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4393,8 +4397,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3240 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3250 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4418,7 +4422,7 @@ sub parse {
     elsif ( $state == 3260 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "read-address", 0, $l ) && $l > 0 ) { $state = 3270; }
-      else { $state = 60300; }
+      else                                                      { $state = 60300; }
     }
     elsif ( $state == 3270 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4438,7 +4442,7 @@ sub parse {
         $state = 60000;
       }
       elsif ( $t eq substr( "number-of-bytes", 0, $l ) && $l > 0 ) { $state = 3290; }
-      else { $state = 60300; }
+      else                                                         { $state = 60300; }
     }
     elsif ( $state == 3290 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4452,8 +4456,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3300 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3310 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4472,8 +4476,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3320 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3330 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4502,7 +4506,7 @@ sub parse {
     elsif ( $state == 3350 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "eeprom-address", 0, $l ) && $l > 0 ) { $state = 3360; }
-      else { $state = 60300; }
+      else                                                        { $state = 60300; }
     }
     elsif ( $state == 3360 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4568,8 +4572,8 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3410 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3420 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4586,7 +4590,7 @@ sub parse {
     elsif ( $state == 3430 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "device-address", 0, $l ) && $l > 0 ) { $state = 3440; }
-      else { $state = 60300; }
+      else                                                        { $state = 60300; }
     }
     elsif ( $state == 3440 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4600,13 +4604,13 @@ sub parse {
       else { $state = 60300; }
     }
     elsif ( $state == 3450 ) {
-      if ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
-      else { $state = 60300; }
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 60000; }
+      else                                { $state = 60300; }
     }
     elsif ( $state == 3460 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "remote-modul-addr", 0, $l ) && $l > 0 ) { $state = 3470; }
-      else { $state = 60300; }
+      else                                                           { $state = 60300; }
     }
     elsif ( $state == 3470 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4622,7 +4626,7 @@ sub parse {
     elsif ( $state == 3480 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "message-type", 0, $l ) && $l > 0 ) { $state = 3490; }
-      else { $state = 60300; }
+      else                                                      { $state = 60300; }
     }
     elsif ( $state == 3490 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4638,7 +4642,7 @@ sub parse {
     elsif ( $state == 3500 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "remote-device-addr", 0, $l ) && $l > 0 ) { $state = 3510; }
-      else { $state = 60300; }
+      else                                                            { $state = 60300; }
     }
     elsif ( $state == 3510 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4665,7 +4669,7 @@ sub parse {
     elsif ( $state == 3530 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
       elsif ( $t eq substr( "value", 0, $l ) && $l > 0 ) { $state = 3540; }
-      else { $state = 60300; }
+      else                                               { $state = 60300; }
     }
     elsif ( $state == 3540 ) {
       if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
@@ -4678,10 +4682,116 @@ sub parse {
       }
       else { $state = 60300; }
     }
+    #Homematic stuff
+    elsif ( $state == 10000 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
+      elsif ( $t =~ /^[ABCDEF\d]{6}$/ ) {
+        $hmres[0] = $t;
+        $state = 10010;
+      }
+      else {
+        $state = 60310;
+      }
+    }
+    elsif ( $state == 10010 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
+      elsif ( $t eq substr( "channel", 0, $l ) && $l > 0 ) {
+        $state = 10020;
+      }
+      elsif ( $t eq substr( "factoryreset", 0, $l ) && $l > 0 ) {
+        $state = 10090;
+      }
+      elsif ( $t eq substr( "unpair", 0, $l ) && $l > 0 ) {
+        $state = 10100;
+      }
+      elsif ( $t eq substr( "signing-off", 0, $l ) && $l > 0 ) {
+        $state = 10110;
+      }
+      elsif ( $t eq substr( "signing-on", 0, $l ) && $l > 0 ) {
+        $state = 10120;
+      }
+      else {
+        $state = 60310;
+      }
+    }
+    elsif ( $state == 10020 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
+      elsif ( $t =~ /^[\d]{1}$/ ) {
+        $hmres[1] = $t;
+        $state = 10030;
+      }
+      else {
+        $state = 60310;
+      }
+    }
+    elsif ( $state == 10030 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
+      else {
+        $hmres[4] = 'devicepair';
+        $state = 10040;
+      }
+    }
+    elsif ( $state == 10040 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
+      elsif ( $t =~ /^[ABCDEF\d]{6}$/ ) {
+        $hmres[2] = $t;
+        $state = 10050;
+      }
+      else {
+        $state = 60310;
+      }
+    }
+    elsif ( $state == 10050 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
+      else {
+        $state = 10060;
+      }
+    }
+    elsif ( $state == 10060 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $state = 60320; }
+      elsif ( $t =~ /^[\d]{1}$/ ) {
+        $hmres[3] = $t;
+        $state = 10070;
+      }
+      else {
+        $state = 60310;
+      }
+    }
+    elsif ( $state == 10070 ) {
+      if   ( $t eq "^10" || $t eq "^13" ) { $state = 70000; }
+      else                                { $state = 60300; }
+    }
+    elsif ( $state == 10080 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $hmres[4] = 'pairing', $state = 70000; }
+      else                              { $state = 60300; }
+    }
+    elsif ( $state == 10090 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $hmres[4] = 'factoryreset', $state = 70000; }
+      else                              { $state = 60300; }
+    }
+    elsif ( $state == 10100 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $hmres[4] = 'unpair', $state = 70000; }
+      else                              { $state = 60300; }
+    }
+    elsif ( $state == 10110 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $hmres[4] = 'signing-off', $state = 70000; }
+      else                              { $state = 60300; }
+    }
+    elsif ( $state == 10120 ) {
+      if ( $t eq "^10" || $t eq "^13" ) { $hmres[4] = 'signing-on', $state = 70000; }
+      else                              { $state = 60300; }
+    }
     $i++;
   } until $state >= 60000;
 
-  if ( $state == 60000 ) {
+  # Homematic stuff
+  if ( $state == 70000 ) {
+    $err = undef;
+    return $err, {}, { type => $hmres[4], target => $hmres[0], sChannel => $hmres[1], destination => $hmres[2], dChannel => $hmres[3] };
+  }
+
+  # HAP stuff
+  elsif ( $state == 60000 ) {
     my $flag = 0;
     if ($native) {
       my $marker = $stmnt;
@@ -4747,9 +4857,9 @@ sub reverseParse {
   my $result;
   if    ( $type == 1 ) { $result = "[ACK]"; }
   elsif ( $type == 2 ) { $result = "[ERROR]"; }
-  else { $result = "[REQUEST]"; }
+  else                 { $result = "[REQUEST]"; }
   $result .= " config ";
-  $result .= &getConfigName($self, $s[0] );
+  $result .= &getConfigName( $self, $s[0] );
   $result .= " vlan ";
   $result .= $s[1];
   $result .= " source ";
@@ -4781,7 +4891,7 @@ sub reverseParse {
     elsif ( $s[6] == 134 ) { $result .= " down"; }
     elsif ( $s[6] == 135 ) { $result .= " stop"; }
     elsif ( $s[6] == 136 ) { $result .= " start"; }
-    else { $result = "[INVALID MESSAGE]"; }
+    else                   { $result = "[INVALID MESSAGE]"; }
   }
   elsif ( $s[4] == 8 ) {
     $result .= " query device ";
@@ -4819,7 +4929,7 @@ sub reverseParse {
       $result .= " eeprom-address ";
       if    ( $s[5] == 161 ) { $result .= "e32"; }
       elsif ( $s[5] == 169 ) { $result .= "e8"; }
-      else { $result .= $s[5]; }
+      else                   { $result .= $s[5]; }
       $result .= " read-address ";
       $result .= $s[7] << 8 | $s[6];
       $result .= " number-of-bytes ";
@@ -4832,7 +4942,7 @@ sub reverseParse {
       $result .= "start ";
       if    ( $s[6] == 16 ) { $result .= "firmware-download"; }
       elsif ( $s[6] == 16 ) { $result .= "gui-config-download"; }
-      else { $result = "[INVALID MESSAGE]"; }
+      else                  { $result = "[INVALID MESSAGE]"; }
     }
     elsif ( $s[5] == 1 ) { $result .= "end"; }
     elsif ( $s[5] == 16 ) {
@@ -4841,7 +4951,7 @@ sub reverseParse {
       $result .= " eeprom-address ";
       if    ( $s[6] == 160 ) { $result .= "e32"; }
       elsif ( $s[6] == 168 ) { $result .= "e8"; }
-      else { $result .= $s[6]; }
+      else                   { $result .= $s[6]; }
     }
     else { $result = "[INVALID MESSAGE]"; }
   }
@@ -4859,15 +4969,15 @@ sub reverseParse {
       $result .= " type ";
       if ( ( $s[6] & 254 ) == 0 ) {
         $result .= "static-output ";
-        if ( ( $s[6] & 1 ) == 0 ) { $result .= "low"; }
-        else { $result .= "high"; }
+        if   ( ( $s[6] & 1 ) == 0 ) { $result .= "low"; }
+        else                        { $result .= "high"; }
       }
       elsif ( $s[6] == 2 ) { $result .= "buzzer"; }
       elsif ( $s[6] == 3 ) { $result .= "ir-receiver"; }
       elsif ( ( $s[6] & 254 ) == 4 ) {
         $result .= "serial-interface ";
-        if ( ( $s[6] & 1 ) == 0 ) { $result .= "receiver"; }
-        else { $result .= "transmitter"; }
+        if   ( ( $s[6] & 1 ) == 0 ) { $result .= "receiver"; }
+        else                        { $result .= "transmitter"; }
       }
       elsif ( $s[6] == 6 )  { $result .= "zero-cross-detection"; }
       elsif ( $s[6] == 8 )  { $result .= "spi-ss"; }
@@ -4933,7 +5043,7 @@ sub reverseParse {
       $result .= " start-mode ";
       if    ( $s[6] == 217 ) { $result .= "normal"; }
       elsif ( $s[6] == 179 ) { $result .= "default-config"; }
-      else { $result .= "full-default-config"; }
+      else                   { $result .= "full-default-config"; }
     }
     elsif ( $s[5] == 5 ) {
       $result .= " modul-address ";
@@ -4945,15 +5055,15 @@ sub reverseParse {
     }
     elsif ( $s[5] == 7 ) {
       $result .= " time-server ";
-      if ( $s[6] == 0 ) { $result .= "off"; }
-      else { $result .= "on"; }
+      if   ( $s[6] == 0 ) { $result .= "off"; }
+      else                { $result .= "on"; }
     }
     elsif ( $s[5] == 8 ) { $result .= " save-config"; }
     elsif ( $s[5] == 9 ) { $result .= " load-config"; }
     elsif ( $s[5] == 10 ) {
       $result .= " bridge-mode ";
-      if ( $s[6] == 0 ) { $result .= "off"; }
-      else { $result .= "on"; }
+      if   ( $s[6] == 0 ) { $result .= "off"; }
+      else                { $result .= "on"; }
     }
     elsif ( $s[5] == 11 ) {
       $result .= " remote-extender ";
@@ -4981,7 +5091,7 @@ sub reverseParse {
       if    ( $s[6] == 0 ) { $result .= "off"; }
       elsif ( $s[6] == 1 ) { $result .= "half"; }
       elsif ( $s[6] == 3 ) { $result .= "full"; }
-      else { $result = "[INVALID MESSAGE]"; }
+      else                 { $result = "[INVALID MESSAGE]"; }
     }
     elsif ( $s[5] == 15 ) {
       $result .= " encryption-key ";
@@ -5012,7 +5122,7 @@ sub reverseParse {
       if ( $type == 1 ) {
         if    ( $s[6] == 0 )   { $result .= " ready-to-flash"; }
         elsif ( $s[6] == 255 ) { $result .= " no-firmware"; }
-        else { $result = "[INVALID MESSAGE]"; }
+        else                   { $result = "[INVALID MESSAGE]"; }
       }
     }
     elsif ( $s[5] == 27 ) {
@@ -5183,8 +5293,8 @@ sub reverseParse {
     }
   }
   elsif ( $s[4] == 88 ) {
-    if ( $type == 3 ) { $result .= " display-control "; }
-    else { $result .= " display-data "; }
+    if   ( $type == 3 ) { $result .= " display-control "; }
+    else                { $result .= " display-data "; }
     $result .= $s[5] . " " . $s[6] . " " . $s[7] . " " . $s[8];
   }
   elsif ( $s[4] == 96 ) {

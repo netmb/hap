@@ -7,7 +7,7 @@
    20 <0-255>               Dritte Nummer eines nativen Befehls
    30 <0-255>               Vierte Nummer eines nativen Befehls
    30 <cr>                  <Enter>
-   40 <0-255>               Fünfte Nummer eines nativen Befehls
+   40 <0-255>               Fï¿½nfte Nummer eines nativen Befehls
    40 <cr>                  <Enter>
    50 <0-255>               Sechste Nummer eines nativen Befehls
    50 <cr>                  <Enter>
@@ -30,43 +30,43 @@
   150 destination           Spezifikation der Adresse des empfangenden Moduls
   160 <0-255>               Adresse des empfangenden Moduls
   170 ac-object             Konfiguration eines Objekts der autonomen Steuerung
-  170 ac-reset              Zurücksetzen der gesamten autonomen Steuerung
+  170 ac-reset              Zurï¿½cksetzen der gesamten autonomen Steuerung
   170 analog-input-device   Legt die Eigenschaften eines analogen Eingangs fest
   170 bridge-mode           Schaltet den Bridge-Modus ein bzw. aus
-  170 buzzer-level          Legt die Ereignisse für die Signaleinrichtung fest
-  170 canbus-vlan           Legt das VLAN für den CAN-Bus fest
+  170 buzzer-level          Legt die Ereignisse fï¿½r die Signaleinrichtung fest
+  170 canbus-vlan           Legt das VLAN fï¿½r den CAN-Bus fest
   170 ccu-address           Legt die Adresse der Central Control Unit fest
-  170 config-reset          Setzt die Konfiguration auf die Voreinstellung zurück und startet neu
-  170 data                  Übertragen von Rohdaten
+  170 config-reset          Setzt die Konfiguration auf die Voreinstellung zurï¿½ck und startet neu
+  170 data                  ï¿½bertragen von Rohdaten
   170 digital-input-device  Legt die Eigenschaften eines digitalen Eingangs fest
-  170 dimmer-control-delay  Legt die Zeit für manuelle Regelung der Dimmer fest
-  170 dimmer-ignition-len   Legt die Länge der Zündimpulse der Dimmer fest
+  170 dimmer-control-delay  Legt die Zeit fï¿½r manuelle Regelung der Dimmer fest
+  170 dimmer-ignition-len   Legt die Lï¿½nge der Zï¿½ndimpulse der Dimmer fest
   170 display-control       Sendet 1-4 Steuercodes bzw. Instruktionen an das Display
   170 display-data          Sendet 1-4 darstellbare Zeichen an das Display
   170 eeprom-address        Liest Daten aus den externen EEPROMs
-  170 encryption-key        Legt den Verschlüsselungsschlüssel der seriellen Schnittstelle fest
-  170 encryption-mode       Legt den Verschlüsselungsmodus der seriellen Schnittstelle fest
+  170 encryption-key        Legt den Verschlï¿½sselungsschlï¿½ssel der seriellen Schnittstelle fest
+  170 encryption-mode       Legt den Verschlï¿½sselungsmodus der seriellen Schnittstelle fest
   170 error                 Generiert eine Protokollfehlernachricht
-  170 firmware-size         Legt die Größe der zu aktualisierenden Firmware fest
+  170 firmware-size         Legt die Grï¿½ï¿½e der zu aktualisierenden Firmware fest
   170 get-compiler-option   Fragt die Compiler-Optionen der aktuellen Firmware ab
   170 get-flash-flag        Fragt das Flash-Flag ab
   170 get-version           Fragt die Version der aktuellen Firmware ab
-  170 gui-device            Konfiguration einer Bedienoberfläche
+  170 gui-device            Konfiguration einer Bedienoberflï¿½che
   170 ir-address            Spezifikation einer Infrarotadresse
-  170 ir-device             Konfiguration der Infrarotgeräteadresse und -codes
+  170 ir-device             Konfiguration der Infrarotgerï¿½teadresse und -codes
   170 ir-hotkey             Spezifikation eines Infrarot-Hotkeys
-  170 ir-learn-command      Lernen der Infrarotgeräteadresse und -codes
-  170 li-activation-time    Legt die Aktivierungszeiten der logischen Eingänge fest
-  170 load-config           Lädt die Konfiguration aus dem EEPROM
+  170 ir-learn-command      Lernen der Infrarotgerï¿½teadresse und -codes
+  170 li-activation-time    Legt die Aktivierungszeiten der logischen Eingï¿½nge fest
+  170 load-config           Lï¿½dt die Konfiguration aus dem EEPROM
   170 magic-packet          Generieren eines Magic-Packets
   170 makro                 Senden eines Makros
   170 modul-address         Legt die Moduladresse fest
   170 multicast-group       Legt die Mitgliedschaft in den Multicastgruppen fest
-  170 pin-config            Konfigurieren eines einfachen Geräts
+  170 pin-config            Konfigurieren eines einfachen Gerï¿½ts
   170 protocol              Protokollsteuerung
   170 query                 Formulierung einer Abfrage
-  170 radio-vlan            Legt das VLAN für die Funk- bzw. serielle Schnittstelle fest
-  170 receive-buffer-len    Legt die Länge des Empfangspuffers fest
+  170 radio-vlan            Legt das VLAN fï¿½r die Funk- bzw. serielle Schnittstelle fest
+  170 receive-buffer-len    Legt die Lï¿½nge des Empfangspuffers fest
   170 remote-extender       Legt die remote-extender Adressen fest
   170 rotary-encoder-dev    Konfiguration eines Drehgebers
   170 save-config           Speichert die aktuelle Konfiguration
@@ -74,13 +74,13 @@
   170 shutter-device        Konfiguration einer Rollladensteuerung
   170 start-mode            Legt den Startmodus fest
   170 status                Formulierung einer Statusmeldung
-  170 system-full-reset     Führt einen vollständigen Neustart des Systems durch (Hard-Reset)
-  170 system-reset          Führt einen Neustart des Systems durch
+  170 system-full-reset     Fï¿½hrt einen vollstï¿½ndigen Neustart des Systems durch (Hard-Reset)
+  170 system-reset          Fï¿½hrt einen Neustart des Systems durch
   170 time-server           Schaltet den Zeitserver ein bzw. aus
   170 time-set              Setzt die Systemzeit
   170 time-synch-request    Generieren einer Zeitsynchronisationsanfrage
-  180 device                Spezifikation der Adresse des festzulegenden Geräts
-  190 <0-255>               Adresse des festzulegenden Geräts
+  180 device                Spezifikation der Adresse des festzulegenden Gerï¿½ts
+  190 <0-255>               Adresse des festzulegenden Gerï¿½ts
   200 decrement             Dekrementieren des aktuellen Werts um 2%
   200 down                  Einleiten des Dimmvorgangs (Abdimmen)
   200 increment             Inkrementieren des aktuellen Werts um 2%
@@ -95,9 +95,9 @@
   230 <0-65535>             Der festzulegende Triggerwert
   240 <cr>                  <Enter>
   250 <0-100>               Der festzulegende Wert
-  260 delay                 Spezifikation der Dimmverzögerung
+  260 delay                 Spezifikation der Dimmverzï¿½gerung
   260 <cr>                  <Enter>
-  270 <0-6553>              Die Dimmverzögerung in Zehntelsekunden
+  270 <0-6553>              Die Dimmverzï¿½gerung in Zehntelsekunden
   280 <cr>                  <Enter>
   290 <cr>                  <Enter>
   300 <cr>                  <Enter>
@@ -106,21 +106,21 @@
   330 <cr>                  <Enter>
   340 <cr>                  <Enter>
   350 <cr>                  <Enter>
-  360 device                Spezifikation der Adresse des abzufragenden Geräts
-  370 <0-255>               Adresse des abzufragenden Geräts
+  360 device                Spezifikation der Adresse des abzufragenden Gerï¿½ts
+  370 <0-255>               Adresse des abzufragenden Gerï¿½ts
   380 trigger               Spezifikation des abzufragenden Triggers
   380 <cr>                  <Enter>
   390 <0-1>                 Nummer des abzufragenden Triggers
   400 <cr>                  <Enter>
-  410 device                Spezifikation der Adresse des sendenden Geräts
+  410 device                Spezifikation der Adresse des sendenden Gerï¿½ts
   410 falling-edge          Fallende Flanke wurde registriert
   410 rising-edge           Steigende Flanke wurde registriert
-  410 trigger               Spezifikation des auslösenden Triggers
+  410 trigger               Spezifikation des auslï¿½senden Triggers
   410 value                 Spezifikation des Statuswerts
-  420 <0-255>               Adresse des sendenden Geräts
+  420 <0-255>               Adresse des sendenden Gerï¿½ts
   430 falling-edge          Fallende Flanke wurde registriert
   430 rising-edge           Steigende Flanke wurde registriert
-  430 trigger               Spezifikation des auslösenden Triggers
+  430 trigger               Spezifikation des auslï¿½senden Triggers
   430 value                 Spezifikation des Statuswerts
   440 bounce-free           Prellfreiheit
   440 long                  Lange Aktivierung
@@ -128,11 +128,11 @@
   440 short                 Kurze Aktivierung
   440 <cr>                  <Enter>
   450 <cr>                  <Enter>
-  460 <0-1>                 Nummer des auslösenden Triggers
+  460 <0-1>                 Nummer des auslï¿½senden Triggers
   470 fall-below            Unterschreiten wurde registriert
-  470 fall-below-and-back   Rückkehr nach vorherigem Unterschreiten wurde registriert
-  470 rise-above            Überschreiten wurde registriert
-  470 rise-above-and-back   Rückkehr nach vorherigem Überschreiten wurde registriert
+  470 fall-below-and-back   Rï¿½ckkehr nach vorherigem Unterschreiten wurde registriert
+  470 rise-above            ï¿½berschreiten wurde registriert
+  470 rise-above-and-back   Rï¿½ckkehr nach vorherigem ï¿½berschreiten wurde registriert
   480 <0-65535>             Der Statuswert
   490 extension             Spezifikation der Erweiterung
   490 <cr>                  <Enter>
@@ -141,79 +141,79 @@
   510 low-byte              Spezifikation des niederwertigen Bytes der Makronummer
   520 <cr>                  <Enter>
   530 <0-255>               Das niederwertige Byte der Makronummer
-  540 high-byte             Spezifikation des höherwertigen Bytes der Makronummer
+  540 high-byte             Spezifikation des hï¿½herwertigen Bytes der Makronummer
   540 <cr>                  <Enter>
-  550 <0-255>               Das höherwertige Byte der Makronummer
-  560 <0-31>                Nummer des zugehörigen Pins
-  560 <a0-d7>               Bezeichnung des zugehörigen Pins
-  560 port                  Spezifikation des zugehörigen Ports
-  570 status-modul-address  Spezifikation der zugehörigen Status-Moduladresse
-  570 type                  Spezifikation des Gerätetyps
-  580 <0-3>                 Nummer des zugehörigen Ports
-  580 <a-d>                 Bezeichnung des zugehörigen Ports
-  590 pin                   Spezifikation des zugehörigen Pins
-  600 <0-7>                 Nummer des zugehörigen Pins
-  610 <0-255>               Die zugehörige Status-Moduladresse
+  550 <0-255>               Das hï¿½herwertige Byte der Makronummer
+  560 <0-31>                Nummer des zugehï¿½rigen Pins
+  560 <a0-d7>               Bezeichnung des zugehï¿½rigen Pins
+  560 port                  Spezifikation des zugehï¿½rigen Ports
+  570 status-modul-address  Spezifikation der zugehï¿½rigen Status-Moduladresse
+  570 type                  Spezifikation des Gerï¿½tetyps
+  580 <0-3>                 Nummer des zugehï¿½rigen Ports
+  580 <a-d>                 Bezeichnung des zugehï¿½rigen Ports
+  590 pin                   Spezifikation des zugehï¿½rigen Pins
+  600 <0-7>                 Nummer des zugehï¿½rigen Pins
+  610 <0-255>               Die zugehï¿½rige Status-Moduladresse
   620 <cr>                  <Enter>
-  630 <0-255>               Nummer des Gerätetyps
-  630 analog-input          Gerätetyp "Analoger Eingang"
-  630 buzzer                Gerätetyp "Buzzer"
-  630 code                  Spezifikation des Gerätecodes
-  630 digital-input         Gerätetyp "Digitaler Eingang"
-  630 dimmer                Gerätetyp "Dimmer"
-  630 ir-receiver           Gerätetyp "Infrarot Empfänger"
-  630 lcd                   Gerätetyp "Liquid Crystal Display"
-  630 logical-input         Gerätetyp "Logischer Eingang"
-  630 serial-interface      Gerätetyp "Serielle Schnittstelle"
-  630 spi-miso              Gerätetyp "Serial Peripheral Interface" - Pin "Master In - Slave Out"
-  630 spi-mosi              Gerätetyp "Serial Peripheral Interface" - Pin "Master Out - Slave In"
-  630 spi-sc                Gerätetyp "Serial Peripheral Interface" - Pin "System Clock"
-  630 spi-ss                Gerätetyp "Serial Peripheral Interface" - Pin "Slave Select"
-  630 static-output         Gerätetyp "Statische Ausgabe"
-  630 switch                Gerätetyp "Geschaltetes Gerät"
-  630 twi-sc                Gerätetyp "Two Wire Interface" - Pin "System Clock"
-  630 twi-sd                Gerätetyp "Two Wire Interface" - Pin "System Data"
-  630 zero-cross-detection  Gerätetyp "Nulldurchgangserkennung"
-  640 device-address        Spezifikation der Geräteadresse
-  650 <0-255>               Adresse des Geräts
-  660 <0-255>               Code des Geräts
-  670 device-address        Spezifikation der Geräteadresse
-  670 offset                Spezifikation des Offsets des Gerätetyps
-  680 <0-32>                Offset des Gerätetyps
-  690 device-address        Spezifikation der Geräteadresse
+  630 <0-255>               Nummer des Gerï¿½tetyps
+  630 analog-input          Gerï¿½tetyp "Analoger Eingang"
+  630 buzzer                Gerï¿½tetyp "Buzzer"
+  630 code                  Spezifikation des Gerï¿½tecodes
+  630 digital-input         Gerï¿½tetyp "Digitaler Eingang"
+  630 dimmer                Gerï¿½tetyp "Dimmer"
+  630 ir-receiver           Gerï¿½tetyp "Infrarot Empfï¿½nger"
+  630 lcd                   Gerï¿½tetyp "Liquid Crystal Display"
+  630 logical-input         Gerï¿½tetyp "Logischer Eingang"
+  630 serial-interface      Gerï¿½tetyp "Serielle Schnittstelle"
+  630 spi-miso              Gerï¿½tetyp "Serial Peripheral Interface" - Pin "Master In - Slave Out"
+  630 spi-mosi              Gerï¿½tetyp "Serial Peripheral Interface" - Pin "Master Out - Slave In"
+  630 spi-sc                Gerï¿½tetyp "Serial Peripheral Interface" - Pin "System Clock"
+  630 spi-ss                Gerï¿½tetyp "Serial Peripheral Interface" - Pin "Slave Select"
+  630 static-output         Gerï¿½tetyp "Statische Ausgabe"
+  630 switch                Gerï¿½tetyp "Geschaltetes Gerï¿½t"
+  630 twi-sc                Gerï¿½tetyp "Two Wire Interface" - Pin "System Clock"
+  630 twi-sd                Gerï¿½tetyp "Two Wire Interface" - Pin "System Data"
+  630 zero-cross-detection  Gerï¿½tetyp "Nulldurchgangserkennung"
+  640 device-address        Spezifikation der Gerï¿½teadresse
+  650 <0-255>               Adresse des Gerï¿½ts
+  660 <0-255>               Code des Gerï¿½ts
+  670 device-address        Spezifikation der Gerï¿½teadresse
+  670 offset                Spezifikation des Offsets des Gerï¿½tetyps
+  680 <0-32>                Offset des Gerï¿½tetyps
+  690 device-address        Spezifikation der Gerï¿½teadresse
   690 high                  Pegel "High"
   690 low                   Pegel "Low"
-  700 device-address        Spezifikation der Geräteadresse
+  700 device-address        Spezifikation der Gerï¿½teadresse
   700 receiver              Empfangender Pin
   700 transmitter           Sendender Pin
-  710 device-address        Spezifikation der Geräteadresse
+  710 device-address        Spezifikation der Gerï¿½teadresse
   710 display-data          Spezifikation eines "Display Data Pin"
   710 enable                Pin "Enable"
   710 read-write            Pin "Read/Write"
   710 register-select       Pin "Register Select"
   720 <0-7>                 Nummer des "Display Data Pin"
-  730 device-address        Spezifikation der Geräteadresse
-  730 long-ignition         Lange Zündimpulse
+  730 device-address        Spezifikation der Gerï¿½teadresse
+  730 long-ignition         Lange Zï¿½ndimpulse
   730 soft-delay            Soft Delay
   730 switch-restriction    Schaltrestriktion
   730 trailing-edge-princ   Phasenabschnittsteuerung
-  740 device-address        Spezifikation der Geräteadresse
-  740 long-ignition         Lange Zündimpulse
+  740 device-address        Spezifikation der Gerï¿½teadresse
+  740 long-ignition         Lange Zï¿½ndimpulse
   740 soft-delay            Soft Delay
   740 switch-restriction    Schaltrestriktion
   740 trailing-edge-princ   Phasenabschnittsteuerung
-  750 device-address        Spezifikation der Geräteadresse
-  750 long-ignition         Lange Zündimpulse
+  750 device-address        Spezifikation der Gerï¿½teadresse
+  750 long-ignition         Lange Zï¿½ndimpulse
   750 soft-delay            Soft Delay
   750 switch-restriction    Schaltrestriktion
   750 trailing-edge-princ   Phasenabschnittsteuerung
-  760 device-address        Spezifikation der Geräteadresse
-  760 long-ignition         Lange Zündimpulse
+  760 device-address        Spezifikation der Gerï¿½teadresse
+  760 long-ignition         Lange Zï¿½ndimpulse
   760 soft-delay            Soft Delay
   760 switch-restriction    Schaltrestriktion
   760 trailing-edge-princ   Phasenabschnittsteuerung
   770 bounce-free           Prellfreiheit
-  770 device-address        Spezifikation der Geräteadresse
+  770 device-address        Spezifikation der Gerï¿½teadresse
   770 falling-edge          Fallende Flanke wird registriert
   770 force-bounce-free     Prellfreiheit erzwingen
   770 long                  Lange Aktivierung
@@ -222,7 +222,7 @@
   770 rising-edge           Steigende Flanke wird registriert
   770 short                 Kurze Aktivierung
   780 bounce-free           Prellfreiheit
-  780 device-address        Spezifikation der Geräteadresse
+  780 device-address        Spezifikation der Gerï¿½teadresse
   780 falling-edge          Fallende Flanke wird registriert
   780 force-bounce-free     Prellfreiheit erzwingen
   780 long                  Lange Aktivierung
@@ -231,7 +231,7 @@
   780 rising-edge           Steigende Flanke wird registriert
   780 short                 Kurze Aktivierung
   790 bounce-free           Prellfreiheit
-  790 device-address        Spezifikation der Geräteadresse
+  790 device-address        Spezifikation der Gerï¿½teadresse
   790 falling-edge          Fallende Flanke wird registriert
   790 force-bounce-free     Prellfreiheit erzwingen
   790 long                  Lange Aktivierung
@@ -240,7 +240,7 @@
   790 rising-edge           Steigende Flanke wird registriert
   790 short                 Kurze Aktivierung
   800 bounce-free           Prellfreiheit
-  800 device-address        Spezifikation der Geräteadresse
+  800 device-address        Spezifikation der Gerï¿½teadresse
   800 falling-edge          Fallende Flanke wird registriert
   800 force-bounce-free     Prellfreiheit erzwingen
   800 long                  Lange Aktivierung
@@ -249,7 +249,7 @@
   800 rising-edge           Steigende Flanke wird registriert
   800 short                 Kurze Aktivierung
   810 bounce-free           Prellfreiheit
-  810 device-address        Spezifikation der Geräteadresse
+  810 device-address        Spezifikation der Gerï¿½teadresse
   810 falling-edge          Fallende Flanke wird registriert
   810 force-bounce-free     Prellfreiheit erzwingen
   810 long                  Lange Aktivierung
@@ -273,38 +273,38 @@
   910 <0-255>               Nummer des VLANs der Funk- bzw. seriellen Schnittstelle
   920 <0-65535>             Nummer der Mitgliedschaft in den Multicastgruppen
   920 all                   Mitglied in allen Multicastgruppen
-  920 binary                Spezifikation der Mitgliedschaftsnummer als binärer Wert
+  920 binary                Spezifikation der Mitgliedschaftsnummer als binï¿½rer Wert
   920 broadcast             Nur Mitglied in der Broadcastgruppe
   920 none                  Mitglied in keiner Multicastgruppe
-  930 <0-1111111111111111>  Mitgliedschaftsnummer als binärer Wert
-  940 full                  Vollständige Verschlüsselung aller Bytes
-  940 half                  VLAN wird nicht mit verschlüsselt
-  940 off                   Verschlüsselung ist ausgeschaltet
-  950 <0-7>                 Nummer des Verschlüsselungsschlüssels
-  960 value                 Spezifikation des Schlüsselwerts
-  970 <0-255>               Schlüsselwert
-  980 <0-65535>             Nummer für die Ereignisse der Signaleinrichtung
-  980 ack                   Auf Bestätigungen reagieren
+  930 <0-1111111111111111>  Mitgliedschaftsnummer als binï¿½rer Wert
+  940 full                  Vollstï¿½ndige Verschlï¿½sselung aller Bytes
+  940 half                  VLAN wird nicht mit verschlï¿½sselt
+  940 off                   Verschlï¿½sselung ist ausgeschaltet
+  950 <0-7>                 Nummer des Verschlï¿½sselungsschlï¿½ssels
+  960 value                 Spezifikation des Schlï¿½sselwerts
+  970 <0-255>               Schlï¿½sselwert
+  980 <0-65535>             Nummer fï¿½r die Ereignisse der Signaleinrichtung
+  980 ack                   Auf Bestï¿½tigungen reagieren
   980 all                   Auf alle Ereignisse reagieren
-  980 binary                Spezifikation der Ereignisnummer als binärer Wert
+  980 binary                Spezifikation der Ereignisnummer als binï¿½rer Wert
   980 error                 Auf Fehler reagieren
   980 input-event           Auf Eingabeereignisse reagieren
   980 none                  Auf kein Ereignis reagieren
   980 system                Auf Systemereignisse reagieren
-  990 <0-1111111111111111>  Ereignisnummer als binärer Wert
+  990 <0-1111111111111111>  Ereignisnummer als binï¿½rer Wert
  1000 <0-255>               Nummer des VLANs des CAN-Bus
- 1010 <0-30720>             Größe der Firmware in Byte
+ 1010 <0-30720>             Grï¿½ï¿½e der Firmware in Byte
  1020 <0-3>                 Nummer des abzufragenden Bytes der Compiler-Optionen
- 1030 bounce-free           Spezifikation der Aktivierungszeit für "Prellfreiheit"
- 1030 long                  Spezifikation der Aktivierungszeit für "Lange Aktivierung"
- 1030 no-restriction        Spezifikation der Aktivierungszeit für "Keine Zeitrestriktion"
- 1030 short                 Spezifikation der Aktivierungszeit für "Kurze Aktivierung"
+ 1030 bounce-free           Spezifikation der Aktivierungszeit fï¿½r "Prellfreiheit"
+ 1030 long                  Spezifikation der Aktivierungszeit fï¿½r "Lange Aktivierung"
+ 1030 no-restriction        Spezifikation der Aktivierungszeit fï¿½r "Keine Zeitrestriktion"
+ 1030 short                 Spezifikation der Aktivierungszeit fï¿½r "Kurze Aktivierung"
  1040 <0-65535>             Aktivierungszeit in Hundertstelsekunden
  1050 <0-255>               Regelzeit in Zehntelsekunden
- 1060 <0-65535>             Länge der Zündimpulse in Tics
- 1070 <1-256>               Länge des Empfangspuffers
- 1080 <0-255>               Adresse des zu konfigurierenden Geräts
- 1090 <0-255>               Adresse des zu konfigurierenden Geräts
+ 1060 <0-65535>             Lï¿½nge der Zï¿½ndimpulse in Tics
+ 1070 <1-256>               Lï¿½nge des Empfangspuffers
+ 1080 <0-255>               Adresse des zu konfigurierenden Gerï¿½ts
+ 1090 <0-255>               Adresse des zu konfigurierenden Gerï¿½ts
  1100 sample-rate           Spezifikation der Sample-Rate des Eingangs
  1100 trigger               Spezifikation der Trigger des Eingangs
  1110 sample-rate           Spezifikation der Sample-Rate des Eingangs
@@ -317,160 +317,160 @@
  1150 <0-65535>             Triggerwert
  1160 <0-255>               Hysterese
  1170 all-status-messages   Statusmeldung immer generieren
- 1170 limit-message         Statusmeldung bei Überschreiten des Triggers generieren
+ 1170 limit-message         Statusmeldung bei ï¿½berschreiten des Triggers generieren
  1170 lower-limit-message   Statusmeldung bei Unterschreiten des Triggers generieren
  1170 no-status-message     Keine Statusmeldungen generieren
  1170 <cr>                  <Enter>
  1180 ds18b20               Dallas Digitales Thermometer DS18B20
  1180 ds18s20               Dallas Digitales Thermometer DS18S20
- 1190 <0-255>               Geräteadresse
+ 1190 <0-255>               Gerï¿½teadresse
  1190 new-address           Konfiguration einer neuen Rollladensteuerung
- 1200 <0-255>               Geräteadresse
- 1210 status-modul-address  Spezifikation der zugehörigen Status-Moduladresse
+ 1200 <0-255>               Gerï¿½teadresse
+ 1210 status-modul-address  Spezifikation der zugehï¿½rigen Status-Moduladresse
  1210 <cr>                  <Enter>
- 1220 <0-255>               Die zugehörige Status-Moduladresse
+ 1220 <0-255>               Die zugehï¿½rige Status-Moduladresse
  1230 <cr>                  <Enter>
- 1240 down-modul            Spezifikation des Geräts zum Herunterfahren
+ 1240 down-modul            Spezifikation des Gerï¿½ts zum Herunterfahren
  1240 max-driving-time      Legt die maximale Fahrzeit des Rollladens fest
  1240 type                  Spezifiziert den Rollladentyp
- 1240 up-modul              Spezifikation des Geräts zum Herauffahren
+ 1240 up-modul              Spezifikation des Gerï¿½ts zum Herauffahren
  1250 <0-239>               Moduladresse
- 1260 device                Spezifikation der Geräteadresse
- 1270 <0-255>               Geräteadresse
- 1280 <0-255>               Maximale Fahrzeit in Fünftelsekunden
+ 1260 device                Spezifikation der Gerï¿½teadresse
+ 1270 <0-255>               Gerï¿½teadresse
+ 1280 <0-255>               Maximale Fahrzeit in Fï¿½nftelsekunden
  1290 normal                Normale Ansteuerung
  1290 pulse-contact-ctrl    Impulssteuerung
- 1300 <0-255>               Geräteadresse
+ 1300 <0-255>               Gerï¿½teadresse
  1300 new-address           Konfiguration eines neuen Drehgebers
- 1310 <0-255>               Geräteadresse
- 1320 status-modul-address  Spezifikation der zugehörigen Status-Moduladresse
+ 1310 <0-255>               Gerï¿½teadresse
+ 1320 status-modul-address  Spezifikation der zugehï¿½rigen Status-Moduladresse
  1320 <cr>                  <Enter>
- 1330 <0-255>               Die zugehörige Status-Moduladresse
- 1340 input-device-a        Legt den logischen Eingang für den Anschluss A fest
- 1340 input-device-b        Legt den logischen Eingang für den Anschluss B fest
- 1340 input-device-t        Legt den logischen Eingang für den Anschluss T fest
+ 1330 <0-255>               Die zugehï¿½rige Status-Moduladresse
+ 1340 input-device-a        Legt den logischen Eingang fï¿½r den Anschluss A fest
+ 1340 input-device-b        Legt den logischen Eingang fï¿½r den Anschluss B fest
+ 1340 input-device-t        Legt den logischen Eingang fï¿½r den Anschluss T fest
  1340 input-modul           Legt das Modul fest, an dem der Drehgeber angeschlossen ist
- 1340 output-modul          Spezifiziert das zu steuernde Gerät
+ 1340 output-modul          Spezifiziert das zu steuernde Gerï¿½t
  1340 speed                 Legt die Drehgeschwindigkeit fest
- 1350 <0-255>               Geräteadresse
+ 1350 <0-255>               Gerï¿½teadresse
  1360 <0-239>               Moduladresse
  1370 <0-255>               Drehgeschwindigkeit
- 1380 new-address           Konfiguration einer neuen Bedienoberfläche
- 1390 <0-255>               Geräteadresse
- 1400 status-modul-address  Spezifikation der zugehörigen Status-Moduladresse
+ 1380 new-address           Konfiguration einer neuen Bedienoberflï¿½che
+ 1390 <0-255>               Gerï¿½teadresse
+ 1400 status-modul-address  Spezifikation der zugehï¿½rigen Status-Moduladresse
  1400 <cr>                  <Enter>
- 1410 <0-255>               Die zugehörige Status-Moduladresse
+ 1410 <0-255>               Die zugehï¿½rige Status-Moduladresse
  1420 <0-63>                Nummer des zu konfigurierenden Objekts
  1430 active-input          Aktiver Eingang
  1430 addition-1            Addition mit einem Eingang
- 1430 addition-2            Addition mit zwei Eingängen
- 1430 addition-3            Addition mit drei Eingängen
- 1430 and-2                 UND-Verknüpfung mit zwei Eingängen
- 1430 and-3                 UND-Verknüpfung mit drei Eingängen
+ 1430 addition-2            Addition mit zwei Eingï¿½ngen
+ 1430 addition-3            Addition mit drei Eingï¿½ngen
+ 1430 and-2                 UND-Verknï¿½pfung mit zwei Eingï¿½ngen
+ 1430 and-3                 UND-Verknï¿½pfung mit drei Eingï¿½ngen
  1430 control-element-0     Regelglied 0
  1430 div-with-offset       Division mit Offset
  1430 division-1            Division mit einem Eingang
- 1430 division-2            Division mit zwei Eingängen
- 1430 division-3            Division mit drei Eingängen
+ 1430 division-2            Division mit zwei Eingï¿½ngen
+ 1430 division-3            Division mit drei Eingï¿½ngen
  1430 equal-1               Vergleichsoperator "=" mit einem Eingang
- 1430 equal-2               Vergleichsoperator "=" mit zwei Eingängen
- 1430 falling-delay         Ausschaltverzögerung
- 1430 flipflop-0-2          Flipflop 0 mit zwei Eingängen
- 1430 flipflop-0-3          Flipflop 0 mit drei Eingängen
- 1430 flipflop-1-2          Flipflop 1 mit zwei Eingängen
- 1430 flipflop-1-3          Flipflop 1 mit drei Eingängen
- 1430 flipflop-2-2          Flipflop 2 mit zwei Eingängen
- 1430 flipflop-2-3          Flipflop 2 mit drei Eingängen
- 1430 flipflop-3-2          Flipflop 3 mit zwei Eingängen
- 1430 flipflop-3-3          Flipflop 3 mit drei Eingängen
- 1430 flipflop-4-2          Flipflop 4 mit zwei Eingängen
- 1430 flipflop-4-3          Flipflop 4 mit drei Eingängen
- 1430 flipflop-5-2          Flipflop 5 mit zwei Eingängen
- 1430 flipflop-5-3          Flipflop 5 mit drei Eingängen
+ 1430 equal-2               Vergleichsoperator "=" mit zwei Eingï¿½ngen
+ 1430 falling-delay         Ausschaltverzï¿½gerung
+ 1430 flipflop-0-2          Flipflop 0 mit zwei Eingï¿½ngen
+ 1430 flipflop-0-3          Flipflop 0 mit drei Eingï¿½ngen
+ 1430 flipflop-1-2          Flipflop 1 mit zwei Eingï¿½ngen
+ 1430 flipflop-1-3          Flipflop 1 mit drei Eingï¿½ngen
+ 1430 flipflop-2-2          Flipflop 2 mit zwei Eingï¿½ngen
+ 1430 flipflop-2-3          Flipflop 2 mit drei Eingï¿½ngen
+ 1430 flipflop-3-2          Flipflop 3 mit zwei Eingï¿½ngen
+ 1430 flipflop-3-3          Flipflop 3 mit drei Eingï¿½ngen
+ 1430 flipflop-4-2          Flipflop 4 mit zwei Eingï¿½ngen
+ 1430 flipflop-4-3          Flipflop 4 mit drei Eingï¿½ngen
+ 1430 flipflop-5-2          Flipflop 5 mit zwei Eingï¿½ngen
+ 1430 flipflop-5-3          Flipflop 5 mit drei Eingï¿½ngen
  1430 forward-control-1     Gesteuerte Weiterleitung mit einem Eingang
- 1430 forward-control-2     Gesteuerte Weiterleitung mit zwei Eingängen
- 1430 forward-control-3     Gesteuerte Weiterleitung mit drei Eingängen
- 1430 forward-greater-1     Weiterleitung "größer" mit einem Eingang
- 1430 forward-greater-2     Weiterleitung "größer" mit zwei Eingängen
- 1430 forward-greater-3     Weiterleitung "größer" mit drei Eingängen
+ 1430 forward-control-2     Gesteuerte Weiterleitung mit zwei Eingï¿½ngen
+ 1430 forward-control-3     Gesteuerte Weiterleitung mit drei Eingï¿½ngen
+ 1430 forward-greater-1     Weiterleitung "grï¿½ï¿½er" mit einem Eingang
+ 1430 forward-greater-2     Weiterleitung "grï¿½ï¿½er" mit zwei Eingï¿½ngen
+ 1430 forward-greater-3     Weiterleitung "grï¿½ï¿½er" mit drei Eingï¿½ngen
  1430 forward-less-1        Weiterleitung "kleiner" mit einem Eingang
- 1430 forward-less-2        Weiterleitung "kleiner" mit zwei Eingängen
- 1430 forward-less-3        Weiterleitung "kleiner" mit drei Eingängen
+ 1430 forward-less-2        Weiterleitung "kleiner" mit zwei Eingï¿½ngen
+ 1430 forward-less-3        Weiterleitung "kleiner" mit drei Eingï¿½ngen
  1430 forward-middle-1      Weiterleitung "mittleren" mit einem Eingang
- 1430 forward-middle-2      Weiterleitung "mittleren" mit zwei Eingängen
- 1430 forward-middle-3      Weiterleitung "mittleren" mit drei Eingängen
+ 1430 forward-middle-2      Weiterleitung "mittleren" mit zwei Eingï¿½ngen
+ 1430 forward-middle-3      Weiterleitung "mittleren" mit drei Eingï¿½ngen
  1430 forward-timed         Zeitgesteuerte Weiterleitung
  1430 greater-1             Vergleichsoperator ">" mit einem Eingang
- 1430 greater-2             Vergleichsoperator ">" mit zwei Eingängen
+ 1430 greater-2             Vergleichsoperator ">" mit zwei Eingï¿½ngen
  1430 greater-equal-1       Vergleichsoperator ">=" mit einem Eingang
- 1430 greater-equal-2       Vergleichsoperator ">=" mit zwei Eingängen
- 1430 input-delay           Einschaltverzögerung
+ 1430 greater-equal-2       Vergleichsoperator ">=" mit zwei Eingï¿½ngen
+ 1430 input-delay           Einschaltverzï¿½gerung
  1430 input-limiting        Einschaltbegrenzung
  1430 left-shift-1          Bitweise Linksverschiebung mit einem Eingang
- 1430 left-shift-2          Bitweise Linksverschiebung mit zwei Eingängen
+ 1430 left-shift-2          Bitweise Linksverschiebung mit zwei Eingï¿½ngen
  1430 less-1                Vergleichsoperator "<" mit einem Eingang
- 1430 less-2                Vergleichsoperator "<" mit zwei Eingängen
+ 1430 less-2                Vergleichsoperator "<" mit zwei Eingï¿½ngen
  1430 less-equal-1          Vergleichsoperator "<=" mit einem Eingang
- 1430 less-equal-2          Vergleichsoperator "<=" mit zwei Eingängen
+ 1430 less-equal-2          Vergleichsoperator "<=" mit zwei Eingï¿½ngen
  1430 mult-with-offset      Multiplikation mit Offset
  1430 mult-with-ratio-num   Multiplikation mit einer rationalen Zahl
  1430 multiplication-1      Multiplikation mit einem Eingang
- 1430 multiplication-2      Multiplikation mit zwei Eingängen
- 1430 multiplication-3      Multiplikation mit drei Eingängen
- 1430 nand-2                NICHT-UND-Verknüpfung mit zwei Eingängen
- 1430 nand-3                NICHT-UND-Verknüpfung mit drei Eingängen
+ 1430 multiplication-2      Multiplikation mit zwei Eingï¿½ngen
+ 1430 multiplication-3      Multiplikation mit drei Eingï¿½ngen
+ 1430 nand-2                NICHT-UND-Verknï¿½pfung mit zwei Eingï¿½ngen
+ 1430 nand-3                NICHT-UND-Verknï¿½pfung mit drei Eingï¿½ngen
  1430 native-output         Nativer Ausgang
  1430 no-operation          Keine Operation
- 1430 no-vol-passive-input  Nicht flüchtiger passiver Eingang
- 1430 nor-2                 NICHT-ODER-Verknüpfung mit zwei Eingängen
- 1430 nor-3                 NICHT-ODER-Verknüpfung mit drei Eingängen
+ 1430 no-vol-passive-input  Nicht flï¿½chtiger passiver Eingang
+ 1430 nor-2                 NICHT-ODER-Verknï¿½pfung mit zwei Eingï¿½ngen
+ 1430 nor-3                 NICHT-ODER-Verknï¿½pfung mit drei Eingï¿½ngen
  1430 not-equal-1           Vergleichsoperator "!=" mit einem Eingang
- 1430 not-equal-2           Vergleichsoperator "!=" mit zwei Eingängen
- 1430 or-2                  ODER-Verknüpfung mit zwei Eingängen
- 1430 or-3                  ODER-Verknüpfung mit drei Eingängen
+ 1430 not-equal-2           Vergleichsoperator "!=" mit zwei Eingï¿½ngen
+ 1430 or-2                  ODER-Verknï¿½pfung mit zwei Eingï¿½ngen
+ 1430 or-3                  ODER-Verknï¿½pfung mit drei Eingï¿½ngen
  1430 output                Ausgang
  1430 output-modifier-0     Ausgangsmodifizierer 0
  1430 output-modifier-1     Ausgangsmodifizierer 1
  1430 property              Spezifikation der zu konfigurierenden Eigenschaft
  1430 right-shift-1         Bitweise Rechtsverschiebung mit einem Eingang
- 1430 right-shift-2         Bitweise Rechtsverschiebung mit zwei Eingängen
+ 1430 right-shift-2         Bitweise Rechtsverschiebung mit zwei Eingï¿½ngen
  1430 status-output         Statusausgang
  1430 subtraction-1         Subtraktion mit einem Eingang
- 1430 subtraction-2         Subtraktion mit zwei Eingängen
- 1430 subtraction-3         Subtraktion mit drei Eingängen
- 1430 timer-day             Timer "täglich"
- 1430 timer-hour            Timer "stündlich"
- 1430 timer-minute          Timer "minütlich"
- 1430 timer-week            Timer "wöchentlich"
- 1430 up-down-control-1     Auf-/Ab-Steuerung "Ein-Taster-Lösung"
- 1430 up-down-control-2     Auf-/Ab-Steuerung "Zwei-Taster-Lösung"
- 1430 up-down-control-2-sh  Auf-/Ab-Steuerung "Zwei-Taster-Lösung" (Rollladen)
- 1430 vol-passive-input     Flüchtiger passiver Eingang
- 1430 xor-2                 EXKLUSIV-ODER-Verknüpfung mit zwei Eingängen
- 1430 xor-3                 EXKLUSIV-ODER-Verknüpfung mit drei Eingängen
+ 1430 subtraction-2         Subtraktion mit zwei Eingï¿½ngen
+ 1430 subtraction-3         Subtraktion mit drei Eingï¿½ngen
+ 1430 timer-day             Timer "tï¿½glich"
+ 1430 timer-hour            Timer "stï¿½ndlich"
+ 1430 timer-minute          Timer "minï¿½tlich"
+ 1430 timer-week            Timer "wï¿½chentlich"
+ 1430 up-down-control-1     Auf-/Ab-Steuerung "Ein-Taster-Lï¿½sung"
+ 1430 up-down-control-2     Auf-/Ab-Steuerung "Zwei-Taster-Lï¿½sung"
+ 1430 up-down-control-2-sh  Auf-/Ab-Steuerung "Zwei-Taster-Lï¿½sung" (Rollladen)
+ 1430 vol-passive-input     Flï¿½chtiger passiver Eingang
+ 1430 xor-2                 EXKLUSIV-ODER-Verknï¿½pfung mit zwei Eingï¿½ngen
+ 1430 xor-3                 EXKLUSIV-ODER-Verknï¿½pfung mit drei Eingï¿½ngen
  1440 <cr>                  <Enter>
  1450 intervall-3           Konfiguration des niederwertigen Teils des Intervalls
- 1450 start-1               Konfiguration des höherwertigen Teils des Startwerts
+ 1450 start-1               Konfiguration des hï¿½herwertigen Teils des Startwerts
  1450 start-2               Konfiguration des niederwertigen Teils des Startwerts
  1450 <cr>                  <Enter>
  1460 <0-255>               Das Intervall in Zehntelsekunden
  1470 <0-63>                Der Startwert in Sekunden
- 1480 intervall-1           Konfiguration des höherwertigen Teils des Intervalls
+ 1480 intervall-1           Konfiguration des hï¿½herwertigen Teils des Intervalls
  1490 <0-3>                 Das Intervall in 256 Zehntelsekunden
  1500 <0-15>                Der Startwert in Zehntelsekunden
  1510 intervall-3           Konfiguration des niederwertigen Teils des Intervalls
- 1510 start-1               Konfiguration des höherwertigen Teils des Startwerts
+ 1510 start-1               Konfiguration des hï¿½herwertigen Teils des Startwerts
  1510 start-2               Konfiguration des niederwertigen Teils des Startwerts
  1510 <cr>                  <Enter>
  1520 <0-255>               Das Intervall in Sekunden
  1530 <0-63>                Der Startwert in Minuten
- 1540 intervall-1           Konfiguration des höherwertigen Teils des Intervalls
+ 1540 intervall-1           Konfiguration des hï¿½herwertigen Teils des Intervalls
  1550 <0-3>                 Das Intervall in 1024 Sekunden
  1560 <0-63>                Der Startwert in Sekunden
  1570 intervall-2           Konfiguration des mittelwertigen Teils des Intervalls
  1580 <0-3>                 Das Intervall in 256 Sekunden
  1590 intervall-3           Konfiguration des niederwertigen Teils des Intervalls
- 1590 start-1               Konfiguration des höherwertigen Teils des Startwerts
+ 1590 start-1               Konfiguration des hï¿½herwertigen Teils des Startwerts
  1590 start-2               Konfiguration des niederwertigen Teils des Startwerts
  1590 <cr>                  <Enter>
  1600 <0-255>               Das Intervall in Minuten
@@ -488,10 +488,10 @@
  1640 workday               Nur an Wochentagen
  1640 <cr>                  <Enter>
  1650 <0-63>                Der Startwert in Minuten
- 1660 intervall-2           Konfiguration des höherwertigen Teils des Intervalls
+ 1660 intervall-2           Konfiguration des hï¿½herwertigen Teils des Intervalls
  1670 <0-3>                 Das Intervall in 256 Minuten
  1680 intervall-3           Konfiguration des niederwertigen Teils des Intervalls
- 1680 start-1-day           Konfiguration des höherwertigen Teils des Startwerts
+ 1680 start-1-day           Konfiguration des hï¿½herwertigen Teils des Startwerts
  1680 start-2               Konfiguration des niederwertigen Teils des Startwerts
  1680 <cr>                  <Enter>
  1690 <0-255>               Das Intervall in Minuten
@@ -499,29 +499,29 @@
  1710 start-1-hour          Konfiguration des mittelwertigen Teils des Startwerts
  1720 <0-31>                Der Startwert in Stunden
  1730 <0-63>                Der Startwert in Minuten
- 1740 intervall-2           Konfiguration des höherwertigen Teils des Intervalls
+ 1740 intervall-2           Konfiguration des hï¿½herwertigen Teils des Intervalls
  1750 <0-3>                 Das Intervall in 256 Minuten
- 1760 device-address        Konfiguration der Geräteadresse des aktiven Eingangs
+ 1760 device-address        Konfiguration der Gerï¿½teadresse des aktiven Eingangs
  1760 modul-address         Konfiguration der Moduladresse des aktiven Eingangs
  1760 query-intervall       Konfiguration des Abfrageintervalls
  1760 <cr>                  <Enter>
- 1770 <0-255>               Die Geräteadresse des aktiven Eingangs
+ 1770 <0-255>               Die Gerï¿½teadresse des aktiven Eingangs
  1780 <0-239>               Die Moduladresse des aktiven Eingangs
  1790 <0-255>               Das Abfrageintervall in Zehntelsekunden
  1800 default-value         Konfiguration des Vorgabewerts
- 1800 device-address        Konfiguration der Geräteadresse des passiven Eingangs
+ 1800 device-address        Konfiguration der Gerï¿½teadresse des passiven Eingangs
  1800 modul-address         Konfiguration der Moduladresse des passiven Eingangs
  1800 <cr>                  <Enter>
  1810 <0-255>               Der Vorgabewert
- 1820 <0-255>               Die Geräteadresse bzw. das HByte der Makronummer
+ 1820 <0-255>               Die Gerï¿½teadresse bzw. das HByte der Makronummer
  1830 <0-255>               Die Moduladresse des passiven Eingangs
  1840 default-value         Konfiguration des Vorgabewerts
- 1840 delay-2               Konfiguration des niederwertigen Teils des Verzögerungswerts
- 1840 delay-3               Konfiguration des höherwertigen Teils des Verzögerungswerts
+ 1840 delay-2               Konfiguration des niederwertigen Teils des Verzï¿½gerungswerts
+ 1840 delay-3               Konfiguration des hï¿½herwertigen Teils des Verzï¿½gerungswerts
  1840 <cr>                  <Enter>
  1850 <0-255>               Der Vorgabewert
- 1860 <0-255>               Der Verzögerungswert in Zehntelsekunden
- 1870 <0-63>                Der Verzögerungswert in 256 Zehntelsekunden
+ 1860 <0-255>               Der Verzï¿½gerungswert in Zehntelsekunden
+ 1870 <0-63>                Der Verzï¿½gerungswert in 256 Zehntelsekunden
  1880 falling-edge          Weitergabe nur bei fallender Flanke
  1880 rising-edge           Weitergabe nur bei steigender Flanke
  1880 <cr>                  <Enter>
@@ -609,24 +609,24 @@
  2330 seconds               Zeitbasis sind Sekunden
  2330 tenth-of-a-second     Zeitbasis sind Zehntelsekunden
  2330 weeks                 Zeitbasis sind Wochen
- 2340 device-address        Konfiguration der Geräteadresse des Ausgangs
+ 2340 device-address        Konfiguration der Gerï¿½teadresse des Ausgangs
  2340 input                 Konfiguration des Eingangsobjekts
  2340 modul-address         Konfiguration der Moduladresse des Ausgangs
  2340 <cr>                  <Enter>
- 2350 <0-255>               Die Geräteadresse des Ausgangs
+ 2350 <0-255>               Die Gerï¿½teadresse des Ausgangs
  2360 <0-63>                Nummer des Objekts
  2370 <0-239>               Die Moduladresse des Ausgangs
- 2380 device-address        Konfiguration der Geräteadresse des Ausgangs
+ 2380 device-address        Konfiguration der Gerï¿½teadresse des Ausgangs
  2380 input                 Konfiguration des Eingangsobjekts
  2380 <cr>                  <Enter>
- 2390 <0-255>               Die Geräteadresse des Ausgangs
+ 2390 <0-255>               Die Gerï¿½teadresse des Ausgangs
  2400 <0-63>                Nummer des Objekts
- 2410 delay-2               Konfiguration des niederwertigen Teils des Verzögerungswerts
- 2410 delay-3               Konfiguration des höherwertigen Teils des Verzögerungswerts
+ 2410 delay-2               Konfiguration des niederwertigen Teils des Verzï¿½gerungswerts
+ 2410 delay-3               Konfiguration des hï¿½herwertigen Teils des Verzï¿½gerungswerts
  2410 input                 Konfiguration des Eingangsobjekts
  2410 <cr>                  <Enter>
- 2420 <0-255>               Der Verzögerungswert in Zehntelsekunden
- 2430 <0-63>                Der Verzögerungswert in 256 Zehntelsekunden
+ 2420 <0-255>               Der Verzï¿½gerungswert in Zehntelsekunden
+ 2430 <0-63>                Der Verzï¿½gerungswert in 256 Zehntelsekunden
  2440 falling-edge          Weitergabe nur bei fallender Flanke
  2440 rising-edge           Weitergabe nur bei steigender Flanke
  2440 <cr>                  <Enter>
@@ -722,35 +722,35 @@
  3020 <0-255>               Drittes Byte der Hardwareadresse
  3030 <cr>                  <Enter>
  3040 <0-99>                Die zu definierende Infrarotadresse
- 3050 modul-address         Spezifikation der zugehörigen Moduladresse
- 3060 <0-255>               Die zugehörige Moduladresse
- 3070 device-address        Spezifikation der zugehörigen Geräteadresse
- 3080 <0-255>               Die zugehörige Geräteadresse
+ 3050 modul-address         Spezifikation der zugehï¿½rigen Moduladresse
+ 3060 <0-255>               Die zugehï¿½rige Moduladresse
+ 3070 device-address        Spezifikation der zugehï¿½rigen Gerï¿½teadresse
+ 3080 <0-255>               Die zugehï¿½rige Gerï¿½teadresse
  3090 <cr>                  <Enter>
  3100 <0-9>                 Der zu definierende Infrarot-Hotkey
- 3110 makro                 Spezifikation der zugehörigen Makronummer
- 3120 <0-65535>             Die zugehörige Makronummer
+ 3110 makro                 Spezifikation der zugehï¿½rigen Makronummer
+ 3120 <0-65535>             Die zugehï¿½rige Makronummer
  3130 <cr>                  <Enter>
- 3140 <0-31>                Die Geräteadresse der Infrarot-Fernbedienung
+ 3140 <0-31>                Die Gerï¿½teadresse der Infrarot-Fernbedienung
  3150 button                Spezifikation des Tastencodes
  3160 <0-127>               Der Tastencode
- 3170 command               Spezifikation des zugehörigen Kommandos
- 3180 <0-127>               Der Code des zugehörigen Kommandos
+ 3170 command               Spezifikation des zugehï¿½rigen Kommandos
+ 3180 <0-127>               Der Code des zugehï¿½rigen Kommandos
  3180 all-off               Das Kommando "Alles ausschalten"
  3180 all-on                Das Kommando "Alles einschalten"
- 3180 button-0              Das Kommando "Taste 0 gedrückt"
- 3180 button-1              Das Kommando "Taste 1 gedrückt"
- 3180 button-2              Das Kommando "Taste 2 gedrückt"
- 3180 button-3              Das Kommando "Taste 3 gedrückt"
- 3180 button-4              Das Kommando "Taste 4 gedrückt"
- 3180 button-5              Das Kommando "Taste 5 gedrückt"
- 3180 button-6              Das Kommando "Taste 6 gedrückt"
- 3180 button-7              Das Kommando "Taste 7 gedrückt"
- 3180 button-8              Das Kommando "Taste 8 gedrückt"
- 3180 button-9              Das Kommando "Taste 9 gedrückt"
+ 3180 button-0              Das Kommando "Taste 0 gedrï¿½ckt"
+ 3180 button-1              Das Kommando "Taste 1 gedrï¿½ckt"
+ 3180 button-2              Das Kommando "Taste 2 gedrï¿½ckt"
+ 3180 button-3              Das Kommando "Taste 3 gedrï¿½ckt"
+ 3180 button-4              Das Kommando "Taste 4 gedrï¿½ckt"
+ 3180 button-5              Das Kommando "Taste 5 gedrï¿½ckt"
+ 3180 button-6              Das Kommando "Taste 6 gedrï¿½ckt"
+ 3180 button-7              Das Kommando "Taste 7 gedrï¿½ckt"
+ 3180 button-8              Das Kommando "Taste 8 gedrï¿½ckt"
+ 3180 button-9              Das Kommando "Taste 9 gedrï¿½ckt"
  3180 enter                 Das Kommando "Enter"
  3180 ignore                Das Kommando "Ignorieren"
- 3180 makro                 Das Kommando "Makro ausführen"
+ 3180 makro                 Das Kommando "Makro ausfï¿½hren"
  3180 minus                 Das Kommando "Minus"
  3180 plus                  Das Kommando "Plus"
  3190 <cr>                  <Enter>
@@ -773,35 +773,52 @@
  3300 <cr>                  <Enter>
  3310 end                   Stoppt das aktuell laufende Protokoll
  3310 start                 Startet ein neues Protokoll
- 3310 start-page-address    Leitet die Übertragung einer neuen Seite ein
+ 3310 start-page-address    Leitet die ï¿½bertragung einer neuen Seite ein
  3320 <cr>                  <Enter>
  3330 firmware-download     Download einer neuen Firmware
- 3330 gui-config-download   Download einer neuen Konfiguration der Bedienoberfläche
- 3340 <0-32767>             Die Adresse der zu übertragenden Seite
+ 3330 gui-config-download   Download einer neuen Konfiguration der Bedienoberflï¿½che
+ 3340 <0-32767>             Die Adresse der zu ï¿½bertragenden Seite
  3350 eeprom-address        Spezifikation des zu schreibenden EEPROMs
  3360 <0-255>               Die Schreibadresse des zu verwendenden EEPROMs
  3360 e32                   Es wird in das 32KByte EEPROM geschrieben
  3360 e8                    Es wird in das 8KByte EEPROM geschrieben
- 3370 <0-255>               Das erste zu übertragende Byte
+ 3370 <0-255>               Das erste zu ï¿½bertragende Byte
  3370 <cr>                  <Enter>
- 3380 <0-255>               Das zweite zu übertragende Byte
+ 3380 <0-255>               Das zweite zu ï¿½bertragende Byte
  3380 <cr>                  <Enter>
- 3390 <0-255>               Das dritte zu übertragende Byte
+ 3390 <0-255>               Das dritte zu ï¿½bertragende Byte
  3390 <cr>                  <Enter>
- 3400 <0-255>               Das vierte zu übertragende Byte
+ 3400 <0-255>               Das vierte zu ï¿½bertragende Byte
  3400 <cr>                  <Enter>
  3410 <cr>                  <Enter>
- 3420 device-busy           Protokollfehler "Gerät nicht frei"
+ 3420 device-busy           Protokollfehler "Gerï¿½t nicht frei"
  3420 no-response           Protokollfehler "Keine Antwort erhalten"
- 3430 device-address        Spezifikation der Adresse des nicht freien Geräts
- 3440 <0-255>               Die Adresse des nicht freien Geräts
+ 3430 device-address        Spezifikation der Adresse des nicht freien Gerï¿½ts
+ 3440 <0-255>               Die Adresse des nicht freien Gerï¿½ts
  3450 <cr>                  <Enter>
  3460 remote-modul-addr     Spezifikation der Adresse des entfernten Moduls
  3470 <0-239>               Die Adresse des entfernten Moduls
- 3480 message-type          Spezifikation des Nachrichtentyps der ursprünglichen Nachricht
- 3490 <0-255>               Der Nachrichtentyp der ursprünglichen Nachricht
- 3500 remote-device-addr    Spezifikation der Adresse des entfernten Geräts
- 3510 <0-255>               Die Adresse des entfernten Geräts
+ 3480 message-type          Spezifikation des Nachrichtentyps der ursprï¿½nglichen Nachricht
+ 3490 <0-255>               Der Nachrichtentyp der ursprï¿½nglichen Nachricht
+ 3500 remote-device-addr    Spezifikation der Adresse des entfernten Gerï¿½ts
+ 3510 <0-255>               Die Adresse des entfernten Gerï¿½ts
  3520 <0-3>                 Die Nummer der zu konfigurierenden Eigenschaft
  3530 value                 Spezifikation des Werts der Eigenschaft
  3540 <0-255>               Der Wert der Eigenschaft
+ 10000 <ABCDEF>             Hex-Address of target device
+ 10010 channel              Target channel
+ 10010 factoryreset         Factory-reset target-device
+ 10010 unpair               Unpair target-device from Server
+ 10010 signing-off          Disable signing in target-device   			
+ 10010 signing-on           Enable signing in target-device
+ 10020 <1-9>                Channel-number
+ 10030 devicepair           pair with
+ 10040 <ABCDEF>             Hex-Adress
+ 10050 channel              channel
+ 10060 <1-9>                Channel-number
+ 10070 <cr>                 <Enter>
+ 10080 <cr>					<Enter>
+ 10090 <cr>                 <Enter>
+ 10100 <cr>                 <Enter>
+ 10110 <cr>                 <Enter>
+ 10120 <cr>                 <Enter>

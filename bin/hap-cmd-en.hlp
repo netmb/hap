@@ -3,6 +3,7 @@
     0 destination           Specify the address of the receiving modul
     0 source                Specify the address of the sending modul
     0 vlan                  Specify the VLAN to use
+    0 hmdevice              Specify a homematic-device by its address (6 Hex)
    10 <0-255>               Second number of a native command
    20 <0-255>               Third number of a native command
    30 <0-255>               Fourth number of a native command
@@ -805,3 +806,20 @@
  3520 <0-3>                 The number of the property to configure
  3530 value                 Specify the value of the property
  3540 <0-255>               The value of the property
+ 10000 <ABCDEF>             Hex-Address of target device
+ 10010 channel              Target channel
+ 10010 factoryreset         Factory-reset target-device
+ 10010 unpair               Unpair target-device from Server
+ 10010 signing-off          Disable signing in target-device   			
+ 10010 signing-on           Enable signing in target-device
+ 10020 <1-9>                Channel-number
+ 10030 devicepair           pair with
+ 10040 <ABCDEF>             Hex-Adress
+ 10050 channel              channel
+ 10060 <1-9>                Channel-number
+ 10070 <cr>                 <Enter>
+ 10080 <cr>					<Enter>
+ 10090 <cr>                 <Enter>
+ 10100 <cr>                 <Enter>
+ 10110 <cr>                 <Enter>
+ 10120 <cr>                 <Enter>
