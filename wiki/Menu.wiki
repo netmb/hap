@@ -44,7 +44,7 @@
 
   [Homematic Homematic-Einbindung]
 
-  [Homematic-Konfig-Befehle HomematicKonfigBefehle]
+  [HomematicKonfigBefehle Homematic Konfig Befehle]
 * Wiki *
 
   [Installation]
