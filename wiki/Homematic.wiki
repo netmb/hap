@@ -35,6 +35,8 @@ Die Einbindung weitere Homematic-Komponenten sollte aber problemlos machbar sein
 
 Zunächst muss die jeweilige Homematic-Komponete mit dem HMLAN-Interface "verheiratet" werden. Hierzu wird die Homematic-Komponente über die Windows-Software einmalig angelernt. 
 
+Alternativ kann mit dem Befehl "hmpair" welches man direkt über eine Telnet-Session zum Messageprocessor (telnet localhost 7891) eingibt, die Homematic-Komponente an den HMLAN gebunden werden. Nach Eingabe des hmpair-Befehls muss man den Setup/Config-Knopf auf der jeweiligen Homematic-Komponente drücken (Gerät fängt an zu blinken). Nach wenige Sekunden hört das Blinken auf und die Bindung sollte erfolgt sein.
+
 Nachdem die Komponente angelernt wurde, kann sie über die HAP-Weboberfläche unter dem Menüpunkt "Homematic" eingebunden werden. 
 
 Es empfiehlt sich für die Homematic-Komponenten ein Dummy-HAP-Modul anzulegen und unterhalb von diesem Modul dann die einzelnen Homematic-Komponenten anzulegen.  
