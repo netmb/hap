@@ -40,6 +40,8 @@ my %homematicDevicesByHmId;
 my $homematicState;
 my %homematicMIdToHap;
 my %makroByDatagram;
+my $hmConfig;
+my %hmMsgQueue;
 
 foreach ( 224 .. 239 ) {    # Source-Addresses
   $mapping{$_} = undef;
@@ -205,60 +207,90 @@ sub serialSetup {
 
 sub hmLanIn {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-  print "HMLAN in: $data\n";
+  print "HMLAN in raw   : $data\n";
   my @mParts = split( ',', $data );
   my $leadingChar = substr( $mParts[0], 0, 1 );
   if ( $leadingChar =~ m/^[ER]/ ) {
-
-    #my $mId    = substr( $mParts[0], 1, 8 );
-    #my $source = substr( $mParts[5], 6, 6 );
     my ( $hapMsg, $hmMsg ) = $hmParser->decrypt( $data, \%homematicDevicesByHmId, \%homematicMIdToHap );
-    if ( ref($hapMsg) ) {
+    print
+"HMLAN in parsed: mId:$hmMsg->{mId}, source: $hmMsg->{source}, dest: $hmMsg->{destination}, flag: $hmMsg->{flag}, msgNo: $hmMsg->{messageNo}, messageType: $hmMsg->{messageType}-$hmMsg->{mTypeText}, channel: $hmMsg->{channel}, payload: $hmMsg->{payload}\n";
 
-      print &composeAnswer( "HMLAN in:", $hapMsg ) . "\n";
-
-      # Makro by datagram stuff
-      my $mUid = buildHashFromMessagePart($hapMsg);
-      if ( defined( $makroByDatagram{$mUid} ) ) {
-        if ( checkValues( $makroByDatagram{$mUid}->{msg}, $hapMsg ) == 1 ) {
-          $kernel->post(
-            'main' => executeMakroScriptByDatagram => {
-              makro  => $makroByDatagram{$mUid}->{makro},
-              hapMsg => $hapMsg
-            }
-          );
+    if ( $hmMsg->{messageType} eq '00' ) {    # someone pressed the config button on remote-homematic device
+      print "Received Config-request from: $hmMsg->{source} \n";
+      if ($hmConfig) {
+        if ( $hmConfig->{type} eq 'pairing' ) {
+          $hmConfig->{target} = $hmMsg->{source};
+        }
+        print "We have and Config-object of type $hmConfig->{type} for $hmConfig->{target}. Building command queue...\n";
+        my @queue = $hmParser->buildHmConfigDatagrams($hmConfig);
+        $hmMsgQueue{ $hmMsg->{source} } = { idx => 0, array => \@queue };
+        $kernel->post( 'main' => hmLanOut => @{ $hmMsgQueue{ $hmMsg->{source} }->{array} }[ $hmMsgQueue{ $hmMsg->{source} }->{idx} ] );
+      }
+    }
+    else {                                    # normal in
+      if ( $hmMsgQueue{ $hmMsg->{source} } ) {    # we have remaining config-objects for this source
+        $hmMsgQueue{ $hmMsg->{source} }->{idx}++;
+        if ( scalar( @{ $hmMsgQueue{ $hmMsg->{source} }->{array} } ) >= $hmMsgQueue{ $hmMsg->{source} }->{idx} + 1 ) {
+          $kernel->post( 'main' => hmLanOut => @{ $hmMsgQueue{ $hmMsg->{source} }->{array} }[ $hmMsgQueue{ $hmMsg->{source} }->{idx} ] );
+        }
+        else {
+          delete($hmMsgQueue{ $hmMsg->{source} });
         }
       }
+      else {                                      # do common stuff
+        if ( ref($hapMsg) ) {
+          print &composeAnswer( "HMLAN in to HAP:", $hapMsg ) . "\n";
 
-    }
-    else {
-      print "Unable to transform Homematic-datagram: $data to HAP-Datagram\n";
-    }
-    if ( ref($hapMsg) && $homematicMIdToHap{ $hmMsg->{mId} } ) {    # looks like an received command initiated by a session
-      $kernel->post( $mapping{ $homematicMIdToHap{ $hmMsg->{mId} } }->{session} => ClientOutput => $hapMsg );
-      $kernel->delay('clearMIdfromHash');                           #remove auto-clean delay
-      delete( $homematicMIdToHap{ $hmMsg->{mId} } );
-    }
-    if ( ref($hapMsg) && $homematicDevicesByHmId{ $hmMsg->{source} }->{channels}->{ $hmMsg->{channel} }->{notify} ) {    # valid message but no session, could be an event
-      my $notifyHapMsg = {
-        vlan        => $hapMsg->{vlan},
-        source      => $hapMsg->{source},
-        destination => $homematicDevicesByHmId{ $hmMsg->{source} }->{channels}->{ $hmMsg->{channel} }->{notify},
-        device      => $hapMsg->{device},
-        mtype       => 16,
-        v0          => $hapMsg->{v0},
-        v1          => $hapMsg->{v1},
-        v2          => $hapMsg->{v2}
-      };
-      $kernel->post( main => serverCuOut => $notifyHapMsg );
-      $kernel->post( main => serverCuIn  => $notifyHapMsg );
+          # Makro by datagram stuff
+          my $mUid = buildHashFromMessagePart($hapMsg);
+          if ( defined( $makroByDatagram{$mUid} ) ) {
+            if ( checkValues( $makroByDatagram{$mUid}->{msg}, $hapMsg ) == 1 ) {
+              $kernel->post(
+                'main' => executeMakroScriptByDatagram => {
+                  makro  => $makroByDatagram{$mUid}->{makro},
+                  hapMsg => $hapMsg
+                }
+              );
+            }
+          }
+        }
+
+        if ( ref($hapMsg) && $homematicMIdToHap{ $hmMsg->{mId} } ) {    # looks like an received command initiated by a session
+          $kernel->post( $mapping{ $homematicMIdToHap{ $hmMsg->{mId} } }->{session} => ClientOutput => $hapMsg );
+          $kernel->delay('clearMIdfromHash');                           #remove auto-clean delay
+          delete( $homematicMIdToHap{ $hmMsg->{mId} } );
+        }
+
+        if ( ref($hapMsg) && $homematicDevicesByHmId{ $hmMsg->{source} }->{channels}->{ $hmMsg->{channel} }->{notify} ) {    # valid message but no session, could be an event
+          my $notifyHapMsg = {
+            vlan        => $hapMsg->{vlan},
+            source      => $hapMsg->{source},
+            destination => $homematicDevicesByHmId{ $hmMsg->{source} }->{channels}->{ $hmMsg->{channel} }->{notify},
+            device      => $hapMsg->{device},
+            mtype       => 16,
+            v0          => $hapMsg->{v0},
+            v1          => $hapMsg->{v1},
+            v2          => $hapMsg->{v2}
+          };
+          $kernel->post( main => serverCuOut => $notifyHapMsg );
+          $kernel->post( main => serverCuIn  => $notifyHapMsg );
+        }
+      }
     }
 
     #send ack
-    $kernel->post( 'main' => hmLanOut => '+' . $hmMsg->{source} );
+    if ( $hmMsg->{destination} eq $c->{Homematic}->{HmVirtualId} ) {
+      select(undef, undef, undef, 0.1);
+      my $tm = int( gettimeofday() * 1000 ) % 0xffffffff;
+      my $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hmMsg->{messageNo} . "8002" . $c->{Homematic}->{HmVirtualId}. $hmMsg->{source} . "01010000" );
+      $kernel->post( 'main' => hmLanOut => $msg );
+    }
+    else {
+      $kernel->post( 'main' => hmLanOut => '+' . $hmMsg->{source} );
+    }
   }
   else {
-    print "Raw Homematic-command: $data\n";
+    print "Unprocessed: $data\n";
   }
 }
 
@@ -694,20 +726,34 @@ sub tcpClientInput {
     }
     return;
   }
-
-  if ( $data =~ /.*quit|exit.*/i ) {                                  # exit request
+  if ( $data =~ /.*quit|exit.*/i ) {    # exit request
     $kernel->yield('shutdown');
     return;
   }
-
-  my ( $error, $dgram ) = $parser->parse( $data, $heap->{'SessionSource'} );    # command line parsing
+  my ( $error, $dgram );
+  ( $error, $dgram, $hmConfig ) = $parser->parse( $data, $heap->{'SessionSource'} );    # command line parsing
   if ($error) {
     $heap->{client}->put($error);
   }
   else {
 
+    # handle Homematic Config stuff
+    #if ($hmConfig) {
+    #  print "HM CONFIG DGRAM\n";
+    #  if ( ref( $hmConfig{ $hmConfigDgram->{source} } ) eq 'ARRAY' ) {                          # we have an config-array for source, so append new commands
+    #    print "IS AN ARRAY\n";
+    #    push @{ $hmConfig{ $hmConfigDgram->{source} } }, $hmParser->buildHmConfigDatagrams($hmConfigDgram);
+    #  }
+    #  else {
+    #    @{ $hmConfig{ $hmConfigDgram->{source} } } = ( $hmParser->buildHmConfigDatagrams($hmConfigDgram) );
+    #  }
+    #}
+
     # handle Homematic
-    if ( $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} } ) {
+    if ($hmConfig) {
+
+    }
+    elsif ( $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} } ) {
 
       my $hmDeviceData = $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} };
       my ( $error, $hmDgram ) = $hmParser->parse( $dgram, $hmDeviceData );
@@ -1014,4 +1060,5 @@ sub buildHashFromMessagePart {
     sprintf( "%03d", $data->{vlan} ) . sprintf( "%03d", $data->{source} ) . sprintf( "%03d", $data->{destination} ) . sprintf( "%03d", $data->{mtype} ) . sprintf( "%03d", $data->{device} );
   return $hashStr;
 }
+
 

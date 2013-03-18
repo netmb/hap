@@ -15,6 +15,19 @@ use strict;
 use warnings;
 use Time::HiRes qw(gettimeofday);
 
+# 00 01=ack:seems to announce the new message counter
+# 00 02=message send done, no ack was requested
+# 00 08=nack - HMLAN did not receive an ACK,
+#    10-info
+# 00 21-'R'
+#    41-info
+# 00 81=open
+# 01 00=with 'E', not 'R'.
+# 00 81=open
+# 04 xx=nothing will be sent anymore? try restart
+
+my %mTypeToText = ( '00', 'config request', '02', 'ACK', '08', 'NACK', '10', 'info', '40', 'event', '41', 'event' );
+
 sub new {
   my ( $class, $c ) = @_;
   my $self = { c => $c };
@@ -45,9 +58,8 @@ sub parse {
   my ( $self, $dgram, $hmDeviceData ) = @_;
   my $error = undef;
   my $msg;
-  my $tm = int( gettimeofday() * 1000 ) % 0xffffffff;
-  $self->{c}->{hmCmdNr} = $self->{c}->{hmCmdNr} ? ( $self->{c}->{hmCmdNr} + 1 ) % 256 : 1;
-  my $hexNo = sprintf "%02x", $self->{c}->{hmCmdNr};
+  my $tm    = &getTm;
+  my $hexNo = &getMsgNo;
 
   my $hmId = $self->{c}->{Homematic}->{HmLanId};
   if ( $dgram->{mtype} == 0 && $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' ) {    # hap set command and wallmount-switch
@@ -67,20 +79,108 @@ sub parse {
   return $error, $msg;
 }
 
+sub buildHmConfigDatagrams {
+  my ( $self, $hmConfigDgram ) = @_;
+  my $error = undef;
+  my $msg;
+  my $hmId = $self->{c}->{Homematic}->{HmLanId};
+  my @arr;
+  if ( $hmConfigDgram->{type} eq 'devicepair' ) {
+    my $sChannel = sprintf( "%02d", $hmConfigDgram->{sChannel} );
+    my $dChannel = sprintf( "%02d", $hmConfigDgram->{dChannel} );
+
+    my $tm    = &getTm;
+    my $hexNo = &getMsgNo;
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $sChannel . "01" . $hmConfigDgram->{destination} . $dChannel . "00" );
+    push @arr, $msg;
+
+    $tm    = &getTm;
+    $hexNo = &getMsgNo;
+    $msg   = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $sChannel . "05" . $hmConfigDgram->{destination} . $dChannel . "04" );
+    push @arr, $msg;
+
+    $tm    = &getTm;
+    $hexNo = &getMsgNo;
+    $msg   = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $sChannel . "08" . "0100" );
+    push @arr, $msg;
+
+    $tm    = &getTm;
+    $hexNo = &getMsgNo;
+    $msg   = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $sChannel . "06" );
+    push @arr, $msg;
+
+  }
+  elsif ( $hmConfigDgram->{type} eq 'pairing' ) {
+
+    my ( $idstr, $s ) = ( $hmId, 0xA );
+    $idstr =~ s/(..)/sprintf("%02X%s",$s++,$1)/ge;
+
+    my $dChannel = "00";    # global config or channel-based?
+
+    # start config
+    my $tm    = &getTm;
+    my $hexNo = &getMsgNo;
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $dChannel . "05" . "00" . "00000000" );
+    push @arr, $msg;
+
+    # set id string
+    $tm    = &getTm;
+    $hexNo = &getMsgNo;
+    $msg   = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $dChannel . "08" . "02" . "01" . $idstr );
+    push @arr, $msg;
+
+    # end config
+    $tm    = &getTm;
+    $hexNo = &getMsgNo;
+    $msg   = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $dChannel . "06" );
+    push @arr, $msg;
+  }
+  elsif ( $hmConfigDgram->{type} eq 'factoryreset' ) {
+    my $tm    = &getTm;
+    my $hexNo = &getMsgNo;
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmConfigDgram->{target} . "04" . "00" );
+    push @arr, $msg;
+  }
+  elsif ( $hmConfigDgram->{type} eq 'unpair' ) {
+    my $tm       = &getTm;
+    my $hexNo    = &getMsgNo;
+    my $dChannel = sprintf( "%02d", $hmConfigDgram->{dChannel} );
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $dChannel . "08" . "02" . "01" . "0A000B000C00" );
+    push @arr, $msg;
+  }
+  elsif ( $hmConfigDgram->{type} eq 'signing-off' ) {
+    my $tm       = &getTm;
+    my $hexNo    = &getMsgNo;
+    my $dChannel = sprintf( "%02d", $hmConfigDgram->{dChannel} );
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $dChannel . "08" . "08" . "02" );
+    push @arr, $msg;
+  }
+  elsif ( $hmConfigDgram->{type} eq 'signing-on' ) {
+    my $tm       = &getTm;
+    my $hexNo    = &getMsgNo;
+    my $dChannel = sprintf( "%02d", $hmConfigDgram->{dChannel} );
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmConfigDgram->{target} . $dChannel . "08" . "08" . "01" );
+    push @arr, $msg;
+  }
+  return @arr;
+}
+
 sub decrypt {
   my ( $self, $dgram, $homematicDevicesByHmId, $homematicMIdToHap ) = @_;
   my @mParts = split( ',', $dgram );
   my $leadingChar = substr( $mParts[0], 0, 1 );
   my $hmLanStatus = substr( $mParts[1], 0, 4 );
 
-  # 0001=ack:seems to announce the new message counter
-  # 0002=message send done, no ack was requested
-  # 0008=nack - HMLAN did not receive an ACK,
-  # 0021= 'R'
-  # 0081=open
-  # 0100=with 'E', not 'R'.
-  # 0081=open
-  # 04xx=nothing will be sent anymore? try restart
+  # 00 01=ack:seems to announce the new message counter
+  # 00 02=message send done, no ack was requested
+  # 00 08=nack - HMLAN did not receive an ACK,
+  #    10-info
+  # 00 21-'R'
+  #    41-info
+  # 00 81=open
+  # 01 00=with 'E', not 'R'.
+  # 00 81=open
+  # 04 xx=nothing will be sent anymore? try restart
 
   if ( $leadingChar =~ m/^I/ ) {    # Message from HMLan
     return $dgram;
@@ -90,25 +190,31 @@ sub decrypt {
     my $mId         = substr( $mParts[0], 1,  8 );
     my $source      = substr( $mParts[5], 6,  6 );
     my $destination = substr( $mParts[5], 12, 6 );
-    my $flag = hex( substr( $mParts[5], 2, 2 ) );
-    my $messageNo   = substr( $mParts[5], 0, 2 );
-    my $messageType = substr( $mParts[5], 4, 2 );
+    my $messageNo   = substr( $mParts[5], 0,  2 );
+    my $flag        = substr( $mParts[5], 2,  2 );
+    my $messageType = substr( $mParts[5], 4,  2 );
     my $payload     = substr( $mParts[5], 18 );
 
-    # messageType 2 = AckStatus
+    # messageType 02 = AckStatus
     # messageType 10 = Info Level
     # messageType 41 = Event
-    
+
+    # flag: & 0x20 dann ACK required
+
     my $hmDgram = {
-      mId => $mId,
-      source => $source,
-      destination =>  $destination,
+      mId         => $mId,
+      source      => $source,
+      destination => $destination,
+      messageNo   => $messageNo,
+      flag        => $flag,
       messageType => $messageType,
-      channel => 0
+      mTypeText   => $mTypeToText{$messageType} || 'unknown',
+      channel     => 0,
+      payload     => $payload
     };
 
     if ( $hmLanStatus eq '0008' ) {    # no ack received -> timeout
-      return ($dgram, $hmDgram);
+      return ( $dgram, $hmDgram );
     }
 
     my $hapDgram = {
@@ -121,6 +227,7 @@ sub decrypt {
       v1          => 0,
       v2          => 0
     };
+
     $hapDgram->{vlan}        = &getVLAN($self);
     $hapDgram->{source}      = $homematicDevicesByHmId->{$source}->{module};
     $hapDgram->{destination} = ( $homematicMIdToHap->{$mId} || $self->{c}->{CCUAddress} );
@@ -131,66 +238,89 @@ sub decrypt {
     elsif ( $messageType eq "10" ) {    #Info Level
       $hapDgram->{mtype} = 9;
     }
+    if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} ) {
+      if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-Pl-2" ) {
+        if ( ( $messageType eq "02" && $payload =~ m/^01/ )
+          || ( $messageType eq "10" && $payload =~ m/^06/ ) )
+        {
+          if ( $payload =~ m/^(..)(..)(..)(..)/ ) {
+            my ( $subType, $chn, $level, $err ) = ( $1, hex($2), $3, hex($4) );
+            $hmDgram->{channel} = $chn;
+            my $value = hex($level) / 2;
+            $hapDgram->{v0}     = $value;
+            $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{ $hmDgram->{channel} }->{address};
+            return ( $hapDgram, $hmDgram );
 
-    if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-Pl-2" ) {
-      if ( ( $messageType eq "02" && $payload =~ m/^01/ )
-        || ( $messageType eq "10" && $payload =~ m/^06/ ) )
-      {
-        if ( $payload =~ m/^(..)(..)(..)(..)/ ) {
-          my ( $subType, $chn, $level, $err ) = ( $1, hex($2), $3, hex($4) );
-          $hmDgram->{channel} = $chn;
-          my $value = hex($level) / 2;
-          $hapDgram->{v0} = $value;
-        }
-      }
-    }
-    elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-SC" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-RHS" ) {
-      if ( $messageType eq "41" ) {
-        if ( $payload =~ m/^(..)(..)(..)/ ) {
-          my ( $chn, $cnt, $state ) = ( hex($1), $2, $3 );
-          $hmDgram->{channel} = $chn;
-          if ( $state eq "C8" ) {    # open
-            $hapDgram->{v0} = 200;
-          }
-          elsif ( $state eq "64" ) {    # tiled
-            $hapDgram->{v0} = 100;
-          }
-          elsif ( $state eq "00" ) {    # closed
-            $hapDgram->{v0} = 0;
           }
         }
       }
-    }
-    elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-PB-2-WM55" ) {    # wall mount push button 2 channel surface mount
-      if ( $messageType =~ m/^4./ && $payload =~ m/^(..)(..)$/ ) {
-        my ( $channel, $pushCount ) = ( hex($1), hex($2) );
-        $hmDgram->{channel} = ( $channel & 0x3F );
-        if ( defined($homematicDevicesByHmId->{$source}->{channels}->{$hmDgram->{channel}}) ) {          # filter channel
-              #print "Current push-counter: $pushCount, previous:" . $homematicDevicesByHmId->{$source}->{pushCounter} . "\n";
-              #$homematicDevicesByHmId->{$source}->{pushCounter} = $pushCount;
-          if ( ( $channel & 0x40 ) == 0x40 ) {
-            $hapDgram->{v0} = 140;
+      elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-SC" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-RHS" ) {
+        if ( $messageType eq "41" ) {
+          if ( $payload =~ m/^(..)(..)(..)/ ) {
+            my ( $chn, $cnt, $state ) = ( hex($1), $2, $3 );
+            $hmDgram->{channel} = $chn;
+            if ( $state eq "C8" ) {    # open
+              $hapDgram->{v0} = 200;
+            }
+            elsif ( $state eq "64" ) {    # tiled
+              $hapDgram->{v0} = 100;
+            }
+            elsif ( $state eq "00" ) {    # closed
+              $hapDgram->{v0} = 0;
+            }
+            $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{ $hmDgram->{channel} }->{address};
+            return ( $hapDgram, $hmDgram );
+
+          }
+        }
+      }
+      elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-PB-2-WM55" ) {    # wall mount push button 2 channel surface mount
+        if ( $messageType =~ m/^4./ && $payload =~ m/^(..)(..)$/ ) {
+          my ( $channel, $pushCount ) = ( hex($1), hex($2) );
+          $hmDgram->{channel} = ( $channel & 0x3F );
+          if ( defined( $homematicDevicesByHmId->{$source}->{channels}->{ $hmDgram->{channel} } ) ) {    # filter channel
+                #print "Current push-counter: $pushCount, previous:" . $homematicDevicesByHmId->{$source}->{pushCounter} . "\n";
+                #$homematicDevicesByHmId->{$source}->{pushCounter} = $pushCount;
+            if ( ( $channel & 0x40 ) == 0x40 ) {
+              $hapDgram->{v0} = 140;
+            }
+            else {
+              $hapDgram->{v0} = 132;
+            }    # simulate short button push on logical-input
+            $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{ $hmDgram->{channel} }->{address};
+            return ( $hapDgram, $hmDgram );
+
           }
           else {
-            $hapDgram->{v0} = 132;
-          }    # simulate short button push on logical-input
+            return ( $dgram, $hmDgram );    # device not configured with this channel - ignore
+          }
         }
-        else {
-          return ($dgram, $hmDgram);    # device not configured with this channel - ignore
+      }
+      elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-MDIR" ) {    # indoor motion detector
+        if ( $messageType eq "41" && $payload =~ m/^01(..)(..)(..)/ ) {
+          my ( $cnt, $brigthness, $nextTr ) = ( hex($1), hex($2), ( hex($3) >> 4 ) );           # useable?
+          $hapDgram->{v0}     = 132;
+          $hmDgram->{channel} = 1;
+          $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{ $hmDgram->{channel} }->{address};
+          return ( $hapDgram, $hmDgram );
         }
       }
     }
-    elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-MDIR" ) {    # indoor motion detector
-      if ( $messageType eq "41" && $payload =~ m/^01(..)(..)(..)/ ) {
-        my ( $cnt, $brigthness, $nextTr ) = ( hex($1), hex($2), ( hex($3) >> 4 ) ); # useable?
-        $hapDgram->{v0} = 132;
-        $hmDgram->{channel} = 1;
-      }
-    }
-    $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{$hmDgram->{channel}}->{address};
-    return ($hapDgram, $hmDgram);
+
+    # No device matched - not configured in hap or unkown message
+    return ( $dgram, $hmDgram );
   }
-  return ($dgram, {});
+  return ( $dgram, undef );
+}
+
+sub getTm {
+  return int( gettimeofday() * 1000 ) % 0xffffffff;
+}
+
+sub getMsgNo {
+  my ($self) = @_;
+  $self->{c}->{hmCmdNr} = $self->{c}->{hmCmdNr} ? ( $self->{c}->{hmCmdNr} + 1 ) % 256 : 1;
+  return uc( sprintf "%02x", $self->{c}->{hmCmdNr} );
 }
 
 1;

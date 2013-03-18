@@ -44,4 +44,5 @@ Homematic:
   HmLanIp: 192.168.165.49
   HmLanPort: 1000
   AESKey: '04D2C8AD053EFDD105AC9DC1EC773474'
+  HmVirtualId: 'ABCDEF'
 

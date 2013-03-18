@@ -271,7 +271,7 @@ while (1) {
 	if ( substr( $line, 0, 1 ) eq "e" || substr( $line, 0, 1 ) eq "q" ) { last; }
 	else {
 		my $parser = new HAP::Parser($cfg);
-		my ( $err, $obj ) = $parser->parse( $line, $sessionSource );
+		my ( $err, $obj, $hmConfigDgram ) = $parser->parse( $line, $sessionSource );
 		if ( $k == 63 && $err =~ /^\d+ .*/ ) {
 			print "\n" . &getHelp($err);
 			$line =~ s/\^63//;
