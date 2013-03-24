@@ -1,0 +1,12 @@
+Folgende Einstellungen sind nötig um ein LCD-Display mit HAP anzusteuern:
+
+Diese Devices müssen angelegt und die der Hardware enstsprechenden Portpins zugewiesen werden.
+
+LCD_D0, LCD_D1, LCD_D2, LCD_D3, LCD_E, LCD_RS, LCD_RW, LCD_Backlight (wenn vorhanden)
+
+Für den Encoder sind noch drei Logical Inputs nötig:
+
+LCD_A, LCD_B, LCD_KNOB
+
+IMHO ist noch ein Fehler in der GUI, wenn man bei der Konfiguration des Eingangs als Template "Rotary encoder Push Button" anwählt, wird bei den Options "Short Activation" vorbelegt.
+Richtig ist aber "Long Activation".
