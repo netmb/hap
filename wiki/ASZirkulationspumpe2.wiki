@@ -1,0 +1,21 @@
+#Bedarfsorientierte Warmwasser-Zirkulation
+
+= Ist =
+
+Die Warmwasser-Zirkulation erfolgt in einem bestimmten Zeitraum (Heizungs-Zeitprogramm) und wird durch einfaches ein-ausschalten in einem Intervall von 10min bereitgestellt. 
+
+= Soll =
+
+Die Warmwasser-Zirkulation soll bedarfsorientiert zur Verfügung gestellt werden. Dies bedeutet, dass bei einer Bewegungsdetektion bzw. Tür öffnen/schliessen die Warmwasserpumpe starten soll.
+
+Zudem soll die Pumpe nur so lange laufen, bis das Warmwasser in der Zirkulationsleitung einen bestimmten Wert erreicht hat.  Ebenso soll die Freigabe für die Pumpe erst erfolgen, wenn eine bestimmte Warmwassertemperatur in der Zirkulationsleitung unterschritten wurde.
+
+Weiterhin soll die Pumpe im Zeitraum von 23:00 bis 05:00 Uhr nicht anlaufen.
+
+= Lösung =
+
+Im Badezimmer wurde ein Homematic-Funk-Bewegungsmelder installiert. Im Gäste-WC wurde an der Tür ein Homematic-Funk-Reed-Kontakt installiert.  An der Zirkulationsleitung wurde in Pumpennähe ein Digitaler-Eingang mit einem Dallas-Temperatur-Sensor über HAP angebunden.
+
+Auf einer CU, welche über eine Relais-Stufe die Zirkulationspumpe steuert wurde folgende Autonome-Steuerung konfiguriert:
+
+[IMAGE]
