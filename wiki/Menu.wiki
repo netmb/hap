@@ -8,6 +8,13 @@
 
   [ErklaerungUpstreamModule Erklärung Upstream-Module / Upstream-Interface]
 
+  [ErstmaligeInbetriebnahmeCU Erstmalige Inbetriebnahme einer neuen Control-Unit]
+
+  [FunktionsweiseBootloader Funktionsweise des Bootloaders]
+
+  [ErklaerungCUServerCUCCU Erklärung CU, Server-CU und CCU]
+  
+
 * Hardware *
 
   [Jalousieaktor Jalousieaktor]
@@ -65,7 +72,16 @@
   [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
 
   [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
+  
+  [DirektesLogin Direktes Login in die Web-GUI ohne Passwort-Dialog]
 
+  [FirmwareUpload Firmware-Upload in die Config-GUI (Web-GUI)]
+
+  [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
+
+  [HAPScheduler Verwendung des HAP-Scheduler]
+
+  [DatenbankWartung Datenbank-Wartung]
 
 
 * Wiki *
