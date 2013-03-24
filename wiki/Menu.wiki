@@ -6,6 +6,8 @@
 
   [ErsteSchritte]
 
+  [ErklaerungUpstreamModule Erklärung Upstream-Module / Upstream-Interface]
+
 * Hardware *
 
   [Jalousieaktor Jalousieaktor]
@@ -57,6 +59,14 @@
   [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
 
   [BeschriftungsvorlageHutschiene Beschriftungsvorlage Hutschienengehäuse]
+
+  [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
+
+  [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
+
+  [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
+
+
 
 * Wiki *
 
