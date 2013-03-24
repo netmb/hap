@@ -1,7 +1,6 @@
 = Erstellung eines Backup =
 
-= <span class="Apple-style-span" style="font-size: 18px; font-weight: bold;">1. Erstellung des Backup &nbsp;</span>  =
-
+== 1. Erstellung des Backup ==
 <br>Die Sicherung der mysql-Datenbank erfolgt mit mysqldumb, wobei hap.sql die Zieldatei ist:<br> 
 {{{
 sudo mysqldump --databases hap -u root -p > hap.sql
@@ -10,8 +9,7 @@ Sofern noch die hochgeladenen Bilder gesichert werden sollen, können diese so a
 {{{
 sudo cp /opt/hap/var/static/images/*.* /media/.../images
 }}}
-=== 2. Re-Import eines Backup<br><br>  ===
-
+== 2. Re-Import eines Backup==
 Die gesicherte Datei hap.sql kann so mit mysql wieder auf dem neuen System importiert werden.<br> 
 {{{
  mysql < hap.sql -u root -p
