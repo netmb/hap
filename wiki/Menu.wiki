@@ -67,8 +67,6 @@
 
   [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
 
-  [BeschriftungsvorlageHutschiene Beschriftungsvorlage Hutschienengehäuse]
-
   [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
 
   [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
