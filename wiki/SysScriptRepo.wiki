@@ -14,3 +14,5 @@ Diese Sammlung enthält System-Scripts, die kleine Teilaufgaben übernehmen (z.B
   [EmailMessageOnMulticast E-Mail bei Multicast]
 
   [ServerscriptRollos Rollos nach Sonnenuntergang in Stellung Nacht fahren]
+
+  [BewegungsmelderBeleuchtungSonnenuntergang Bewegungsmelder für Beleuchtung nach Sonnenuntergang aktiv schalten]
