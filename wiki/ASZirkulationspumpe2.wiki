@@ -18,4 +18,16 @@ Im Badezimmer wurde ein Homematic-Funk-Bewegungsmelder installiert. Im Gäste-WC
 
 Auf einer CU, welche über eine Relais-Stufe die Zirkulationspumpe steuert wurde folgende Autonome-Steuerung konfiguriert:
 
-[IMAGE]
+http://hap.googlecode.com/svn/wiki/images/AS-Zirkulation2.png
+
+Der Bewegungsmelder senden einen Status 132 bei Detektion. Der Reed-Kontakt einen Status 0, wenn die Tür geschlossen wird. 
+
+Der digitale Eingang mit Dallas-Temperatursensor ist wie folgt konfiguriert:
+
+http://hap.googlecode.com/svn/wiki/images/Sensor-Zirkulation.png
+
+Bei Unterschreitung von XX Grad wird der Triggerstatus 64 abgesetzt, bei Überschreitung der Triggerstatus 193. Durch die Bitweise-Und-Verknüpfung wird das Flip-Flop "eingeschaltet", wenn der Triggerwert 64 (Unterschreitung) und eine Bewegung oder ein Tür-schliessen detektiert wurden.
+
+Ist der Triggerstatus 193 so wird das Flip-Flop zurückgesetzt . Zudem wird das Flip-Flop zurückgesetzt, wenn der Timer aktiv ist (zwischen 23:00 und 05:00 Uhr) bzw. das Flip-Flop am Ausgang für 5min aktiv war (Switch-on delay). 
+
+Somit wird verhindert, dass die Pumpe zum Dauerläufer wird, wenn die Trigger-Überschreitung nicht erfolgt (Warmwasser ist nicht warm genug).  
