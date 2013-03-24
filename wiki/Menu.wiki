@@ -6,7 +6,7 @@
 
   [Schema Schematische Darstellung]
 
-  [ErsteSchritte]
+  [ErsteSchritte Erste Schritte]
 
   [ErklaerungUpstreamModule Erklärung Upstream-Module / Upstream-Interface]
 
