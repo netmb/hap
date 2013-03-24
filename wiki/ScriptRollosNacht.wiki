@@ -1,20 +1,21 @@
 = Rollos nach Sonnenuntergang in Stellung Nacht fahren =
 
- == Ist ==
+== Ist ==
 
 Das Makro zum Schließen der Rollos des Ober- u. Dachgeschosses wird manuell gestartet.
- == Soll ==
+
+== Soll ==
 
 Die Rollos sollen automatisch zur berechneten Sonnenuntergangszeit geschlossen werden.
- == Lösung ==
- === Programm ===
+== Lösung ==
+=== Programm ===
 
 Das Programm rscalc2 aus dem Wetterstationsforum berechnet nach Längen- und Breitengrad des Wohnorts die Uhrzeit für den Sonnenuntergang des aktuellen Tages.
 Das Programm muss selber kompiliert werden und nach /opt/hap/var/scripts kopiert werden. Die Optionen für make stehen im Kopf der Sourcen.
 
 http://wetter.looplab.org/source/rscalc2.c
 
- === Konfiguration ===
+=== Konfiguration ===
 
 Cronjob anlegen der jeden Tag um 0 Uhr das Skript 'set_sunset_rollo_down' ausführt
 
@@ -22,7 +23,7 @@ Cronjob anlegen der jeden Tag um 0 Uhr das Skript 'set_sunset_rollo_down' ausfü
 crontab –e 0 0 * * * /opt/hap/var/scripts/set_sunset_rollo_down 
 }}}
 
- === Skript: set_sunset_rollo_down ===
+=== Skript: set_sunset_rollo_down ===
 
  
 {{{
