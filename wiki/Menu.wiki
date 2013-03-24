@@ -35,6 +35,7 @@
 
   [CAT5Belegung Belegung Cat5 (Vorschlag)]
 
+
 * Software *
 
   [ConfigGUI Config-GUI]
@@ -45,9 +46,8 @@
 
   [Console Console]
 
-* Konfiguration *
 
-  [ConfigBasic Grundlagen]
+* Konfiguration *
 
   [HAPScheduler Scheduler]
 
