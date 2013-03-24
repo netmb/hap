@@ -1,7 +1,3 @@
 = HAP-Wiki =
 
 Bitte wählen Sie einen Menüpunkt aus...
-
-Hier geht's zum alten HAP-Wik (Einträge werden sukzessive übernommen):
-
-http://wiki.netmb.net
