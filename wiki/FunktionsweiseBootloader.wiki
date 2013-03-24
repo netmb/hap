@@ -11,7 +11,7 @@ Vorab ein paar grundsätzliche Aussagen:
 
 == Funktionsweise eines Firmware-Transfers via CAN/Funk (über die Web-GUI)  ==
 
-Die aktuelle Firmware auf der Ziel-CU empfängt die Firmware-Datei über den CAN-Bus/Funk und transferiert diese in das exterene EEProm. Nach Beendigung des Transfers wird ein Flag in der CU gesetzt. Anschliessend wird die CU neu gestartet.
+Die aktuelle Firmware auf der Ziel-CU empfängt die Firmware-Datei über den CAN-Bus/Funk und transferiert diese in das externe EEProm. Nach Beendigung des Transfers wird ein Flag in der CU gesetzt. Anschliessend wird die CU neu gestartet.
 
 Der Bootloader sieht anhand des gesetzten Flags, dass eine neue Firmware-Version vorliegt und transferiert nun die Firmware-Daten aus dem externen EEProm in den Flash-Speicher des Atmel-Controllers.
 Nach Fertigstellung startet die CU mit der neuen Firmware.
