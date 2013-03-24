@@ -1,5 +1,3 @@
-#Homematic Einbindung
-
 = Einbindung von Homematic-Komponenten =
 
 Ab der SVN-Version (>= 276) ist es möglich, Homematic-Komponenten in das HAP-System einzubinden (ich habe mich hier am Code vom fhem-Projekt bedient :-)).
