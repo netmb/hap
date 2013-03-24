@@ -1,5 +1,7 @@
 * Grundlagen *
 
+  [Installation]
+
   [TecDoc Technische Dokumentation]
 
   [Schema Schematische Darstellung]
@@ -85,8 +87,6 @@
 
 
 * Wiki *
-
-  [Installation]
 
   [Subversion]
 
