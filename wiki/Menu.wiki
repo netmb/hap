@@ -22,6 +22,8 @@
 
   [ZCD Zero-Cross-Detection]
 
+  [CAT5Belegung Belegung Cat5 (Vorschlag)]
+
 * Software *
 
   [ConfigGUI Config-GUI]
@@ -47,6 +49,14 @@
   [HomematicKonfigBefehle Homematic Konfig Befehle]
 
   [Verzeichnisstruktur Verzeichnisstruktur]
+
+  [FusesLockbits Fuses und Lockbits]
+
+  [Debugging Debugging]
+
+  [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
+
+  [BeschriftungsvorlageHutschiene Beschriftungsvorlage Hutschienengehäuse]
 
 * Wiki *
 
