@@ -86,7 +86,7 @@
   [DatenbankWartung Datenbank-Wartung]
 
 
-* Wiki *
+* Sonstiges *
 
   [Subversion]
 
