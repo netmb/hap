@@ -12,3 +12,5 @@ Diese Sammlung enthält System-Scripts, die kleine Teilaufgaben übernehmen (z.B
   [BrowserStartnachBooten Browser-Start nach HAP]
 
   [EmailMessageOnMulticast E-Mail bei Multicast]
+
+  [ServerscriptRollos Rollos nach Sonnenuntergang in Stellung Nacht fahren]
