@@ -93,7 +93,3 @@
   [Backup]
 
   [SysScriptRepo System Scripts]
-
-  [Konfiguration]
-
-  [GUI]
