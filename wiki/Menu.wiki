@@ -45,6 +45,9 @@
   [Homematic Homematic-Einbindung]
 
   [HomematicKonfigBefehle Homematic Konfig Befehle]
+
+  [Verzeichnisstruktur Verzeichnisstruktur]
+
 * Wiki *
 
   [Installation]
