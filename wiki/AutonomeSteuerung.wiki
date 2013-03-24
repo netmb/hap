@@ -15,3 +15,5 @@
  [ASHeizstrahler Heizstrahler mit Einschaltbegrenzung]
 
  [ASZirkulationspumpe Zeit- und temperaturgesteuerte Warmwasser-Zirkulationspumpe]
+
+ [ASZirkulationspumpe2 Bedarfsorientierte Warmwasser-Zirkulation mit Homematic-Komponenten]
