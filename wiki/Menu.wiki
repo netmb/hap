@@ -79,8 +79,6 @@
 
   [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
 
-  [HAPScheduler Verwendung des HAP-Scheduler]
-
   [DatenbankWartung Datenbank-Wartung]
 
 
