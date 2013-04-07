@@ -31,7 +31,7 @@ HAP-5xDimmer-3.1:
 http://www.reichelt.de/?ACTION=20;AWKID=96183;PROVID=2084
 
 HAP-6xRelais-3.1: 
-http://www.reichelt.de/?ACTION=20;AWKID=96181;PROVID=2084
+https://secure.reichelt.de/index.html?;ACTION=20;AWKID=730469;PROVID=2084
 
 HAP-4xJalousieaktor-1.0:
 http://www.reichelt.de/?ACTION=20;AWKID=174350;PROVID=2084
