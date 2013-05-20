@@ -102,7 +102,8 @@ sub submit : Local {
 
 sub setUserPassword : Local {
   my ( $self, $c ) = @_;
-  my $rs = $c->model('hapModel::Users')->search( username => $c->user->id )->first;
+  $c->log->debug($c->user->id);
+  my $rs = $c->model('hapModel::Users')->search( id => $c->user->id )->first;
   $rs->update( { password => Digest::SHA::sha1_hex( $c->request->params->{password} ) } );
   $c->stash->{success} = "true";
   $c->forward('View::JSON');
