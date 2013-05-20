@@ -25,6 +25,7 @@ use Device::SerialPort;
 use POE::Component::Client::TCP;
 use Symbol qw(gensym);
 use Time::HiRes qw(gettimeofday);
+use Digest::MD5 qw(md5_hex);
 
 my $json = new JSON::XS;
 $json = $json->allow_unknown(1);
@@ -145,7 +146,9 @@ if ( $c->{Homematic}->{HmLanId} && length( $c->{Homematic}->{HmLanId} ) == 6 ) {
       my $s2000 = sprintf( "%02X", secSince2000() );
       $_[KERNEL]->post( 'main' => hmLanOut  => "A$c->{Homematic}->{HmLanId}" );
       $_[KERNEL]->post( 'main' => hmLanOut  => "C" );
-      $_[KERNEL]->post( 'main' => hmLanOut  => "Y01,01,$c->{Homematic}->{AESKey}" );
+      my $hmSecKey = '';
+      $hmSecKey = uc(md5_hex($c->{Homematic}->{HmSecKey})) if (defined($c->{Homematic}->{HmSecKey}) && length($c->{Homematic}->{HmSecKey}) > 0);
+      $_[KERNEL]->post( 'main' => hmLanOut  => "Y01,01,".$hmSecKey );
       $_[KERNEL]->post( 'main' => hmLanOut  => "Y02,00," );
       $_[KERNEL]->post( 'main' => hmLanOut  => "Y03,00," );
       $_[KERNEL]->post( 'main' => hmLanOut  => "Y03,00," );
@@ -329,8 +332,7 @@ sub serverCuIn {
   if ( !$c->{Crypto} ) {
     $data = $mroutine->decrypt( $data, $c->{CryptKey}, $c->{CryptOption} );    #$kernel->delay('serverCuOut'); # clear retransmit
   }
-  print &composeAnswer( "Serial in:", $data ) . "\n";
-
+  print &composeAnswer( "Serial in:", $data ) . "\n";  
   # Makro by datagram stuff
   my $mUid = buildHashFromMessagePart($data);
   if ( defined( $makroByDatagram{$mUid} ) ) {
@@ -754,7 +756,6 @@ sub tcpClientInput {
 
     }
     elsif ( $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} } ) {
-
       my $hmDeviceData = $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} };
       my ( $error, $hmDgram ) = $hmParser->parse( $dgram, $hmDeviceData );
       if ($error) {
@@ -962,6 +963,7 @@ sub checkValues {
 
 sub compareValues {
   my ( $hapValue, $dbStr ) = @_;
+  print "COMPARE: $hapValue to $dbStr\n";
   $dbStr =~ /([<>=]{0,2})(\d{1,3})/;
   my $op      = $1;
   my $dbValue = $2;
