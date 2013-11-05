@@ -3,7 +3,7 @@ Diese Anleitung soll die ersten Schritten vereinfachen.
 *Vorraussetzungen zur Nutzung:*
 
  * Windows PC mit AVR-Studio & WinAVR
- * Ubuntu 9.04
+ * Ubuntu
  * 1-2 aufgebaute Controller-Units (CU)
  * Hterm (Terminalsoftware) für Linux/Windows
  * USB oder RS232 Interface
@@ -57,7 +57,7 @@ HAP-GUI    :  http://192.xxx.xxx.xxx :8090/GUI
 
 ==2. Erstellung der Firmware (CU)==
 
-Vorab sollte man im HAPConfig über Tools->DownloadBootlader den Bootloader exportieren, um diesen auf die CU zu flashen. Die muss für jede CU einzeln gemacht werd. Dadurch wird automatisch eine UID im Bootloader eingesetzt und macht später die CU indentifizierbar. 
+Vorab sollte man im HAPConfig über Tools->DownloadBootlader den Bootloader exportieren, um diesen auf die CU zu flashen. Die muss für jede CU einzeln gemacht werden. Dadurch wird automatisch eine UID im Bootloader eingesetzt und macht später die CU indentifizierbar. 
 
 Die UID (6 Zeichen) selber steht im Bootloader bzw. im Namen:
 
