@@ -57,7 +57,7 @@ HAP-GUI    :  http://192.xxx.xxx.xxx :8090/GUI
 
 ==2. Erstellung der Firmware (CU)==
 
-Vorab sollte man im HAPConfig über Tools->DownloadBootlader den Bootloader exportieren, um diesen auf die CU zu flashen. Die muss für jede CU einzeln gemacht werden. Dadurch wird automatisch eine UID im Bootloader eingesetzt und macht später die CU indentifizierbar. 
+Vorab sollte man im HAPConfig über Tools->DownloadBootlader den Bootloader exportieren, um diesen auf die CU zu flashen. Dies muss für jede CU einzeln gemacht werden. Dadurch wird automatisch eine UID im Bootloader eingesetzt und macht später die CU indentifizierbar. 
 
 Die UID (6 Zeichen) selber steht im Bootloader bzw. im Namen:
 
@@ -66,7 +66,9 @@ HAPBootLoader-0F2C07.hex
 Das direkte Importieren des Projekts klappte bei mir leider nicht, daher:
 
 1. Erstellen eines neuen Projekts in AVR (MEGA32)
+
 2. import *.h & *.c & Makefile
+
 3. Anpassung der mv.h
 
 Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen für alle Controller-Units:
@@ -91,13 +93,20 @@ Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen fü
 	CAN muss deaktiviert werden, wenn ihr nur 1 x CU habt! (COHACB)!
 
 4. Kompilierung der Firmware in AVR-Studio  
+
 5. Fuses setzen siehe WIKI
 (SPIEN, BOOTSZ=1024, BODLEVEL=4V, BODEN, Ext HF 1k+ 4ms)
+
 6. CHIP ERASE 
+
 7. Programmierung des Bootloaders aus der HAPConfig
+
 8. Danach Programmierung der kompilierten Firmware ohne Chip-Erase
+
 9. Öffnen von Hterm mit 19200baud & Zeichen Dezimal
+
 10. Nach dem Anschalten sollte das Modul einen Zeitrequest senden
+
 {{{
 	Hterm: 	0 0 255 123 0 0 0 0     ( 0 = 000 in HTerm)
 }}}
