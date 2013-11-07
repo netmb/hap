@@ -4,3 +4,4 @@ Speziell für die Ansteuerung von Jalousien/Rollläden ist diese Ausgangsstufe v
 
 http://hap.googlecode.com/svn/wiki/images/jalousieaktor.jpg
 http://hap.googlecode.com/svn/wiki/images/jalousieaktor-platine.jpg
+http://hap.googlecode.com/svn/wiki/images/Jalousie_I.jpg
