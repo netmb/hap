@@ -1,6 +1,6 @@
 #summary One-sentence summary of this page.
 
-= HAP -  Was steckt dahinter =
+= HAP, was steckt dahinter... =
 
 WEB-GUI via linux-Server 
  * Einfache Konfiguration in HAPConfig
