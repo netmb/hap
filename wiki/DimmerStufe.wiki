@@ -4,3 +4,4 @@ Die Dimmerstufe verfügt über 5 Ausgangstufen,welche als klassische Phasenansch
 
 http://hap.googlecode.com/svn/wiki/images/dimmer.jpg
 http://hap.googlecode.com/svn/wiki/images/dimmer-brd.png
+http://hap.googlecode.com/svn/wiki/images/Dimmer_I.jpg
