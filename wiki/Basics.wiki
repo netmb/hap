@@ -20,3 +20,6 @@ Hardware
  * ZCD
  * LCD Einheit
  * Adapterplatinen für HUT-Schienengehäuse
+
+http://hap.googlecode.com/svn/wiki/images/GUI_I.jpg
+http://hap.googlecode.com/svn/wiki/images/CUb.jpg
