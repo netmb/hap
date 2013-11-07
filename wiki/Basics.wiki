@@ -2,14 +2,14 @@
 
 = HAP, was steckt dahinter... =
 
-WEB-GUI via linux-Server 
+*WEB-GUI via linux-Server* 
  * Einfache Konfiguration in HAPConfig
  *  Plattformunabhängig
  *  Anpassungsfähig je nach Umgebung
 
 http://hap.googlecode.com/svn/wiki/images/GUI_I.jpg
 
-Controller Units 
+*Controller Units* 
  * Konfiguration/Programmierung via HAPConfig
  * Eingeständige Funktionen auch ohne server
  * Ansteuerung/Auswertung von Aktuatoren
@@ -17,7 +17,7 @@ Controller Units
 http://hap.googlecode.com/svn/wiki/images/CUa.jpg
 http://hap.googlecode.com/svn/wiki/images/CUb.jpg
 
-Hardware 
+*Hardware* 
  * Controller units (Autonome Steuerung/Regelung, CAN/UART)
  * Relaiplatine
  * Jalousieaktor
