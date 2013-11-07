@@ -7,10 +7,15 @@ WEB-GUI via linux-Server
  *  Plattformunabhängig
  *  Anpassungsfähig je nach Umgebung
 
+http://hap.googlecode.com/svn/wiki/images/GUI_I.jpg
+
 Controller Units 
  * Konfiguration/Programmierung via HAPConfig
  * Eingeständige Funktionen auch ohne server
  * Ansteuerung/Auswertung von Aktuatoren
+
+http://hap.googlecode.com/svn/wiki/images/CUa.jpg
+http://hap.googlecode.com/svn/wiki/images/CUb.jpg
 
 Hardware 
  * Controller units (Autonome Steuerung/Regelung, CAN/UART)
@@ -21,5 +26,5 @@ Hardware
  * LCD Einheit
  * Adapterplatinen für HUT-Schienengehäuse
 
-http://hap.googlecode.com/svn/wiki/images/GUI_I.jpg
-http://hap.googlecode.com/svn/wiki/images/CUb.jpg
+
+http://hap.googlecode.com/svn/wiki/images/HUT-Adapter_I.jpg
