@@ -1,6 +1,6 @@
 * Grundlagen *
 
-  [HAP , was steckt dahinter]
+  [HAP was steckt dahinter]
 
   [Installation]
 
