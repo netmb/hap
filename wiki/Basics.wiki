@@ -1,0 +1,24 @@
+#summary One-sentence summary of this page.
+
+= HAP -  Was steckt dahinter =
+
+WEB-GUI via linux-Server 
+* Einfache Konfiguration in HAPConfig
+* Plattformunabhängig
+* Anpassungsfähig je nach Umgebung
+
+Controller Units 
+* Konfiguration/Programmierung via HAPConfig
+* Eingeständige Funktionen auch ohne server
+* Ansteuerung/Auswertung von Aktuatoren
+
+Hardware 
+* Controller units
+* * Autonome Steuerung/Regelung
+* * CAN/UART Kommunikation
+* Relaiplatine
+* Jalousieaktor
+* Dimmer (cut-on/off)
+* ZCD
+* LCD Einheit
+* Adapterplatinen für HUT-Schienengehäuse
