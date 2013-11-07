@@ -10,7 +10,7 @@ Diese Anleitung soll die ersten Schritten vereinfachen.
 
 ==1.  Installation von Ubuntu 12.04==
 
-In der Konsole mit sudo:
+In der Konsole mit sudo (siehe Installation im Detail):
 {{{
 sudo ./setup.sh
 }}}
