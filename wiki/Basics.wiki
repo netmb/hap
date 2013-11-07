@@ -15,7 +15,7 @@ http://hap.googlecode.com/svn/wiki/images/GUI_I.jpg
  * Ansteuerung/Auswertung von Aktuatoren
 
 http://hap.googlecode.com/svn/wiki/images/CUa.jpg
-http://hap.googlecode.com/svn/wiki/images/CUb.jpg
+http://hap.googlecode.com/svn/wiki/images/Cub.jpg
 
 *Hardware* 
  * Controller units (Autonome Steuerung/Regelung, CAN/UART)
@@ -27,4 +27,4 @@ http://hap.googlecode.com/svn/wiki/images/CUb.jpg
  * Adapterplatinen für HUT-Schienengehäuse
 
 
-http://hap.googlecode.com/svn/wiki/images/HUT-Adapter_I.jpg
+http://hap.googlecode.com/svn/wiki/images/HUT-Adapter_II.jpg
