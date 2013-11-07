@@ -187,6 +187,5 @@ http://hap.googlecode.com/svn/wiki/images/Beispiel-CCU.png
 =CU-EG Beispiel=
 http://hap.googlecode.com/svn/wiki/images/Beispiel-CU-EG.png
 
-
 =CU-OG Beispiel=
 http://hap.googlecode.com/svn/wiki/images/Beispiel-OG.png
