@@ -19,7 +19,7 @@ Für eine Hutschieneninstallation existiert eine Adapterplatine, welche alle Ans
 Das Hutschienengehäuse ist ein 6TE-Standardgehäuse, welches problemlos über die bekannten Distributoren bezogen werden kann.
 
 http://hap.googlecode.com/svn/wiki/images/cu3offen.jpg
-http://hap.googlecode.com/svn/wiki/images/CU a.jpg
+http://hap.googlecode.com/svn/wiki/images/CUa.jpg
 
 Alternativ gibt es dank Uwe Bleile nun auch eine "einsteigerfreundliche" Version, welche fast gänzlich ohne SMD-Bauteile auskommt und zudem auch noch einseitig ist, so dass man diese Version problemlos selber herstellen kann:
 
