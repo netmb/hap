@@ -3,10 +3,10 @@ Diese Anleitung soll die ersten Schritten vereinfachen.
 *Vorraussetzungen zur Nutzung:*
 
  * Windows PC mit AVR-Studio & WinAVR
- * Ubuntu
+ * Ubuntu Desktop oder Server mit HAP installiert
  * 1-2 aufgebaute Controller-Units (CU)
  * Hterm (Terminalsoftware) für Linux/Windows
- * USB oder RS232 Interface
+ * USB oder RS232 Interface zur CU
 
 ==1.  Installation von Ubuntu 12.04==
 
@@ -57,13 +57,13 @@ HAP-GUI    :  http://192.xxx.xxx.xxx :8090/GUI
 
 ==2. Erstellung der Firmware (CU)==
 
-Vorab sollte man im HAPConfig über Tools->DownloadBootlader den Bootloader exportieren, um diesen auf die CU zu flashen. Dies muss für jede CU einzeln gemacht werden. Dadurch wird automatisch eine UID im Bootloader eingesetzt und macht später die CU indentifizierbar. 
+Vorab sollte man im HAPConfig über Tools->DownloadBootlader einen Bootloader pro CU exportieren, um diesen dann auf die CU zu flashen. Dies muss für jede CU einzeln erfolgen um eine eindeutige UID zu haben. 
 
 Die UID (6 Zeichen) selber steht im Bootloader bzw. im Namen:
 
 HAPBootLoader-0F2C07.hex
 	
-Das direkte Importieren des Projekts klappte bei mir leider nicht, daher:
+Das direkte Importieren des Projekts klappte bei mir leider nicht in AVR, daher halfen folgende Schritte:
 
 1. Erstellen eines neuen Projekts in AVR (MEGA32)
 
@@ -71,7 +71,7 @@ Das direkte Importieren des Projekts klappte bei mir leider nicht, daher:
 
 3. Anpassung der mv.h
 
-Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen für alle Controller-Units:
+Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen für alle Controller-Units zum ersten Testen:
 {{{
 #define COHAES                    // EEPROM-Support                  (Bit  0 -  0)
 // #define COHAER                // Externer Reset                      (Bit  1 -  1)
@@ -90,22 +90,22 @@ Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen fü
 // #define COHAGUI             // Bedienoberfl‰che                  (Bit 16 - 16)
  #define COHAAS                 // Autonome Steuerung               (Bit 17 - 17)
  }}}
-	CAN muss deaktiviert werden, wenn ihr nur 1 x CU habt! (COHACB)!
+	*CAN muss deaktiviert werden, wenn ihr nur 1 x CU habt! (COHACB)!*
 
 4. Kompilierung der Firmware in AVR-Studio  
 
-5. Fuses setzen siehe WIKI
+5. Fußes des Atmen setzen siehe WIKI
 (SPIEN, BOOTSZ=1024, BODLEVEL=4V, BODEN, Ext HF 1k+ 4ms)
 
 6. CHIP ERASE 
 
 7. Programmierung des Bootloaders aus der HAPConfig
 
-8. Danach Programmierung der kompilierten Firmware ohne Chip-Erase
+8. Danach Programmierung der kompilierten Firmware _ohne Chip-Erase_ (sonst ist der Bootloader wieder weg)
 
 9. Öffnen von Hterm mit 19200baud & Zeichen Dezimal
 
-10. Nach dem Anschalten sollte das Modul einen Zeitrequest senden
+10. Nach dem Anschalten der CU sollte das Modul einen Zeitrequest senden und in HTerm erscheinen
 
 {{{
 	Hterm: 	0 0 255 123 0 0 0 0     ( 0 = 000 in HTerm)
@@ -117,7 +117,7 @@ Die Mindestanforderungen könnt ihr im Wiki finden. Hier meine Einstellungen fü
 Jede CU-Platine hat eine Moduladresse bzw. eine UID. Die UID selber wird beim exportieren des Bootloaders aus der HAPConfig erstellt und muss für jede Platine einzeln generiert werden. Die Moduladresse ist jedoch frei wählbar von 0-239 und jede CU sollte eine eigene pro VLAN haben.
 Die UID selber muss man dann neben der Programmierung durch den Bootloader auch noch einmal für jedes Modul (CU-Platine) in die HAPConfig per Hand eintragen werden. Ebenso muss man die selbst zugewiesene Moduladresse eintragen. 
 
-Um HTERM unter Ubuntu zu nutzen bitte HAP in der Konsole erst stoppen damit die Schnittstelle frei ist:
+Um HTERM unter Ubuntu (wo auch HAP installiert ist) zu nutzen muss HAP in der Konsole erst gestoppt werden, damit die Schnittstelle frei ist:
 {{{
 cd /etc/init.d/
 sudo ./hap-mp stop
@@ -146,6 +146,7 @@ Startmodus      			                 0 0 Modul 76   4   217  0   0
 EE_Konfig speichern				0 0 Modul 76   8    0     0   0
 Reset	(full) 						0 0 Modul 76   2    0     0   0
 }}}
+
 Der Startmodus, um die neue Konfiguration zu laden muss 217 sein. Brigdemode müssen die Platinen haben, die Daten durchleiten sollen (z.B. CU-EG) Die CCU-Moduladresse ist für alle CU in meinem Fall 99 siehe Kapitel 4. 
 
 Parallel ist es ebenfalls möglich mit Hilfe der UID & des MagicPaket die Moduladresse zu setzen, sofern man mehr als eine neue CU angeschlossen hat.
