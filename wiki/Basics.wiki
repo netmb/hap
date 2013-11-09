@@ -28,6 +28,6 @@ http://hap.googlecode.com/svn/wiki/images/Cub.jpg
 
 
 http://hap.googlecode.com/svn/wiki/images/HUT-Adapter_II.jpg
-http://hap.googlecode.com/svn/wiki/images/Relai_II.jpg
 http://hap.googlecode.com/svn/wiki/images/Dimmer_II.jpg
+http://hap.googlecode.com/svn/wiki/images/Relai_II.jpg
 http://hap.googlecode.com/svn/wiki/images/Jalousie_II.jpg
