@@ -5,7 +5,7 @@
 *WEB-GUI via linux-Server* 
  * Einfache Konfiguration in HAPConfig
  *  Plattformunabhängig
- *  Anpassungsfähig je nach Umgebung
+ *  Anpassungsfähig je nach Umgebung (Mobile, Tablet, Desktop)
 
 http://hap.googlecode.com/svn/wiki/images/GUI_I.jpg
 
@@ -28,3 +28,6 @@ http://hap.googlecode.com/svn/wiki/images/Cub.jpg
 
 
 http://hap.googlecode.com/svn/wiki/images/HUT-Adapter_II.jpg
+http://hap.googlecode.com/svn/wiki/images/Relai_II.jpg
+http://hap.googlecode.com/svn/wiki/images/Dimmer_II.jpg
+http://hap.googlecode.com/svn/wiki/images/Jalousie_II.jpg
