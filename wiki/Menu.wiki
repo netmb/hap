@@ -36,7 +36,8 @@
 
   [CAT5Belegung Belegung Cat5 (Vorschlag)]
 
-
+  [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
+ 
 * Software *
 
   [ConfigGUI Config-GUI]
@@ -53,9 +54,7 @@
 
   [FusesLockbits Fuses und Lockbits]
 
-  [AutonomeSteuerung Autonome Steuerung]
-
-  [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
+* Konfiguration  LCD-Modul *
 
   [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
 
@@ -63,9 +62,11 @@
 
   [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
 
-  [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
- 
 * Konfiguration  HapConfig&GUI *
+
+  [AutonomeSteuerung Autonome Steuerung für Autoren wie Dimmer, Jalousie, ...]
+
+  [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
 
   [HAPScheduler Scheduler]
 
