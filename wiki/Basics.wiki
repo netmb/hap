@@ -6,6 +6,7 @@
  * Einfache GUI-Konfiguration in HAPConfig
  * Plattformunabhängig
  * Anpassungsfähig je nach Umgebung (Mobile, Tablet, Desktop)
+ * Integration on Webinhalten/Videostreams
 
 http://hap.googlecode.com/svn/wiki/images/GUIII.png
 
