@@ -2,11 +2,11 @@
 
   [Basics HAP, was steckt dahinter]
 
-  [Installation]
-
   [TecDoc Technische Dokumentation]
 
   [Schema Schematische Darstellung]
+
+  [Installation]
 
   [ErsteSchritte Erste Schritte]
 
@@ -18,7 +18,6 @@
 
   [ErklaerungCUServerCUCCU Erklärung CU, Server-CU und CCU]
   
-
 * Hardware *
 
   [Jalousieaktor Jalousieaktor]
@@ -48,24 +47,13 @@
 
   [Console Console]
 
-
-* Konfiguration *
-
-  [HAPScheduler Scheduler]
-
-  [AutonomeSteuerung Autonome Steuerung]
-
-  [Scripting Makros]
-
-  [Homematic Homematic-Einbindung]
-
-  [HomematicKonfigBefehle Homematic Konfig Befehle]
-
   [Verzeichnisstruktur Verzeichnisstruktur]
+
+* Konfiguration  CU*
 
   [FusesLockbits Fuses und Lockbits]
 
-  [Debugging Debugging]
+  [AutonomeSteuerung Autonome Steuerung]
 
   [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
 
@@ -74,15 +62,30 @@
   [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
 
   [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
-  
+
+  [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
+ 
+* Konfiguration  HapConfig/GUI*
+
+  [HAPScheduler Scheduler]
+
+  [Scripting Makros]
+
   [DirektesLogin Direktes Login in die Web-GUI ohne Passwort-Dialog]
 
   [FirmwareUpload Firmware-Upload in die Config-GUI (Web-GUI)]
 
-  [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
+  [Debugging Debugging]
 
   [DatenbankWartung Datenbank-Wartung]
 
+   [GUIContainer GUI Web/Streamintegration] 
+
+* Konfiguration Homematic * 
+
+  [Homematic Homematic-Einbindung]
+
+  [HomematicKonfigBefehle Homematic Konfig Befehle]
 
 * Sonstiges *
 
