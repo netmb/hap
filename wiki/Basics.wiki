@@ -7,7 +7,7 @@
  *  Plattformunabhängig
  *  Anpassungsfähig je nach Umgebung (Mobile, Tablet, Desktop)
 
-http://hap.googlecode.com/svn/wiki/images/GUI_I.jpg
+http://hap.googlecode.com/svn/wiki/images/GUIII.jpg
 
 *Controller Units* 
  * Konfiguration/Programmierung via HAPConfig
