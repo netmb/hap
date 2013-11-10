@@ -1,0 +1,25 @@
+Also neue Funktion in HAP gibt es jetzt einen Container, der es ermöglicht, weitere HTML Inhalte innerhalb der HAP Weboberfläche zu integrieren.
+
+Damit können bspw. Videostreams oder ansonsten nicht in HAP verfügbare Daten wie Uhrzeit oder Wetter eingebunden werden.
+
+*Bespiele:*
+
+= Integration eines Videostreams innerhalb der Oberfläche =
+
+* Zunächst muss über den Object Explorer das Symbol "Container" in die GUI gewegt werden.
+* Inner-HTML ist der eigentlich Ort zum einfügen des HTML Codes.
+
+{{{
+<p>Video stream IP-front cam</p>
+<embed height="240" width="320"
+flashvars="height=240&width=320&file=http://192.168.xx.xx/video.mjpg&searchbar=false&showicons=false"                 
+allowfullscreen="true" allowscriptaccess="always"
+src="http://192.168.xx.xx/video.mjpg"></embed>                     
+</body></html>
+}}}
+
+= Integration Uhrzeit =
+
+
+
+= Integration Wettter =
