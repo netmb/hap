@@ -49,7 +49,7 @@
 
   [Verzeichnisstruktur Verzeichnisstruktur]
 
-* Konfiguration  CU*
+* Konfiguration  CU *
 
   [FusesLockbits Fuses und Lockbits]
 
@@ -65,7 +65,7 @@
 
   [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
  
-* Konfiguration  HapConfig & GUI *
+* Konfiguration  HapConfig&GUI *
 
   [HAPScheduler Scheduler]
 
