@@ -66,8 +66,6 @@
 
   [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
 
-  [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
-
   [HAPScheduler Scheduler]
 
   [Scripting Makros]
@@ -80,7 +78,9 @@
 
   [DatenbankWartung Datenbank-Wartung]
 
-   [GUIContainer HTML & Stream-integration] 
+  [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
+
+  [GUIContainer HTML & Stream-integration] 
 
 * Konfiguration Homematic * 
 
