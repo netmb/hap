@@ -20,7 +20,7 @@ src="http://192.168.xx.xx/video.mjpg"></embed>
 
 = Integration Uhrzeit =
 
-
+JAVA scheint aber noch nicht zu funktionieren...
 
 = Integration Wettter =
 
@@ -28,4 +28,4 @@ Sofern die HAP Oberfläche im Flur auf nem Tablett läuft, will man es meistens 
 
 Einfache HTML Generierung findet man bspw. unter http://www.wetter.com/apps_und_mehr/website/wetterbutton/.
 
-Den zugesanten Inhalt einfach ein Inner-HTML kopieren und fertig.
+JAVA scheint aber noch nicht zu funktionieren...
