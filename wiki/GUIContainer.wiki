@@ -1,6 +1,6 @@
 Also neue Funktion in HAP gibt es jetzt einen Container, der es ermöglicht, weitere HTML Inhalte innerhalb der HAP Weboberfläche zu integrieren.
 
-Damit können bspw. Videostreams oder ansonsten nicht in HAP verfügbare Daten wie Uhrzeit oder Wetter eingebunden werden.
+Damit können bspw. Videostreams oder ansonsten nicht in HAP verfügbare Daten vom Server eingebunden werden. Parallel sind noch Uhrzeit oder Wetter interessant aber JAVA schein noch nicht zu klappen.
 
 *Bespiele:*
 
