@@ -64,7 +64,7 @@
 
 * Konfiguration  HapConfig&GUI *
 
-  [AutonomeSteuerung Autonome Steuerung für Autoren wie Dimmer, Jalousie, ...]
+  [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
 
   [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
 
