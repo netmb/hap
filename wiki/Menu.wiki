@@ -54,15 +54,7 @@
 
   [FusesLockbits Fuses und Lockbits]
 
-* Konfiguration  LCD-Modul *
-
-  [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
-
-  [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
-
-  [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
-
-* Konfiguration  HapConfig&GUI *
+* Konfiguration  HapConfig*
 
   [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
 
@@ -87,6 +79,14 @@
   [Homematic Homematic-Einbindung]
 
   [HomematicKonfigBefehle Homematic Konfig Befehle]
+
+* Konfiguration  LCD-Modul *
+
+  [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
+
+  [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
+
+  [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
 
 * Sonstiges *
 
