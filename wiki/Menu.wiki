@@ -10,9 +10,9 @@
 
   [ErsteSchritte Erste Schritte (Server & CU) ]
 
-  [ErklaerungUpstreamModule Erklärung Upstream-Module / Upstream-Interface]
-
   [ErstmaligeInbetriebnahmeCU Erstmalige Inbetriebnahme einer neuen Control-Unit]
+
+  [ErklaerungUpstreamModule Erklärung Upstream-Module / Upstream-Interface]
 
   [FunktionsweiseBootloader Funktionsweise des Bootloaders]
 
