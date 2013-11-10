@@ -8,7 +8,7 @@
 
   [Installation Installation HAP auf dem Server]
 
-  [ErsteSchritte Erste Schritte]
+  [ErsteSchritte Erste Schritte (Server & CU) ]
 
   [ErklaerungUpstreamModule Erklärung Upstream-Module / Upstream-Interface]
 
