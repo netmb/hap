@@ -65,7 +65,7 @@
 
   [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
  
-* Konfiguration  HapConfig/GUI*
+* Konfiguration  HapConfig & GUI *
 
   [HAPScheduler Scheduler]
 
@@ -79,7 +79,7 @@
 
   [DatenbankWartung Datenbank-Wartung]
 
-   [GUIContainer GUI Web/Streamintegration] 
+   [GUIContainer HTML & Stream-integration] 
 
 * Konfiguration Homematic * 
 
