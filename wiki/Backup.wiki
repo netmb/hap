@@ -19,3 +19,5 @@ Die gespeicherten Bilder können über die HAP-Oberfläche oder so direkt import
 sudo cp /media/.../images/*.* /opt/hap/var/static/images/
 sudo chown -R hap:hap /opt/hap 
 }}}
+
+Browser Cache solle noch geleert werden, um alle Neuerungen in Bildern korrekt darzustellen.
