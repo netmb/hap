@@ -3,15 +3,15 @@
 = HAP, was steckt dahinter... =
 
 *WEB-GUI via linux-Server* 
- * Einfache Konfiguration in HAPConfig
- *  Plattformunabhängig
- *  Anpassungsfähig je nach Umgebung (Mobile, Tablet, Desktop)
+ * Einfache GUI-Konfiguration in HAPConfig
+ * Plattformunabhängig
+ * Anpassungsfähig je nach Umgebung (Mobile, Tablet, Desktop)
 
 http://hap.googlecode.com/svn/wiki/images/GUIII.png
 
 *Controller Units* 
- * Konfiguration/Programmierung via HAPConfig
- * Eingeständige Funktionen auch ohne server
+ * Konfiguration/Programmierung der Hardware via HAPConfig
+ * CU Funktionen autonom (auch ohne server) 
  * Ansteuerung/Auswertung von Aktuatoren
 
 http://hap.googlecode.com/svn/wiki/images/CUa.jpg
@@ -23,9 +23,8 @@ http://hap.googlecode.com/svn/wiki/images/Cub.jpg
  * Jalousieaktor
  * Dimmer (cut-on/off)
  * ZCD
- * LCD Einheit
+ * LCD Einheit & Drehknopfeingabe
  * Adapterplatinen für HUT-Schienengehäuse
-
 
 http://hap.googlecode.com/svn/wiki/images/HUT-Adapter_II.jpg
 http://hap.googlecode.com/svn/wiki/images/Dimmer_II.jpg
