@@ -48,6 +48,8 @@
         </script>
         <script type="text/javascript" src='/static/js/hap/gui/ValueLayer.js'>
         </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Container.js'>
+        </script>
         <script type="text/javascript" src='/static/js/hap/gui/Chart.js'>
         </script>
         <script type="text/javascript" src='/static/js/hap/gui/Chart5.js'>
