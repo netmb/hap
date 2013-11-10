@@ -4,7 +4,7 @@ Damit können bspw. Videostreams oder ansonsten nicht in HAP verfügbare Daten w
 
 *Bespiele:*
 
-= Integration eines Videostreams innerhalb der Oberfläche =
+= Integration eines Videostreams=
 
 * Zunächst muss über den Object Explorer das Symbol "Container" in die GUI gewegt werden.
 * Inner-HTML ist der eigentlich Ort zum einfügen des HTML Codes.
@@ -24,8 +24,8 @@ src="http://192.168.xx.xx/video.mjpg"></embed>
 
 = Integration Wettter =
 
-Sofern die HAP Oberfläche im Flur auf nem Tablett läuft, will man es meisten für mehr nutzen und so kann auch einfach das aktuelle Wetter eingebunden werden. 
+Sofern die HAP Oberfläche im Flur auf nem Tablett läuft, will man es meistens für mehr nutzen und so kann auch einfach bspw. das aktuelle Wetter eingebunden werden. 
 
-Einfache Widget zum erstellen findet man bspw. unter http://www.wetter.com/apps_und_mehr/website/wetterbutton/.
+Einfache HTML Generierung findet man bspw. unter http://www.wetter.com/apps_und_mehr/website/wetterbutton/.
 
 Den zugesanten Inhalt einfach ein Inner-HTML kopieren und fertig.
