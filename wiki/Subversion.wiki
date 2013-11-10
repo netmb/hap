@@ -92,3 +92,5 @@ sudo ./hap-scheduler start
 sudo ./hap-configserver start
 sudo ./hap-mp start
 }}}
+
+Browser Cache solle noch geleert werden, um alle Neuerungen korrekt darzustellen.
