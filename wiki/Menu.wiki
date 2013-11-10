@@ -54,7 +54,7 @@
 
   [FusesLockbits Fuses und Lockbits]
 
-* Konfiguration  HapConfig*
+* Konfiguration  HapConfig *
 
   [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
 
