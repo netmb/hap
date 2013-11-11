@@ -39,20 +39,19 @@ t=setTimeout(function(){readTime()},500);
 
 function checkdigit(i)
 {
-if (i<10)
-  {
-    i="0" + i;
-      }
-      return i;
-      }
-      </script>
-      </head>
+	if (i<10)
+  	{
+	i="0" + i;
+	}
+	return i;
+}
+</script>
+</head>
 
-      <body onload="readTime()">
-      <div id="txt"></div>
-      </body>
-      </html>
-
+<body onload="readTime()">
+<div id="txt"></div>
+</body>
+</html>
 }}}
 JAVA scheint aber noch nicht zu funktionieren...
 
