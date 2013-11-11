@@ -25,34 +25,34 @@ src="http://192.168.xx.xx/video.mjpg"></embed>
 <html>
 <head>
 <script>
-function readtime()
+function readTime()
 {
-	var now=new Date();
-	var h=now.getHours();
-	var m=now.getMinutes();
-	var s=now.getSeconds();
-	m=checkdigit(m);
-	s= checkdigit(s);
-	document.getElementById('txt').innerHTML=h+":"+m+":"+s;
-	t=setTimeout(function(){readtime()},500);
+var timenow=new Date();
+var h=timenow.getHours();
+var m=timenow.getMinutes();
+var s=timenow.getSeconds();
+m=checkdigit(m);
+s=checkdigit(s);
+document.getElementById('txt').innerHTML=h+":"+m+":"+s;
+t=setTimeout(function(){readTime()},500);
 }
 
 function checkdigit(i)
 {
-	if (i<10)
-  	{
-  		i="0" + i;
-  	}
-	return i;
-}
-</script>
-</head>
+if (i<10)
+  {
+    i="0" + i;
+      }
+      return i;
+      }
+      </script>
+      </head>
 
-<body onload=„readtime()">
-<div id="txt"></div>
-</body>
+      <body onload="readTime()">
+      <div id="txt"></div>
+      </body>
+      </html>
 
-</html>
 }}}
 JAVA scheint aber noch nicht zu funktionieren...
 
