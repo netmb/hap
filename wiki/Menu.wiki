@@ -49,7 +49,7 @@
   * [Homematic Homematic-Einbindung]
   * [HomematicKonfigBefehle Homematic Konfig Befehle]
 
- * Konfiguration LCD-Modul
+ * Konfiguration_LCD-Modul
   * [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
   * [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
   * [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
