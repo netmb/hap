@@ -1,6 +1,5 @@
-<wiki:toc max_depth="2" />
 
-* Wiki
+* HAP-Wiki
  * Grundlagen
   * [Basics HAP, was steckt dahinter]
   * [TecDoc Technische Dokumentation]
@@ -27,9 +26,9 @@
   * [Backend Backend]
   * [Console Console]
   * [Verzeichnisstruktur]
- * KonfigurationCU-Unit
+ * Konfiguration CU-Unit
   * [FusesLockbits Fuses und Lockbits]
- * KonfigurationHAPConfigSW
+ * Konfiguration HAPConfig SW
   * [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
   * [HAPScheduler Scheduler]
   * [Scripting Makros]
