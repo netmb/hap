@@ -1,4 +1,4 @@
-  * HAP-Wiki
+  * *HAP-Wiki*
   * Grundlagen
    * [Basics HAP, was steckt dahinter]
    * [TecDoc Technische Dokumentation]
