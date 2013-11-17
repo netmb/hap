@@ -3,12 +3,13 @@
   * [Basics HAP, was steckt dahinter]
   * [TecDoc Technische Dokumentation]
   * [Schema Schematische Darstellung]
-  * [Installation Installation HAP auf dem Server]
-  * [ErsteSchritte Erste Schritte (Server & CU) ]
-  * [ErstmaligeInbetriebnahmeCU Erstmalige Inbetriebnahme einer neuen Control-Unit]
   * [ErklaerungUpstreamModule Erklärung Upstream-Module / Upstream-Interface]
   * [FunktionsweiseBootloader Funktionsweise des Bootloaders]
   * [ErklaerungCUServerCUCCU Erklärung CU, Server-CU und CCU]
+ * Installation
+  * [Installation Installation HAP auf dem Server]
+  * [ErsteSchritte Erste Schritte (Server & CU) ]
+  * [ErstmaligeInbetriebnahmeCU Erstmalige Inbetriebnahme einer neuen Control-Unit]
  * Hardware
   * [Jalousieaktor Jalousieaktor]
   * [ControlUnit Control Unit]
