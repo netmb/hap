@@ -27,7 +27,7 @@
   * [Verzeichnisstruktur]
  * KonfigurationCU-Unit
   * [FusesLockbits Fuses und Lockbits]
- * Konfiguration HAPConfig SW
+ * KonfigurationHAPConfigSW
   * [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
   * [HAPScheduler Scheduler]
   * [Scripting Makros]
