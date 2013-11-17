@@ -1,3 +1,5 @@
+<wiki:toc max_depth="2" />
+
 * Wiki
  * Grundlagen
   * [Basics HAP, was steckt dahinter]
