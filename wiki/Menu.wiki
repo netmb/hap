@@ -29,12 +29,12 @@
   * [WebGUI Web-GUI]
   * [Backend Backend]
   * [Console Console]
-  * [Verzeichnisstruktur Verzeichnisstruktur]
+  * [Verzeichnisstruktur]
 
- * Konfiguration CU
+ * Konfiguration_CU
   * [FusesLockbits Fuses und Lockbits]
 
- * Konfiguration HapConfig
+ * Konfiguration_HapConfig
   * [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
   * [HAPScheduler Scheduler]
   * [Scripting Makros]
@@ -45,11 +45,11 @@
   * [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
   * [GUIContainer HTML & Stream-integration] 
 
- * Konfiguration Homematic 
+ * Konfiguration_Homematic 
   * [Homematic Homematic-Einbindung]
   * [HomematicKonfigBefehle Homematic Konfig Befehle]
 
- *Konfiguration LCD-Modul
+ * Konfiguration LCD-Modul
   * [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
   * [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
   * [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
