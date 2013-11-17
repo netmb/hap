@@ -1,5 +1,4 @@
-
-*[Grundlagen]
+* Grundlagen
  * [Basics HAP, was steckt dahinter]
  * [TecDoc Technische Dokumentation]
  * [Schema Schematische Darstellung]
@@ -10,7 +9,7 @@
  * [FunktionsweiseBootloader Funktionsweise des Bootloaders]
  * [ErklaerungCUServerCUCCU Erklärung CU, Server-CU und CCU]
   
-*[Hardware]
+* Hardware
  * [Jalousieaktor Jalousieaktor]
  * [ControlUnit Control Unit]
  * [RelaisStufe Relaisstufe]
@@ -21,17 +20,17 @@
  * [CAT5Belegung Belegung Cat5 (Vorschlag)]
  * [SystembewegungsmelderJung Systembewegungsmelder von Jung mit HAP einsetzen]
  
-*[Software]
+* Software
  * [ConfigGUI Config-GUI]
  * [WebGUI Web-GUI]
  * [Backend Backend]
  * [Console Console]
  * [Verzeichnisstruktur Verzeichnisstruktur]
 
-*[Konfiguration  CU]
+* Konfiguration  CU
  * [FusesLockbits Fuses und Lockbits]
 
-*[Konfiguration  HapConfig]
+* Konfiguration  HapConfig
  * [AutonomeSteuerung Autonome Steuerung für Aktoren (Dimmer, Jalousie, Reed, ...]
  * [HAPScheduler Scheduler]
  * [Scripting Makros]
@@ -42,16 +41,16 @@
  * [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
  * [GUIContainer HTML & Stream-integration] 
 
-*[Konfiguration Homematic]* 
+* Konfiguration Homematic 
  * [Homematic Homematic-Einbindung]
  * [HomematicKonfigBefehle Homematic Konfig Befehle]
 
- *[Konfiguration  LCD-Modul]* 
+*Konfiguration  LCD-Modul
  * [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
  * [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
  * [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
 
-*[Sonstiges]*
+* Sonstiges
  * [Subversion]
  * [Backup Backup erstellen ]
  * [SysScriptRepo System Scripts]
