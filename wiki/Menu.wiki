@@ -1,7 +1,6 @@
 #summary WIKI
-<wiki:toc max_depth="1" />
 
-* WIKI
+* Wiki
  * Grundlagen
   * [Basics HAP, was steckt dahinter]
   * [TecDoc Technische Dokumentation]
