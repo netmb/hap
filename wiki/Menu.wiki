@@ -38,7 +38,7 @@
    * [DatenbankWartung Datenbank-Wartung] 
    * [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
    * [GUIContainer HTML & Stream-integration]
-  * Konfiguration Homematic
+  * Konfiguration Homematic Interface
    * [Homematic Homematic-Einbindung]
    * [HomematicKonfigBefehle Homematic Konfig Befehle]
   * Konfiguration LCD-Modul
