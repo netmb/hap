@@ -1,5 +1,5 @@
   * *HAP-Wiki*
-  * Grundlagen
+  * HAP Grundlagen
    * [Basics HAP, was steckt dahinter]
    * [TecDoc Technische Dokumentation]
    * [Schema Schematische Darstellung]
