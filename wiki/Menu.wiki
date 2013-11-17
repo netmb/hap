@@ -1,4 +1,3 @@
-
 * HAP-Wiki
  * Grundlagen
   * [Basics HAP, was steckt dahinter]
@@ -37,11 +36,11 @@
   * [Debugging Debugging]
   * [DatenbankWartung Datenbank-Wartung]
   * [UmrechnungsformelDallas Umrechungsformel Dallas DS18S20]
-  * [GUIContainer HTML & Stream-integration] 
- * KonfigurationHomematic
+  * [GUIContainer HTML & Stream-integration]
+ * Konfiguration Homematic
   * [Homematic Homematic-Einbindung]
   * [HomematicKonfigBefehle Homematic Konfig Befehle]
- * KonfigurationLCD-Modul
+ * Konfiguration LCD-Modul
   * [KonfigurationLCDDrehgeber Konfiguration LCD-Display mit Drehgeber]
   * [InfrarotFernbedienungAnlernen Infrarot Fernbedienung anlernen]
   * [InfrarotBefehleAktion Infrarot Befehle einer Aktion zuordnen]
