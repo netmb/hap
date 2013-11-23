@@ -62,7 +62,7 @@ sub parse {
   my $hexNo = &getMsgNo;
 
   my $hmId = $self->{c}->{Homematic}->{HmLanId};
-  if ( $dgram->{mtype} == 0 && $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' ) {    # hap set command and wallmount-switch
+  if ( $dgram->{mtype} == 0 && ($hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' || $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-FM') ) {    # hap set command and wallmount-switch
     if ( $dgram->{v0} == 0 ) {
       $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020" . $hmDeviceData->{'channel'} . "000000" );
     }
@@ -70,7 +70,7 @@ sub parse {
       $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020" . $hmDeviceData->{'channel'} . "C80000" );
     }
   }
-  elsif ( $dgram->{mtype} == 8 && $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' ) {    # hap query command
+  elsif ( $dgram->{mtype} == 8 && ($hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' || $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-FM') ) {    # hap query command
     $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmDeviceData->{'homematicAddress'} . "0" . $hmDeviceData->{'channel'} . "0E" );
   }
   else {
@@ -239,7 +239,7 @@ sub decrypt {
       $hapDgram->{mtype} = 9;
     }
     if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} ) {
-      if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-Pl-2" ) {
+      if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-Pl-2" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-FM") {
         if ( ( $messageType eq "02" && $payload =~ m/^01/ )
           || ( $messageType eq "10" && $payload =~ m/^06/ ) )
         {
