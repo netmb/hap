@@ -11,7 +11,7 @@
    * [ErsteSchritte Erste Schritte (Server & CU) ] 
    * [ErstmaligeInbetriebnahmeCU Erstmalige Inbetriebnahme einer neuen Control-Unit]
   * Hardware
-   * [HWLinks Übersicht Eagle & Bauteillisten]
+   * [HWLinks Download HW Layouts & Bauteillisten]
    * [Jalousieaktor Jalousieaktor]
    * [ControlUnit Control Unit]
    * [RelaisStufe Relaisstufe]
