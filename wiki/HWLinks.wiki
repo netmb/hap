@@ -2,27 +2,27 @@ Aktuelle HW incl. Layout und Warenkorb zur Bestellung der Bauteile:
 
 *- CU-Unit*
 
-Eagle: 
+Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
 Bauteile:
 
 *- CU-HUT-Adapter*
 
-Eagle: 
+Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
 Bauteile:
 
 *- Relaiplatine*
 
-Eagle: 
+Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
 Bauteile:
 
 *- Dimmerplatine*
 
-Eagle: 
+Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
 Bauteile:
 
 *- Mosfet-Dimmerplatine*
 
-Eagle: 
+Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
 Bauteile:
 
 *- Jalousieaktor*
