@@ -1,19 +1,24 @@
-Aktuelle HW incl. Layout und Warenkorb zur Bestellung der Bauteile:
+Aktuelle HW incl. Layout und grobe Warenkorb (Reichelt) zur Bestellung der Bauteile:
 
 *- CU-Unit*
 
-Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
-Bauteile:
+Eagle: [https://hap.googlecode.com/files/CU-Unit3.0.zip Download]
+Bauteile: [http://www.reichelt.de/?ACTION=20;AWKID=64257;PROVID=2084 Download]
 
 *- CU-HUT-Adapter*
 
-Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
-Bauteile:
+Eagle: [https://hap.googlecode.com/files/CU-Hut3.0.zip Download]
+Bauteile: -
+
+*- CU-Unit-DIL*
+
+Eagle: [https://hap.googlecode.com/files/CU-Unit-DIL3.0.zip Download]
+Bauteile: [http://www.reichelt.de/?;ACTION=20;LA=5010;AWKID=139808;PROVID=2084 Download]
 
 *- Relaiplatine*
 
-Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
-Bauteile:
+Eagle: [https://hap.googlecode.com/files/.zip Download]
+Bauteile: [ Download]
 
 *- Dimmerplatine*
 
@@ -22,20 +27,27 @@ Bauteile:
 
 *- Mosfet-Dimmerplatine*
 
-Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download]
-Bauteile:
+Eagle: [https://hap.googlecode.com/files/hap-hardware.zip Download link]
 
+Bauteile: [http://www.reichelt.de/?ACTION=20;AWKID=8974;PROVID=2084 ]
+---- 
 *- Jalousieaktor*
 
 Eagle: 
 Bauteile:
-
+---- 
 *- USB-UART*
 
 Eagle: 
 Bauteile:
-
+---- 
 *- ZCD*
 
 Eagle: 
 Bauteile:
+---- 
+*- LCD*
+
+Eagle: [https://hap.googlecode.com/files/LCD1.0.zip Download]
+Bauteile: 
+---- 
