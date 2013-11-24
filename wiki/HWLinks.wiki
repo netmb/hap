@@ -1,0 +1,41 @@
+Aktuelle HW incl. Layout und Warenkorb zur Bestellung der Bauteile:
+
+*- CU-Unit*
+
+Eagle: 
+Bauteile:
+
+*- CU-HUT-Adapter*
+
+Eagle: 
+Bauteile:
+
+*- Relaiplatine*
+
+Eagle: 
+Bauteile:
+
+*- Dimmerplatine*
+
+Eagle: 
+Bauteile:
+
+*- Mosfet-Dimmerplatine*
+
+Eagle: 
+Bauteile:
+
+*- Jalousieaktor*
+
+Eagle: 
+Bauteile:
+
+*- USB-UART*
+
+Eagle: 
+Bauteile:
+
+*- ZCD*
+
+Eagle: 
+Bauteile:
