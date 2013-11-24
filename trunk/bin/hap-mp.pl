@@ -753,7 +753,9 @@ sub tcpClientInput {
 
     # handle Homematic
     if ($hmConfig) {
-
+      # do nothing, global $hmConfig gets checked in HMLanIn when received a config-request command
+      print "Got HMConfig-Cmd from parser. Stored in hmConfig-Var for later processing\n";
+      $heap->{client}->put("[ACK] Received Homematic-Config Command. Press Config-Button on Homematic-Device now!");
     }
     elsif ( $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} } ) {
       my $hmDeviceData = $homematicDevices{ ( $dgram->{destination} << 8 ) ^ $dgram->{device} };

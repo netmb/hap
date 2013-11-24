@@ -78,6 +78,16 @@ sub execHAPCmd {
 	return;
 }
 
+sub passthroughHMCmd {
+  my ($line) = @_;
+  if ($line) {
+    print $sock "$line\n";
+	  print <$sock> . "\n";
+	  $sock->autoflush(1);
+	  return;
+  }
+}
+
 my $cfg = new HAP::Init( FILE => "$FindBin::Bin/../etc/hap.yml", SKIP_DB => 1 );
 $sock = new IO::Socket::INET( PeerAddr => $cfg->{MessageProcessor}->{Host}, PeerPort => $cfg->{MessageProcessor}->{Port}, Proto => 'tcp' );
 $sock or die "Can\'t connect to Message-Processor:$!";
@@ -292,6 +302,7 @@ while (1) {
 				if ( $err =~ /^\s.*/ ) { print $emptyPrompt; }
 				print $err;
 			}
+			elsif ($hmConfigDgram) { &passthroughHMCmd($line); }
 			else { &execHAPCmd($obj); }
 			##print "\n\n";
 			$line   = "";
