@@ -19,12 +19,12 @@ Die View 12 in der Config 4711 anspringen:
 Einziges Problem hierbei:
 Die IDs muss man sich aus der Datenbank fischen.
 
+---- 
+
 Einfacher Login auf die Default Seite:
 
-{{{http://ihr-server:8090/login/checkGui/__ID__?user=xxxx&pass=xxxx}}}
+Wenn ihr in eurem Backup {{{*.sql}}} nach der Default Scene (hier "Meine_Startseite") sucht findet ihr sowas:
 
-Wenn ihr in eurem Backup {{{*.sql}}} nach der Default Scene (hier "GUI3D_Beleuchtung_EG0") sucht findet ihr sowas:
+{{{(133,18,1,NULL,NULL,'Meine_Startseite',133)}}}
 
-{{{(133,18,1,NULL,NULL,'GUI3D_Beleuchtung_EG0',133)}}}
-
-Die letzte Zahl hier ist die __ID__ zum einsetzen oben.
+---> {{{http://ihr-server:8090login/checkGui/133/18?user=xxxx&pass=xxxx}}}
