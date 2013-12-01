@@ -612,7 +612,7 @@ CREATE TABLE IF NOT EXISTS `static_timebase` (
 SET character_set_client = @saved_cs_client;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `static_messagetypes` (
+CREATE TABLE IF NOT EXISTS `static_messagetypes` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   `Type` int(11) DEFAULT NULL,
@@ -621,7 +621,7 @@ CREATE TABLE `static_messagetypes` (
 SET character_set_client = @saved_cs_client;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `makro_by_datagram` (
+CREATE TABLE IF NOT EXISTS `makro_by_datagram` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `VLAN` int(11) DEFAULT NULL,
   `Source` int(11) DEFAULT NULL,
@@ -640,7 +640,7 @@ CREATE TABLE `makro_by_datagram` (
 SET character_set_client = @saved_cs_client;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `static_homematicdevicetypes` (
+CREATE TABLE IF NOT EXISTS `static_homematicdevicetypes` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(63) NOT NULL,
   `Description` varchar(255) DEFAULT NULL,
