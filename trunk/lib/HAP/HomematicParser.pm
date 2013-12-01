@@ -296,13 +296,23 @@ sub decrypt {
           }
         }
       }
-      elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-MDIR" ) {    # indoor motion detector
+      elsif ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sec-MDIR" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-Sen-MDIR-O") {    # indoor and outdoor motion detector
         if ( $messageType eq "41" && $payload =~ m/^01(..)(..)(..)/ ) {
           my ( $cnt, $brigthness, $nextTr ) = ( hex($1), hex($2), ( hex($3) >> 4 ) );           # useable?
           $hapDgram->{v0}     = 132;
           $hmDgram->{channel} = 1;
           $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{ $hmDgram->{channel} }->{address};
           return ( $hapDgram, $hmDgram );
+        }
+        elsif ( $messageType eq "10" && $payload =~ m/^06(..)(..)(..)/ ) { # info 
+            my ($chn, $brightness, $err) = ( hex($1), hex($2), hex($3) );
+            $hapDgram->{v0} = $brightness;
+            # we have to map the info-data to another channel, otherwise we are not able to differentiate between motion-detection data (HAP value 132) and brigthness-data
+            # you need to create 2 virtual devices for this homematic-device: One for Motion-Detection and another one (on channel 2) for brigthness-Information.
+            # Background: The Homematic-Datagram uses more than one byte for information, but the Autonomous-control in the CU can only use 1-byte Data for data-input  
+            $hmDgram->{channel} = 2;
+            $hapDgram->{device} = $homematicDevicesByHmId->{$source}->{channels}->{ $hmDgram->{channel} }->{address};
+            return ( $hapDgram, $hmDgram );
         }
       }
     }

@@ -712,7 +712,7 @@ REPLACE INTO `static_schedulercommands` VALUES (2,'hap-sendcmd.pl'),(3,'hap-conf
 REPLACE INTO `static_startmodes` VALUES (1,'Standard',217,'normal'),(2,'Default-Config',179,'default-config'),(3,'Full-Default-Config',0,'full-default-config');
 REPLACE INTO `static_timebase` VALUES (1,'1/10s',0),(2,'Seconds',1),(3,'Minutes',2),(4,'Hours',3),(5,'Days',4),(6,'Weeks',5);
 REPLACE INTO `static_weekdays` VALUES (1,'Monday',0),(2,'Tuesday',1),(3,'Wednesday',2),(4,'Thursday',3),(5,'Friday',4),(6,'Saturday',5),(7,'Sunday',6);
-REPLACE INTO `static_homematicdevicetypes` VALUES(1,'HM-LC-Sw1-Pl-2','Wall Mount Switch'),(2,'HM-Sec-SC','Reed-Contact'), (3,'HM-Sec-RHS','Window rotary handle sensor'),(4,'HM-Sec-MDIR','Indoor motion indicator'),(5,'HM-PB-2-WM55','Push button 2-channel surface mount'),(6,'HM-LC-Sw1-FM','Switch actuator 1-channel flush-mount');
+REPLACE INTO `static_homematicdevicetypes` VALUES(1,'HM-LC-Sw1-Pl-2','Wall Mount Switch'),(2,'HM-Sec-SC','Reed-Contact'), (3,'HM-Sec-RHS','Window rotary handle sensor'),(4,'HM-Sec-MDIR','Indoor motion indicator'),(5,'HM-PB-2-WM55','Push button 2-channel surface mount'),(6,'HM-LC-Sw1-FM','Switch actuator 1-channel flush-mount'),(7,'HM-Sen-MDIR-O','Outdoor motion detector');
 REPLACE INTO `static_messagetypes` VALUES(1,'set',0),(2,'query',8), (3,'notify',16);
 REPLACE INTO `roles` VALUES (1,'Read'),(2,'Write'),(3,'Delete'),(33,'GUI_Set'),(32,'GUI_Read'),(31,'Delete_Users'),(30,'Manage_Users'),(29,'Learn_IR'),(28,'Delete_Schedules'),(27,'Add_Schedules'),(26,'Reset_Module'),(25,'Push_Config'),(24,'Flash_Firmware');
 
