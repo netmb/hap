@@ -375,6 +375,7 @@ sub serverCuIn {
       source      => $c->{CCUAddress},
       destination => $data->{source},
       mtype       => $data->{mtype} + 1,
+      device      => $data->{device},
       v0          => $data->{v0},
       v1          => $data->{v1},
       v2          => $data->{v2}
