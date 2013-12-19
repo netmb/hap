@@ -1,0 +1,44 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Ziel ist es ein Raspberry PI zu nutzen, um weitere Sensoren auszulesen, Diese werdendirekt an der GPIO Schnittstelle zu betrieben. 
+
+= Details =
+
+1. Installation der Kernelmodule:
+
+{{{
+pi@raspberrypi ~ $ sudo modprobe wire
+pi@raspberrypi ~ $ sudo modprobe w1_gpio
+pi@raspberrypi ~ $ sudo modprobe w1_therm
+pi@raspberrypi ~ $ sudo apt-get update
+pi@raspberrypi ~ $ sudo apt-get install bc
+}}}
+
+2. Anschluss Dalles DS1820
+
+4,7kOhm Pull-Up zwischen den DATA & 5V Leitung nicht vergessen!
+
+3. Skript
+
+ # Hierzu im Verzeichnis /sys/bus/w1/devices/w1_bus_master1/ nach schauen, welche ID der Sensor hat (hier 10-000802016a2f).
+ # IP bei Telnet ersetzen
+ # Destination & device ersetzen (Einbindung in die GUI ist noch in Arbeit...)
+{{{
+#!/bin/bash
+
+# Temperatur des Sensors auslesen
+etxt=$(grep 't=' /sys/bus/w1/devices/w1_bus_master1/10-000802016a2f/w1_slave | awk -F 't=' '{print $2}')
+
+number=${etxt:0:2}
+
+/usr/bin/expect <<EOD
+spawn telnet 192.168.1.2 7891
+sleep 2
+send "destination 102 set device 200 value $number\r"
+sleep 2
+send "exit\r"
+interact
+EOD
+}}}
