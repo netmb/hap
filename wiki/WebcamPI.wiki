@@ -66,7 +66,7 @@ exit 0
 Danach in den Autostart laden in /etc/init.d:
 
 {{{
-sudo update-rd.d mjpg-streamer defaults
+sudo update-rd.d mjpg-stream defaults
 }}}
 
 Einbindung als Bild In der GUI via Container:
