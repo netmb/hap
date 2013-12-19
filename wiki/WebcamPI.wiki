@@ -7,12 +7,16 @@ Einbindung der Raspberry PI CAM & Aktivierung eines Streamservers.
 = Details =
 
 1. Erstellung in /etc/init.d der Datei mjpg_streamer - http://wiki.ubuntuusers.de/MJPG-Streamer
+
 2. Installation PI CAM -  http://www.raspberrypi.org/camera
+
 3. Erstellung in /etc/init.d der Datei mjpg_stream
+
 4. sudo chmod 0775 mjpg_stream
 
  # /mnt/vmtmpfs ersetzen durch das passende Verzeichnis (Ramdisc zu empfehlen!)
  # /home/pi/mjpeg/mjpg-streamer-code-182/mjpg-streamer/mjpg_streamer ersetzen durch das passende Verzeichnis je nachdem wo es installiert ist, Pfad notwendig beim Autostart!)
+
 {{{
 #!/bin/sh
 # /etc/init.d/mjpg_stream
