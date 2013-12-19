@@ -75,4 +75,4 @@ HTML:   {{{<img src="http://192.168.1.2:8080/?action=snapshot" width="320" heigh
 
 Da das ganze nicht dauerhaft läuft, am besten per crontab 1x pro Tag neustarren:
 
-{{{ * 6  * * * /etc/init.d/mjpg_streamer restart}}}
+{{{ * 6  * * * /etc/init.d/mjpg_stream restart}}}
