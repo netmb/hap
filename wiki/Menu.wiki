@@ -50,3 +50,7 @@
    * [Subversion]
    * [Backup Backup erstellen ]
    * [SysScriptRepo System Scripts]
+  * Raspberry Integration
+   * [DS1820 Dallas S1820]
+   * [WebcamPI Raspberry PI Webcam]
+
