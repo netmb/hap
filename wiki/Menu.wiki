@@ -51,6 +51,5 @@
    * [Backup Backup erstellen ]
    * [SysScriptRepo System Scripts]
   * Raspberry Integration
-   * [DS1820 Dallas S1820]
-   * [WebcamPI Raspberry PI Webcam]
-
+   * [DS1820 Dallas DS18S20]
+   * [WebcamPI Raspberry PI CAM]
