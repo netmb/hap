@@ -68,3 +68,7 @@ Danach in den Autostart laden in /etc/init.d:
 {{{
 sudo update-rd.d mjpg-streamer defaults
 }}}
+
+Einbindung als Bild In der GUI via Container:
+
+HTML:   <img src="http://192.168.1.2:8080/?action=snapshot" width="320" height="240"/>
