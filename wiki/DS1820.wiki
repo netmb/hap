@@ -22,7 +22,10 @@ pi@raspberrypi ~ $ sudo apt-get install bc
 
 3. Anlegen einer virtuellen CU
 
-Es muss eine virtuelle CU angelegte werden und darin pro Kanal ein device (switch). Diese wird jeweils im Script als Ziel eingegeben.
+Es muss eine virtuelle CU angelegte werden und darin pro Kanal ein device (switch). 
+Diese wird jeweils im Script als Ziel eingegeben.
+Formula: return ((X-5000)*0.001);
+
 
 4. Skript
 
@@ -41,7 +44,7 @@ number_offset=$(($number+5000))
 /usr/bin/expect <<EOD
 spawn telnet 192.168.1.2 7891
 sleep 2
-send "source Dummy_M destination CCU status device Dummy_D value $number_offset\r"
+send "source <Dummy_M> destination <Server-CCU> status device <Dummy_D> value $number_offset\r"
 sleep 2
 send "exit\r"
 interact
@@ -49,5 +52,5 @@ EOD
 }}}
 
  * Dummy_M = Dummy Modul
- * CCU = Server CU ID
+ * Server-CCU = Server CCU ID
  * Dummy_D = Dummy Device
