@@ -27,7 +27,7 @@ pi@raspberrypi ~ $ sudo apt-get install bc
  * Formula: return ((X-5000)*0.001);
  * Type: Switch
 
--> Anzeige via GUI durch einen "value layer" der virtuelle device, wie eingerichtet.
+-> Anzeige via GUI durch einen "value layer" der device, wie eingerichtet.
 
 
 4. Skript
