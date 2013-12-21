@@ -24,7 +24,7 @@ pi@raspberrypi ~ $ sudo apt-get install bc
 
  * Es muss eine virtuelle CU angelegt werden und darin jeweils pro Kanal eine device. 
  * Diese wird jeweils im Script als Ziel eingegeben.
- * Formula: return ((X-5000)*0.001);
+ * Formula: return {{{((X-5000)*0.001);}}}
  * Type: Switch
 
 -> Anzeige via GUI durch einen "value layer" der device, wie eingerichtet.
