@@ -18,13 +18,13 @@ pi@raspberrypi ~ $ sudo apt-get install bc
 
 2. Anschluss Dalles DS1820
 
-4,7kOhm Pull-Up zwischen den DATA & 5V Leitung nicht vergessen!
+ * 4,7kOhm Pull-Up zwischen den DATA & 5V Leitung nicht vergessen!
 
 3. Anlegen einer virtuellen CU
 
-Es muss eine virtuelle CU angelegte werden und darin pro Kanal ein device (switch). 
-Diese wird jeweils im Script als Ziel eingegeben.
-Formula: return ((X-5000)*0.001);
+ * Es muss eine virtuelle CU angelegte werden und darin pro Kanal ein device (switch). 
+ * Diese wird jeweils im Script als Ziel eingegeben.
+ * Formula: return ((X-5000)*0.001);
 
 
 4. Skript
