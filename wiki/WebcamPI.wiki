@@ -2,13 +2,13 @@
 
 = Introduction =
 
-Einbindung der Raspberry PI CAM & Aktivierung eines Streamservers.
+Einbindung der Raspberry PI CAM & Aktivierung eines Stream-servers.
 
 = Details =
 
-1. Erstellung in /etc/init.d der Datei mjpg_streamer - http://wiki.ubuntuusers.de/MJPG-Streamer
+1. Installation mjpg-streamer - siehe  http://wiki.ubuntuusers.de/MJPG-Streamer
 
-2. Installation PI CAM -  http://www.raspberrypi.org/camera
+2. Installation PI CAM - siehe  http://www.raspberrypi.org/camera
 
 3. Erstellung in /etc/init.d der Datei mjpg_stream
 
@@ -34,7 +34,7 @@ Einbindung der Raspberry PI CAM & Aktivierung eines Streamservers.
 start()
 {
   echo "Start mjpg-stream"
-  /usr/bin/raspistill --nopreview -w 640 -h 480 -ISO 100 -ex auto -q 5 -o /mnt/vmtmpfs/pic.jpg -tl 1000 -t 9999999 -th 0:0:0 &
+  /usr/bin/raspistill --nopreview -w 640 -h 480 -ISO 100 -ex auto -q 5 -o /mnt/vmtmpfs/pic.jpg -tl 100 -t 0 -th 0:0:0 &
   /home/pi/mjpeg/mjpg-streamer-code-182/mjpg-streamer/mjpg_streamer -i "/usr/local/lib/input_file.so -f /mnt/vmtmpfs -n pic.jpg -d 5" -o "/usr/local/lib/output_http.so -w /usr/local/www" &
 }
 
