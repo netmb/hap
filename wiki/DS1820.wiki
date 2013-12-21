@@ -48,6 +48,6 @@ interact
 EOD
 }}}
 
-Dummy_M = Dummy Modul
-CCU = Server CU ID
-Dummy_D = Dummy Device
+ * Dummy_M = Dummy Modul
+ * CCU = Server CU ID
+ * Dummy_D = Dummy Device
