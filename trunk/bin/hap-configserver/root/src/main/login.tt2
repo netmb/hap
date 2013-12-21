@@ -6,7 +6,7 @@
   document.getElementById('username').focus();
 }
 </script>
-<form method="post" action=" [% Catalyst.uri_for('/login/checkGui') %] ">
+<form method="post" action="/login/checkGui">
   <table>
     <tr>
       <td>Username:</td>
