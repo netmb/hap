@@ -503,7 +503,7 @@ sub dbUpdateStatus {
 
     # Update Status only if message is not a Digital- or Analog-Input trigger-Status-Message
     elsif ( !( ( $_->{'Type'} == 32 || $_->{'Type'} == 40 ) && $data->{hapData}->{mtype} == 16 ) ) {
-      my $status = $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
+      my $status = $data->{hapData}->{v2} * 65536 + $data->{hapData}->{v1} * 256 + $data->{hapData}->{v0};
       if ( $_->{'Formula'} ) {
         my $formula = $_->{'Formula'};
         $formula =~ s/x|X/$status/g;

@@ -32,7 +32,7 @@ sub index : Private {
 sub getCurrentConfig : Local {
   my ( $self, $c ) = @_;
   my $rc =
-    $c->model('hapModel::Config')->search( id => $c->session->{config} )->first;
+    $c->model('hapModel::Config')->search( id => $c->session->{config} || 0 )->first;
   if ( defined($rc) ) {
     $c->stash->{id}   = $rc->id;
     $c->stash->{name} = $rc->name;
