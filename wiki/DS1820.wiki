@@ -2,9 +2,11 @@
 
 = Introduction =
 
-Ziel ist es ein Raspberry PI zu nutzen, um weitere Sensoren auszulesen, Diese werdendirekt an der GPIO Schnittstelle zu betrieben. 
+Ziel ist es ein Raspberry PI in HAP einzubinden, um bspw. weitere Sensoren auszulesen. Diese können an der GPIO Schnittstelle angeschlossen & ausgewertet werden.
 
 = Details =
+
+Hier als Bespiel das Auslesen eine DS18S20 Temperaturesensur, via 1wire.
 
 1. Installation der Kernelmodule:
 
@@ -20,12 +22,20 @@ pi@raspberrypi ~ $ sudo apt-get install bc
 
  * 4,7kOhm Pull-Up zwischen den DATA & 5V Leitung nicht vergessen!
 
-3. Anlegen einer virtuellen CU
+Wichtig:
+
+ * VDD   :  PIN xx ( 3,3 V, nicht 5V!)
+ * DATA :  PIN xx
+ * GND  :  PIN xx
+
+3. Zur Anzeige in der GUI muss eine virtuelle CU angelegt werden, die als 
 
  * Es muss eine virtuelle CU angelegt werden und darin jeweils pro Kanal eine device. 
  * Diese wird jeweils im Script als Ziel eingegeben.
  * Formula: return {{{((X-5000)*0.001);}}}
  * Type: Switch
+
+http://hap.googlecode.com/svn/wiki/images/Device_V.png
 
 -> Anzeige via GUI durch einen "value layer" der device, wie eingerichtet.
 
