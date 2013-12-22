@@ -28,8 +28,8 @@ GPIO:
  * DATA  :  PIN 5 (GPIO 3)
  * GND   :  PIN 6 (GND)
 
-[http://developer-blog.net/hardware/raspberry-pi-gpio-schnittstelle-teil-1 Belegung]
-http://developer-blog.net/hardware/raspberry-pi-gpio-schnittstelle-teil-1
+[ http://developer-blog.net/hardware/raspberry-pi-gpio-schnittstelle-teil-1 Belegung]
+
 
 3. Zur Anzeige in der GUI muss eine virtuelle CU angelegt werden, die als 
 
