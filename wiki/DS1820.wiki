@@ -20,13 +20,16 @@ pi@raspberrypi ~ $ sudo apt-get install bc
 
 2. Anschluss Dalles DS1820
 
- * 4,7kOhm Pull-Up zwischen den DATA & 5V Leitung nicht vergessen!
+ * 4,7kOhm Pull-Up zwischen den DATA & 3,3V Leitung nicht vergessen
 
-Wichtig:
+GPIO:
 
- * VDD   :  PIN xx ( 3,3 V, nicht 5V!)
- * DATA :  PIN xx
- * GND  :  PIN xx
+ * VDD   :  PIN 1 ( 3,3 V, nicht 5V!)
+ * DATA  :  PIN 5 (GPIO 3)
+ * GND   :  PIN 6 (GND)
+
+[http://developer-blog.net/hardware/raspberry-pi-gpio-schnittstelle-teil-1 Belegung]
+http://developer-blog.net/hardware/raspberry-pi-gpio-schnittstelle-teil-1
 
 3. Zur Anzeige in der GUI muss eine virtuelle CU angelegt werden, die als 
 
