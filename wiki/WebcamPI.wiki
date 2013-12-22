@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Einbindung der Raspberry PI CAM & Aktivierung eines Stream-servers.
+Ziel ist es die Raspberry-PI CAM in HAP zu integrieren via MJPG stream-server.
 
 = Details =
 
@@ -14,8 +14,9 @@ Einbindung der Raspberry PI CAM & Aktivierung eines Stream-servers.
 
 4. sudo chmod 0775 mjpg_stream
 
- # /mnt/vmtmpfs ersetzen durch das passende Verzeichnis (Ramdisc zu empfehlen!)
- # /home/pi/mjpeg/mjpg-streamer-code-182/mjpg-streamer/mjpg_streamer ersetzen durch das passende Verzeichnis je nachdem wo es installiert ist, Pfad notwendig beim Autostart!)
+Im Beispiel-Skript anzupassen:
+ # /mnt/vmtmpfs ist der Pfad, wo das Bild abgelegt wird. Hier Nutzung einer Ramdisc (zu empfehlen um die SD zu schonen!)
+ # /home/pi/mjpeg/mjpg-streamer-code-182/mjpg-streamer/mjpg_streamer ersetzen durch das Verzeichnis, je nachdem wo mjpg-streamer installiert ist (Pfad ist notwendig beim Autostart!)
 
 {{{
 #!/bin/sh
@@ -67,10 +68,21 @@ Danach in den Autostart laden in /etc/init.d:
 
 {{{
 sudo update-rd.d mjpg-stream defaults
+sudo reboot
 }}}
 
 Einbindung als Bild In der GUI via Container:
 
 {{{
-<img src="http://192.168.1.2:8080/?action=snapshot" width="320" height="240"/>
+<img src="http://192.168.1.2:8080/?action=snapshot" width="640" height="480"/>
+}}}
+
+*Bsp. zum anlegen einer RamDisc:*
+{{{
+sudo apt-get install tmpfs
+}}}
+
+In der Datei/etc/fstab am Ende einfügen (size an Bildgrösse anpassen):
+{{{
+tmpfs /mnt/vmtmpfs tmpfs defaults,size=8M 0 0
 }}}
