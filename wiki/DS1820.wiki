@@ -11,14 +11,14 @@ Hier als Bespiel das Auslesen eine DS18S20 Temperaturesensur, via 1wire.
 1. Installation der Kernelmodule:
 
 {{{
+pi@raspberrypi ~ $ sudo apt-get update
 pi@raspberrypi ~ $ sudo modprobe wire
 pi@raspberrypi ~ $ sudo modprobe w1_gpio
 pi@raspberrypi ~ $ sudo modprobe w1_therm
-pi@raspberrypi ~ $ sudo apt-get update
 pi@raspberrypi ~ $ sudo apt-get install bc
 }}}
 
-2. Anschluss Dalles DS1820
+2. Anschluss Dalles DS1820 am PI
 
  * 4,7kOhm Pull-Up zwischen den DATA & 3,3V Leitung nicht vergessen
 
@@ -28,25 +28,23 @@ GPIO:
  * DATA  :  PIN 5 (GPIO 3)
  * GND   :  PIN 6 (GND)
 
-[ http://developer-blog.net/hardware/raspberry-pi-gpio-schnittstelle-teil-1 Belegung]
-
-
-3. Zur Anzeige in der GUI muss eine virtuelle CU angelegt werden, die als 
+3. Übertragung & Anzeige in der GUI erfolgt via einer virtuellen CU, die angelegt werden muss
 
  * Es muss eine virtuelle CU angelegt werden 
- * Darin jeweils pro Kanal eine device, diese wird jeweils im Script als Ziel eingegeben.
+ * In der virtuellen CU wird pro Kanal eine *device* angelegt
  * Formula: return {{{((X-5000)*0.001);}}}
  * Type: Switch
 
 http://hap.googlecode.com/svn/wiki/images/Device_V.png
 
----> Anzeige in der GUI durch einen "value layer" mit der jeweiligen Device, wie zuvor eingerichtet.
+---> Anzeige in der GUI dann wie gewohnt durch einen "value layer" mit der jeweiligen Device
 
-4. Skript zum auslesen des DS18S20
+4. Raspberry PI Skript zum auslesen des DS18S20
 
- # Hierzu im Verzeichnis /sys/bus/w1/devices/w1_bus_master1/ nachschauen, welche ID der Sensor im BUS  hat (hier 10-000802016a2f).
+ # Im Verzeichnis /sys/bus/w1/devices/w1_bus_master1/ nachschauen, welche ID der Sensor im BUS  hat (hier 10-000802016a2f).
  # IP bei Telnet ersetzen
  # Destination & device ersetzen
+
 {{{
 #!/bin/bash
 
