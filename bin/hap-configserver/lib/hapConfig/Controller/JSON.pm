@@ -66,7 +66,7 @@ sub getUpstreamModules : Local {
 sub getFreeModuleAddresses : Local {
   my ( $self, $c, $moduleID ) = @_;
   my @used = $c->model('hapModel::Module')->search(
-    config => $c->session->{config},
+    {config => $c->session->{config}},
     { columns => [qw/id address/] }
   )->all;
   my @unused;
