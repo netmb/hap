@@ -70,6 +70,17 @@ sub parse {
       $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020" . $hmDeviceData->{'channel'} . "C80000" );
     }
   }
+  elsif ( $dgram->{mtype} == 0 && ($hmDeviceData->{'homematicDeviceType'} eq 'HM_LC_SW4_BA_PCB') ) {    # 4x Switch burst mode only ?
+    if ( $dgram->{v0} == 0 ) {
+      $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "B011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020" . $hmDeviceData->{'channel'} . "000000" );
+    }
+    elsif ( $dgram->{v0} > 0 ) {
+      $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "B011" . $hmId . $hmDeviceData->{'homematicAddress'} . "020" . $hmDeviceData->{'channel'} . "C80000" );
+    }
+  }
+  elsif ( $dgram->{mtype} == 8 && ($hmDeviceData->{'homematicDeviceType'} eq 'HM_LC_SW4_BA_PCB') ) {    # hap query command on 4x Switch - burst mode only?
+    $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmDeviceData->{'homematicAddress'} . "0" . $hmDeviceData->{'channel'} . "0E" );
+  }
   elsif ( $dgram->{mtype} == 8 && ($hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-Pl-2' || $hmDeviceData->{'homematicDeviceType'} eq 'HM-LC-Sw1-FM') ) {    # hap query command
     $msg = sprintf( "S%08X,00,00000000,01,%08X,%s", $tm, $tm, $hexNo . "A001" . $hmId . $hmDeviceData->{'homematicAddress'} . "0" . $hmDeviceData->{'channel'} . "0E" );
   }
@@ -239,7 +250,7 @@ sub decrypt {
       $hapDgram->{mtype} = 9;
     }
     if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} ) {
-      if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-Pl-2" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-FM") {
+      if ( $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-Pl-2" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM-LC-Sw1-FM" || $homematicDevicesByHmId->{$source}->{homematicDeviceType} eq "HM_LC_SW4_BA_PCB") {
         if ( ( $messageType eq "02" && $payload =~ m/^01/ )
           || ( $messageType eq "10" && $payload =~ m/^06/ ) )
         {
