@@ -4,6 +4,7 @@
     0 source                Specify the address of the sending modul
     0 vlan                  Specify the VLAN to use
     0 hmdevice              Specify a homematic-device by its address (6 Hex)
+    0 hmpair                Test
    10 <0-255>               Second number of a native command
    20 <0-255>               Third number of a native command
    30 <0-255>               Fourth number of a native command
@@ -818,7 +819,7 @@
  10050 channel              channel
  10060 <1-9>                Channel-number
  10070 <cr>                 <Enter>
- 10080 <cr>					<Enter>
+ 10080 <cr>                 <Enter>
  10090 <cr>                 <Enter>
  10100 <cr>                 <Enter>
  10110 <cr>                 <Enter>
