@@ -1,0 +1,61 @@
+////////////////////////////////////////////////////////////////////////////////
+// Projekt:              Home-Automation                                      //
+// Modul:                Change-Log                                           //
+// Version:              1.0 (2)                                              //
+////////////////////////////////////////////////////////////////////////////////
+// Erstellt am:          12.02.2009                                           //
+// Erstellt von:         Holger Heuser                                        //
+// Zuletzt geändert am:  28.12.2009                                           //
+// Zuletzt geändert von: Carsten Wolff                                        //
+////////////////////////////////////////////////////////////////////////////////
+
+HA-Version: 2.5 (8) vom 12.02.2009 based on 2.5 (7) vom 15.07.2008
+  File: haas.c
+    Fehler beim AS-Objekt "Volatile Passive Input" behoben. Wechsel des
+    Eingangswerts während der Verarbeitung des aktuellen Werts wurde nicht
+    berücksichtigt.
+
+////////////////////////////////////////////////////////////////////////////////
+
+HA-Version: 2.5 (9) vom 12.02.2009 based on 2.5 (8) vom 12.02.2009
+  File: hazm.c
+    Inkrement des Counters zur Überwachung der Nulldurchgänge eingebaut.
+  File: hadm.h
+    Deklaration zur Inkrement-Funktion des Counters zur Überwachung der Null-
+    durchgänge eingebaut.
+  File: hadm.c
+    - Erweiterungen zur Überwachung der Nulldurchgänge eingebaut.
+    - Rundungsproblem bei Funktion "DMGetValue" behoben (Dekrement-Problem bei
+    Ansteuerung eines Dimmers über einen Taster).
+
+////////////////////////////////////////////////////////////////////////////////
+
+HA-Version: 2.5 (10) vom 12.02.2009 based on 2.5 (9) vom 12.02.2009
+  File: hadm.c
+    ISR auf aktuelle Bezeichner geändert
+  File: hafm.c
+    ISR auf aktuelle Bezeichner geändert
+  File: hatwi.c
+    ISR auf aktuelle Bezeichner geändert
+  File: hazm.c
+    ISR auf aktuelle Bezeichner geändert
+    
+////////////////////////////////////////////////////////////////////////////////
+
+HA-Version: 2.5 (11) vom 28.12.2009 based on 2.5 (10) vom 12.02.2009
+  File: hadm.c
+     - Logik zur Überwachung der Nulldurchgänge überarbeitet.
+     - Anzahl der Dimmerstufen auf 200 gesetzt zur Vermeidung von
+       Rundungsfehlern (Aufblitzen der Lampe bei erreichen des Wertes 0
+       durch einen Taster)    
+  File: hars.c
+     - Rollosteuerung Ã¼berarbeitet. Gleichzeitiges aktivieren von Up- u.
+ Down-
+       Device wird verhindert.
+      
+
+////////////////////////////////////////////////////////////////////////////////
+
+HA-Version: 2.5 (13) vom 17.10.2010 based on 2.5 (11) vom 28.12.2009 
+  File: haas.c
+      - AS-Device Makro hinzugefügt

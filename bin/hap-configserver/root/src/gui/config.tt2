@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <title>HAP-GUI</title>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <title>Untitled Document</title>
+    </head>
+    <body>
+        [% FOREACH config IN configs -%]
+        <a href="/gui/setConfig/[% config.id %]">[[% config.name %]]</a>
+        <br>
+        [% END -%]
+    </body>
+</html>

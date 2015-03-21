@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name = "viewport" content = "width = device-width">
+        <meta name = "viewport" content = "height = device-height">
+	<title>Scene</title>
+        <link rel="apple-touch-icon" href="/static/images/hap-white.png"/>
+        <link rel="stylesheet" type="text/css" href="/static/js/yui/build/container/assets/skins/sam/container.css">
+        <!-- YUI -->
+        <script type="text/javascript" src="/static/js/yui/build/yahoo-dom-event/yahoo-dom-event.js">
+        </script>
+        <script type="text/javascript" src="/static/js/yui/build/connection/connection-min.js">
+        </script>
+        <script type="text/javascript" src="/static/js/yui/build/dragdrop/dragdrop-min.js">
+        </script>
+        <script type="text/javascript" src="/static/js/yui/build/json/json-min.js">
+        </script>
+        <script type="text/javascript" src="/static/js/yui/build/slider/slider-min.js">
+        </script>
+        <!-- Open Flash Chart -->
+        <script type="text/javascript" src='/static/js/ofc/swfobject.js'>
+        </script>
+        <!-- rgraph -->
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.common.core.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.common.tooltips.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.line.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.bar.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.hbar.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.hprogress.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.vprogress.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.meter.js"></script>
+        <script type="text/javascript" src="/static/js/rgraph/RGraph.odo.js"></script>    
+        <!-- HAP -->
+        <script type="text/javascript" src='/static/js/hap/gui/Init.js'>
+        </script>
+        <script type="text/javascript" src="/static/js/hap/gui/SceneBuilder.js">
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Switch.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Macro.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Trigger.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Slider.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/ImageLayer.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/ValueLayer.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Container.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Chart.js'>
+        </script>
+        <script type="text/javascript" src='/static/js/hap/gui/Chart5.js'>
+        </script>
+    </head>
+    <body>
+        <div id="rootDiv">
+        </div>
+        <script type="text/javascript">
+            var sceneBuilder = new HAP.SceneBuilder();
+            window.setInterval("sceneBuilder.refresh()", 1000);
+            sceneBuilder.setScene("getScene/[%sceneId%]");
+        </script>
+    </body>
+</html>
