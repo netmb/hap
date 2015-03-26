@@ -2,6 +2,8 @@ Home Automation Project
 
 HA using Atmel-AVR and Web 2.0.
 
+![https://github.com/netmb/hap/wiki/images/HAP-small-black.png](https://github.com/netmb/hap/wiki/images/HAP-small-black.png)
+
 Take a look at the [Wiki-Sites](https://github.com/netmb/hap/wiki) for more Information or if you want to jump-start, check the Installation-Instruction: [Installation](https://github.com/netmb/hap/wiki/Installation)
 
 Some more documenation:
