@@ -37,10 +37,13 @@ MessageProcessor:
 Scheduler: 
   Host: 127.0.0.1
   Port: 7892  
+MQTTBroker:
+  Host: 127.0.0.1
+  Port: 1883
 HAPCmdLang: en
 HAPCmdPrompt: 'HAP# '
 Homematic:
-  HmLanId : '1C65B8'
+  HmLanId : 'FFFFFF'
   HmLanIp: 192.168.165.49
   HmLanPort: 1000
   HmSecKey: '1122334455'
