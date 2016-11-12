@@ -43,6 +43,7 @@ my %homematicMIdToHap;
 my %makroByDatagram;
 my $hmConfig;
 my %hmMsgQueue;
+my $logSessionSource;
 
 foreach ( 224 .. 239 ) {    # Source-Addresses
   $mapping{$_} = undef;
@@ -393,7 +394,10 @@ sub serverCuIn {
   {
     $kernel->post( 'main' => multicastAlert => $data );
   }
-
+  ##Debug
+  if ($logSessionSource) {
+    $kernel->post( $mapping{ $logSessionSource }->{session} => ClientOutput => $data );
+  }
   return;
 }
 
@@ -672,6 +676,7 @@ sub tcpClientDisconnect {
 
 sub tcpClientInput {
   my ( $kernel, $session, $heap, $data ) = @_[ KERNEL, SESSION, HEAP, ARG0 ];
+  print $data."\n";
   if ( $data =~ /\{.*\}/i ) {    # config-object
     my $cObj;
     eval { $cObj = $json->decode($data); };
@@ -727,6 +732,16 @@ sub tcpClientInput {
     if ( defined( $cObj->{MakroByDatagramUpdate} ) ) {
       $kernel->post( main => 'dbGetMakroByDatagram' );
     }
+    if ( defined( $cObj->{Debug})) {
+      if ($cObj->{Debug} == 1) {
+        $logSessionSource = $heap->{SessionSource};
+	$heap->{client}->put("Logging activated");
+      }
+      else {
+	$logSessionSource = undef;
+        $heap->{client}->put("Logging deactivated");
+      }
+    }
     return;
   }
   if ( $data =~ /.*quit|exit.*/i ) {    # exit request
@@ -751,7 +766,7 @@ sub tcpClientInput {
     #    @{ $hmConfig{ $hmConfigDgram->{source} } } = ( $hmParser->buildHmConfigDatagrams($hmConfigDgram) );
     #  }
     #}
-
+    #print "DEST:".(($dgram->{destination} << 8 ) ^ $dgram->{device})."\n";
     # handle Homematic
     if ($hmConfig) {
       # do nothing, global $hmConfig gets checked in HMLanIn when received a config-request command
@@ -770,7 +785,7 @@ sub tcpClientInput {
         my $mId = substr( $mParts[0], 1, 8 );
         $homematicMIdToHap{$mId} = $heap->{'SessionSource'};
         $kernel->post( main => hmLanOut => $hmDgram );
-        $kernel->delay_add( 'ClientOutput', $mroutine->getTimeout($dgram), "[ERR] No Answer." );
+        $kernel->delay_add( 'ClientOutput', $mroutine->getTimeout($dgram) + 1.5, "[ERR] No Answer." ); # answers from homematic-devices take longer, so we add 1.5 sec to the default of 0.5
         $kernel->delay_add( 'clearMIdfromHash', 2, $mId );
       }
     }
@@ -795,10 +810,12 @@ sub tcpClientInput {
 
 sub tcpClientOutput {
   my ( $kernel, $heap, $data ) = @_[ KERNEL, HEAP, ARG0 ];
-  if ( ref($data) ) {    # looks like an datagram-object
-    my $compareResult = $mroutine->compare( $heap->{predictions}, $data, $heap->{MCastGroup} );
-    if ( $compareResult == 1 ) {    # we're fine
+  if ( ref($data) ) {    # looks like an datagram-object    
+    my $compareResult = $mroutine->compare( $heap->{predictions}, $data, $heap->{MCastGroup} );        
+    #print "COMPARERES:$compareResult\n";
+   if ( $compareResult == 1 ) {    # we're fine
       $kernel->delay('ClientOutput');    # clear delay
+      #print "DATA ACK: ".$parser->reverseParse($data)."\n";
       $heap->{client}->put( $parser->reverseParse($data) );
 
       #$heap->{client}->put( &composeAnswer("[ACK]", $data) );
@@ -819,7 +836,12 @@ sub tcpClientOutput {
     }
     elsif ( $compareResult == 0 ) {
       $kernel->delay('ClientOutput');    # clear delay
-      $heap->{client}->put( &composeAnswer( "[ERR Prediction]", $data ) );
+      if ($logSessionSource && $logSessionSource == $heap->{SessionSource}) {
+        $heap->{client}->put( &composeAnswer( "[DEBUG]", $data ) );
+      }
+      else {
+        $heap->{client}->put( &composeAnswer( "[ERR Prediction]", $data ) );
+      }
     }
   }
   else {
