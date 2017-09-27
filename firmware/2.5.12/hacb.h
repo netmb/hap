@@ -1,0 +1,44 @@
+////////////////////////////////////////////////////////////////////////////////
+// Projekt:              Home-Automation                                      //
+// Modul:                CAN-Bus                                              //
+// Version:              1.0 (0)                                              //
+////////////////////////////////////////////////////////////////////////////////
+// Erstellt am:          21.01.2006                                           //
+// Erstellt von:         Holger Heuser                                        //
+// Zuletzt geändert am:  03.02.2006                                           //
+// Zuletzt geändert von: Holger Heuser                                        //
+////////////////////////////////////////////////////////////////////////////////
+
+#ifndef HACB
+#define HACB
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Module einbinden                                                           //
+////////////////////////////////////////////////////////////////////////////////
+
+#include <hagl.h>
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Typdefinitionen                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+typedef struct {
+  tByte CLANID;
+} tCBC;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Deklarationen                                                              //
+////////////////////////////////////////////////////////////////////////////////
+
+inline tCBC *CBGetConfPointer(void);
+void CBSetConfDefaults(void);
+inline void CBSetConfCLANID(tByte pCLANID);
+void CBInit(void);
+void CBRecMessage(void);
+void CBTransMessage(tByte pInt, const tMData *pData);
+
+
+#endif
