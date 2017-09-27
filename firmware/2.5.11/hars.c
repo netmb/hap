@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Projekt:              Home-Automation                                      //
 // Modul:                Rollladensteuerung                                   //
-// Version:              1.0 (1)                                              //
+// Version:              1.0 (0)                                              //
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          11.01.2007                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  28.01.2010                                           //
-// Zuletzt geändert von: Carsten Wolff                                        //
+// Zuletzt geändert am:  11.01.2007                                           //
+// Zuletzt geändert von: Holger Heuser                                        //
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -106,6 +106,16 @@ void RSInit(void) {
 
 void RSSetValue(tByte pX, tByte pValue) {
   if((RSS.E[pX].Status & 0x03) == RSStatusStill) {
+    if(RSS.E[pX].Value > pValue || pValue == 0) {
+      if(pValue == 0)
+        RSS.E[pX].Counter = RSS.E[pX].CP->RS.MaxTime * RSMaxTimeTol;
+      else
+        RSS.E[pX].Counter = (RSS.E[pX].Value - pValue) * RSS.E[pX].CP->RS.MaxTime / 100;
+      RSS.E[pX].Status = (RSS.E[pX].Status & 0xFC) | RSStatusUp;
+      if((RSS.E[pX].CP->RS.Type & RSTypeImpSteuer) == RSTypeImpSteuer)
+        RSS.E[pX].ImpSteuerUpC = RSImpLengthC;
+      SMSetOutput(RSS.E[pX].CP->RS.OPUp.Modul, RSS.E[pX].CP->RS.OPUp.Addr, 100, 0, 0);
+    }
     if(RSS.E[pX].Value < pValue || pValue == 100) {
       if(pValue == 100)
         RSS.E[pX].Counter = RSS.E[pX].CP->RS.MaxTime * RSMaxTimeTol;
@@ -114,19 +124,7 @@ void RSSetValue(tByte pX, tByte pValue) {
       RSS.E[pX].Status = (RSS.E[pX].Status & 0xFC) | RSStatusDown;
       if((RSS.E[pX].CP->RS.Type & RSTypeImpSteuer) == RSTypeImpSteuer)
         RSS.E[pX].ImpSteuerDownC = RSImpLengthC;
-      SMSetOutput(RSS.E[pX].CP->RS.OPUp.Modul, RSS.E[pX].CP->RS.OPUp.Addr, 0, 0, 0);
       SMSetOutput(RSS.E[pX].CP->RS.OPDown.Modul, RSS.E[pX].CP->RS.OPDown.Addr, 100, 0, 0);
-    }
-    else if(RSS.E[pX].Value > pValue || pValue == 0) {
-      if(pValue == 0)
-        RSS.E[pX].Counter = RSS.E[pX].CP->RS.MaxTime * RSMaxTimeTol;
-      else
-        RSS.E[pX].Counter = (RSS.E[pX].Value - pValue) * RSS.E[pX].CP->RS.MaxTime / 100;
-      RSS.E[pX].Status = (RSS.E[pX].Status & 0xFC) | RSStatusUp;
-      if((RSS.E[pX].CP->RS.Type & RSTypeImpSteuer) == RSTypeImpSteuer)
-        RSS.E[pX].ImpSteuerUpC = RSImpLengthC;
-      SMSetOutput(RSS.E[pX].CP->RS.OPDown.Modul, RSS.E[pX].CP->RS.OPDown.Addr, 0, 0, 0);
-      SMSetOutput(RSS.E[pX].CP->RS.OPUp.Modul, RSS.E[pX].CP->RS.OPUp.Addr, 100, 0, 0);
     }
     RSS.E[pX].ValueNew = pValue;
     SMSendStatus(RSS.E[pX].CP->SModul, RSS.E[pX].CP->Addr, pValue, 0);
@@ -198,7 +196,7 @@ void RSControl(void) {
         RSS.E[i].Counter--;
         if((RSS.E[i].Status & 0x03) == RSStatusUp)
           RSS.E[i].Value = RSS.E[i].Counter * 100 / RSS.E[i].CP->RS.MaxTime + RSS.E[i].ValueNew;
-        else if((RSS.E[i].Status & 0x03) == RSStatusDown)
+        if((RSS.E[i].Status & 0x03) == RSStatusDown)
           RSS.E[i].Value = RSS.E[i].ValueNew - RSS.E[i].Counter * 100 / RSS.E[i].CP->RS.MaxTime;
       }
       else {
@@ -206,7 +204,6 @@ void RSControl(void) {
           RSS.E[i].Status = (RSS.E[i].Status & 0xFC) | RSStatusStill;
           if((RSS.E[i].CP->RS.Type & RSTypeImpSteuer) == RSTypeImpSteuer) {
             RSS.E[i].ImpSteuerUpC = RSImpLengthC;
-            SMSetOutput(RSS.E[i].CP->RS.OPDown.Modul, RSS.E[i].CP->RS.OPDown.Addr, 0, 0, 0);
             SMSetOutput(RSS.E[i].CP->RS.OPUp.Modul, RSS.E[i].CP->RS.OPUp.Addr, 100, 0, 0);
           }
           else
@@ -216,7 +213,6 @@ void RSControl(void) {
           RSS.E[i].Status = (RSS.E[i].Status & 0xFC) | RSStatusStill;
           if((RSS.E[i].CP->RS.Type & RSTypeImpSteuer) == RSTypeImpSteuer) {
             RSS.E[i].ImpSteuerDownC = RSImpLengthC;
-            SMSetOutput(RSS.E[i].CP->RS.OPUp.Modul, RSS.E[i].CP->RS.OPUp.Addr, 0, 0, 0);
             SMSetOutput(RSS.E[i].CP->RS.OPDown.Modul, RSS.E[i].CP->RS.OPDown.Addr, 100, 0, 0);
           }
           else
