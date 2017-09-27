@@ -5,8 +5,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Erstellt am:          28.12.2005                                           //
 // Erstellt von:         Holger Heuser                                        //
-// Zuletzt geändert am:  18.01.2010                                           //
-// Zuletzt geändert von: Carsten Wolff                                        //
+// Zuletzt geändert am:  25.01.2010                                           //
+// Zuletzt geändert von: Carsten Wolff  Test:Inversbetrieb                    //
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -44,14 +44,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #define DMTicsProHalbwelle 15000
-#define DMTicsSynchDiff 600
+#define DMTicsSynchDiff -300          // Nulldurchgangsverschiebung
 #define DMSteps 255
 #define DMSoftDelay 3
 #define DMPlusMinusSteps 2
 #define DMControlDelayDef 60
 #define DMZDDef 60
-#define DMZCDVerifyTol 10
-#define DMMaxWert 242                 // Maximale Helligkeit bei Phasenabschn.
+#define DMZCDVerifyTol 10             // Nulldurchgangstoleranz  
+#define DMMaxWert 240                 // Maximale Helligkeit bei Phasenabschn.
 #define DMControlFlag 0x80
 
 
@@ -104,6 +104,8 @@ tByte DMZCStart;                      // Counter fuer Zuendzeitpunkte
 tByte DMZCStop;                       // Counter fuer Zuendzeitpunkte
 tByte DMZA;
 tByte DMSynchReg;                     // Zeitsynch. der Regulate-Fkt.
+tByte DMSynchZZP;                     // Synch. zur Umschaltung der Timertabelle
+tByte DMSetZZPActiv;                  // -Wert setzen- Funktion aktiv
 int DMZCDVerifyC;
 
 
@@ -152,6 +154,7 @@ void DMInit(void) {
   DMZ[DMS.N][0].Stop = 0x7FFF;
   DMZ[DMS.N][1] = DMZ[DMS.N][0];
   DMZA = 0;
+  DMSynchZZP = 0;
   
   // Timer1 initialisieren
   TCCR1B = 0x02;                    // CS10 = 2 (Prescale: 8)
@@ -164,32 +167,39 @@ int DMCalcZZPPAn(double px) {
 
   int tmp;
   
-  tmp = ceil(DMTicsProHalbwelle / M_PI * acos(2 * px / DMSteps - 1));
-  if(tmp > DMTicsSynchDiff)
-    return tmp - DMTicsProHalbwelle;
-  else
-    return DMTicsSynchDiff - DMTicsProHalbwelle + 10;
+  tmp = ceil(DMTicsProHalbwelle * pow(acos(2 * pow((px * DMMaxWert / DMSteps) / DMSteps, 0.7) - 1) / M_PI, 0.9));
+  return tmp - DMTicsProHalbwelle;
 }
 
 int DMCalcZZPPAb(double px) {
 
   int tmp;
 
-  tmp = ceil(DMTicsProHalbwelle / M_PI * acos(2 * (px * DMMaxWert / DMSteps) / DMSteps - 1));
-  if(tmp > DMTicsSynchDiff) 
-    return -tmp;
-  else
-    return DMTicsSynchDiff - DMTicsProHalbwelle + 10;    
+  tmp = ceil(DMTicsProHalbwelle * pow(acos(2 * pow((px * DMMaxWert / DMSteps) / DMSteps, 0.7) - 1) / M_PI, 0.9));
+  return -tmp; 
 }
+
 
 void DMSetZZPAn(int pStart, int pStop, tByte pX) {
 
   tByte i;
   tByte s;
   tByte n;
+  int tmp;
  
-  i = 0;
+  DMSetZZPActiv = 1; // Sperre setzen wenn Funktion aktiv ist
   if(pStart > pStop) pStop = pStart;
+  // Start und Stopzeit bei Ãœberlauf korrigieren
+  tmp = pStart - DMTicsSynchDiff;
+  if(tmp > 0) pStart = DMTicsSynchDiff - DMTicsProHalbwelle + tmp;
+  tmp = pStop - DMTicsSynchDiff;
+  if(tmp > 0) pStop = DMTicsSynchDiff - DMTicsProHalbwelle + tmp;
+  // Beim ersten Aufruf pro Halbwelle die aktuelle Timertabelle kopieren
+  if(DMSynchZZP == 0) {
+	for(n = 0; n < DMS.N; n++) DMZ[n][!DMZA] = DMZ[n][DMZA];
+    DMSynchZZP = 1;
+  }
+  i = 0;
   while(pX != DMZ[i][!DMZA].X) i++;
   s = 0;
   while(pStart > DMZ[s][!DMZA].Start) s++;
@@ -202,8 +212,8 @@ void DMSetZZPAn(int pStart, int pStop, tByte pX) {
   DMZ[s][!DMZA].Start = pStart;
   DMZ[s][!DMZA].Stop = pStop;
   DMZ[s][!DMZA].X = pX;
-  DMZA = !DMZA;
-  for(n = 0; n < DMS.N; n++) DMZ[n][!DMZA] = DMZ[n][DMZA];
+
+  DMSetZZPActiv = 0; // Sperre aufheben
 }
 
 void DMSetZZPAb(int pStart, int pStop, tByte pX) {
@@ -211,9 +221,21 @@ void DMSetZZPAb(int pStart, int pStop, tByte pX) {
   tByte i;
   tByte s;
   tByte n;
- 
-  i = 0;
+  int tmp;
+
+  DMSetZZPActiv = 1; // Sperre setzen wenn Funktion aktiv ist
+
   if(pStart > pStop) pStop = pStart;
+  tmp = pStart - DMTicsSynchDiff;
+  if(tmp > 0) pStart = DMTicsSynchDiff - DMTicsProHalbwelle + tmp;
+  tmp = pStop - DMTicsSynchDiff;
+  if(tmp > 0) pStop = DMTicsSynchDiff - DMTicsProHalbwelle + tmp;
+  // Beim ersten Aufruf pro Halbwelle die aktuelle Timertabelle kopieren
+  if(DMSynchZZP == 0) {
+	for(n = 0; n < DMS.N; n++) DMZ[n][!DMZA] = DMZ[n][DMZA];
+    DMSynchZZP = 1;
+  }
+  i = 0;
   while(pX != DMZ[i][!DMZA].X) i++;
   s = 0;
   while(pStop > DMZ[s][!DMZA].Stop) s++;
@@ -226,8 +248,8 @@ void DMSetZZPAb(int pStart, int pStop, tByte pX) {
   DMZ[s][!DMZA].Start = pStart;
   DMZ[s][!DMZA].Stop = pStop;
   DMZ[s][!DMZA].X = pX;
-  DMZA = !DMZA;
-  for(n = 0; n < DMS.N; n++) DMZ[n][!DMZA] = DMZ[n][DMZA];
+
+  DMSetZZPActiv = 0; // Sperre aufheben
 }
 
 void DMSetValue(tByte pX, tByte pPHW, tWord pDelay) {
@@ -251,10 +273,14 @@ void DMSetValue(tByte pX, tByte pPHW, tWord pDelay) {
   if(Delay == 0) {
     DMS.E[pX].HW = HW;
     if(DMS.E[pX].Prop & KMIODMPAb)
-      DMSetZZPAb(DMTicsSynchDiff - DMTicsProHalbwelle + 10, DMCalcZZPPAb(HW), pX);
-    else {
+      DMSetZZPAb(-DMTicsProHalbwelle, DMCalcZZPPAb(HW), pX);
+	else if((DMS.E[pX].Prop & KMIODMZL) == 0) {
       ZZP = DMCalcZZPPAn(HW);
       DMSetZZPAn(ZZP, ZZP + DMS.ZD, pX);
+    }
+    else {
+      ZZP = DMCalcZZPPAn(HW);
+      DMSetZZPAn(ZZP, 0, pX);
     }
   }
   DMS.E[pX].HWNew = HW;
@@ -343,9 +369,13 @@ void DMRegulate(void) {
             DMS.E[i].HW = DMS.E[i].HWNew;
           if(DMS.E[i].Prop & KMIODMPAb)
             DMSetZZPAb(DMTicsSynchDiff - DMTicsProHalbwelle + 10, DMCalcZZPPAb(DMS.E[i].HW), i);
-          else {
+          else if((DMS.E[i].Prop & KMIODMZL) == 0) {
             ZZP = DMCalcZZPPAn(DMS.E[i].HW);
             DMSetZZPAn(ZZP, ZZP + DMS.ZD, i);
+          }
+          else {
+            ZZP = DMCalcZZPPAn(DMS.E[i].HW);
+            DMSetZZPAn(ZZP, 0, i);
           }
           if(DMS.E[i].HW == DMSteps) DMS.E[i].Prop |= DMControlFlag;
         }    
@@ -357,9 +387,13 @@ void DMRegulate(void) {
               DMS.E[i].HW = DMS.E[i].HWNew;
             if(DMS.E[i].Prop & KMIODMPAb)
               DMSetZZPAb(DMTicsSynchDiff - DMTicsProHalbwelle + 10, DMCalcZZPPAb(DMS.E[i].HW), i);
-            else {
+            else if((DMS.E[i].Prop & KMIODMZL) == 0) {
               ZZP = DMCalcZZPPAn(DMS.E[i].HW);
               DMSetZZPAn(ZZP, ZZP + DMS.ZD, i);
+            }
+            else {
+              ZZP = DMCalcZZPPAn(DMS.E[i].HW);
+              DMSetZZPAn(ZZP, 0, i);
             }
             if(DMS.E[i].HW == 0) DMS.E[i].Prop &= ~DMControlFlag;
           }
@@ -374,16 +408,17 @@ void DMRegulate(void) {
 ISR (TIMER1_COMPA_vect) {
   while(OCR1A >= DMZ[DMZCStart][DMZA].Start - cDMZTol && DMZCStart < DMS.N) {
     if(DMS.E[DMZ[DMZCStart][DMZA].X].HW > 0)
-      *DMS.E[DMZ[DMZCStart][DMZA].X].Port |= 1 << DMS.E[DMZ[DMZCStart][DMZA].X].Pin;
+      //*DMS.E[DMZ[DMZCStart][DMZA].X].Port |= 1 << DMS.E[DMZ[DMZCStart][DMZA].X].Pin;
+      *DMS.E[DMZ[DMZCStart][DMZA].X].Port &= ~(1 << DMS.E[DMZ[DMZCStart][DMZA].X].Pin);
     DMZCStart++;
   }
   OCR1A = DMZ[DMZCStart][DMZA].Start;
 }
 
 ISR (TIMER1_COMPB_vect) {
-  while(OCR1B >= DMZ[DMZCStop][DMZA].Stop && DMZCStop < DMS.N) {
-    if((DMS.E[DMZ[DMZCStop][DMZA].X].Prop & KMIODMZL) == 0)
-      *DMS.E[DMZ[DMZCStop][DMZA].X].Port &= ~(1 << DMS.E[DMZ[DMZCStop][DMZA].X].Pin);
+  while(OCR1B >= DMZ[DMZCStop][DMZA].Stop - cDMZTol && DMZCStop < DMS.N) {
+    //*DMS.E[DMZ[DMZCStop][DMZA].X].Port &= ~(1 << DMS.E[DMZ[DMZCStop][DMZA].X].Pin);
+    *DMS.E[DMZ[DMZCStop][DMZA].X].Port |= 1 << DMS.E[DMZ[DMZCStop][DMZA].X].Pin;
     DMZCStop++;
   }
   OCR1B = DMZ[DMZCStop][DMZA].Stop;
@@ -395,18 +430,21 @@ ISR (TIMER1_OVF_vect) {
   tByte i;
 
   for(i = 0; i < DMS.N; i++)
-    *DMS.E[i].Port &= ~(1 << DMS.E[i].Pin);
+    //*DMS.E[i].Port &= ~(1 << DMS.E[i].Pin); 
+    *DMS.E[i].Port |= 1 << DMS.E[i].Pin;
 }
 
 inline void DMSynch(void) {
-  if((DMZCDVerifyC - 234) <= DMZCDVerifyTol || DMZCDVerifyC > 2550) {
-    DMZCDVerifyC = 0;
+  if(abs(DMZCDVerifyC) <= DMZCDVerifyTol || DMZCDVerifyC > 2344) {
+    DMZCDVerifyC = -234;
     TCNT1 = DMTicsSynchDiff - DMTicsProHalbwelle;
     DMZCStart = 0;
     DMZCStop = 0;
+	if(DMSynchZZP == 1 && DMSetZZPActiv == 0) DMZA = !DMZA; //bei Ã„nderung neue Timertabelle aktivieren
     OCR1A = DMZ[0][DMZA].Start;
     OCR1B = DMZ[0][DMZA].Stop;
     DMSynchReg = 1;
+	DMSynchZZP = 0;
   }
 }
 
