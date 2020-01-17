@@ -1,3 +1,5 @@
+# This project is no longer maintained! We recommend esphome.io in combination with home-assistant.io as an alternative.
+## If you build a lot of HAP-Actors like "HAP-Relais" and would like to continue using it: Use esphome.io with an ESP32 as an drop-in replacment. Works like charm!
 Home Automation Project
 
 HA using Atmel-AVR and Web 2.0.
