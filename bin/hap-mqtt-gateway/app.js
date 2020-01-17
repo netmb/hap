@@ -1,5 +1,6 @@
 var net = require('net');
 var mqtt = require('mqtt')
+var isnumeric = require('isnumeric');
 
 var hapMpIp = "127.0.0.1";
 var hapMpPort = 7891;
@@ -40,23 +41,26 @@ function mqttMessageHandler(topic, message) {
         hapValue = 0;
     }
     else if (message.match(/TOGGLE/)) {
-	toggleState = true;
-	hapValue = 100;
+        toggleState = true;
+        hapValue = 100;
     }
     if (hapCmd == "query") {
         console.log("destination " + hapDestination + " " +  hapCmd  +" device " + hapDevice + "\n");
         socket.write("destination " + hapDestination + " " +  hapCmd  +" device " + hapDevice + "\n");
     }
     else if (hapCmd == "set") {
-	console.log("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " value " + hapValue + "\n");
-        socket.write("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " value " + hapValue + "\n");
-	if (toggleState) { 
-	    setTimeout(function() {
-		hapValue = 0;
-        	console.log("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " value " + hapValue + " - toggle off\n");
-		socket.write("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " value " + hapValue + "\n");
-	    }, 100);
-	}
+        var setValueCmd = isnumeric(hapValue) ? "value " : "";
+
+        console.log("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " " + setValueCmd + hapValue + "\n");
+        socket.write("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " " + setValueCmd + hapValue + "\n");
+
+        if (toggleState) { 
+            setTimeout(function() {
+                hapValue = 0;
+                console.log("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " value " + hapValue + " - toggle off\n");
+                socket.write("destination " + hapDestination + " " +  hapCmd  + " device " + hapDevice  + " value " + hapValue + "\n");
+            }, 100);
+        }
     }
 }
 
@@ -123,13 +127,13 @@ function socketDataEventHandler(data) {
         } 
         //Digital-Input state 
         else if (hapMessage.v0 > 0 && (hapMessage.v1 > 0 || hapMessage.v2 > 0)) { 
-		    value = parseInt(hapMessage.v2)*256*256 + parseInt(hapMessage.v1)*256 + parseInt(hapMessage.v0);
+            value = parseInt(hapMessage.v2)*256*256 + parseInt(hapMessage.v1)*256 + parseInt(hapMessage.v0);
             value = value.toString();
         }
         var topic = '/hap/' + hapMessage.source + '/' + hapMessage.device+ '/status';
         console.log('Publishing:' + topic + ' with value:' + value);
         mqttClient.publish(topic, value, {retain: true});
-	}
+    }
 }
 
 function socketErrorEventHandler() {
