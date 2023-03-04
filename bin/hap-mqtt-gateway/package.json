@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-	"mqtt" : "*"
+    "mqtt": "*",
+    "isnumeric": "^0.3.2"
   }
 }
